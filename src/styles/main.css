@@ -1,0 +1,11 @@
+html {
+  overflow-y: initial;
+}
+
+.v-application--wrap {
+  max-height: 100vh;
+}
+
+main {
+  height: 100%;
+}
