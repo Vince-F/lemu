@@ -108,6 +108,10 @@ export default {
   getters: {
     tests({ currentConfiguration }: any) {
       return currentConfiguration ? currentConfiguration.scenarios : [];
+    },
+
+    hasConfiguration({ currentConfiguration }: any) {
+      return !!currentConfiguration;
     }
   }
 };

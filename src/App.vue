@@ -16,7 +16,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn text v-on:click="save">
+      <v-btn text v-on:click="save" v-if="hasConfiguration">
         <v-icon>mdi-content-save</v-icon>
         Save
       </v-btn>
@@ -36,12 +36,14 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import {Action} from "vuex-class";
+import {Action, Getter} from "vuex-class";
 
 @Component
 export default class App extends Vue {
   @Action("configurationStore/saveConfiguration")
   private saveConfiguration!: () => Promise<void>;
+  @Getter("configurationStore/hasConfiguration")
+  private hasConfiguration!: boolean;
 
   private save() {
     this.saveConfiguration()
