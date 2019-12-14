@@ -25,6 +25,11 @@ export default {
       }
     },
 
+    dismissCurrentConfiguration(state: any) {
+      state.currentConfiguration = null;
+      state.configurationPath = "";
+    },
+
     setFullConfiguration(state: any, { newConfiguration }: any) {
       state.currentConfiguration = newConfiguration;
     },
