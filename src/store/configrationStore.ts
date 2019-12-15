@@ -24,6 +24,11 @@ export default {
         state.currentConfiguration.scenarios.push(new BackstopTest({ label }));
       }
     },
+    
+    dismissCurrentConfiguration(state: any) {
+      state.currentConfiguration = null;
+      state.configurationPath = "";
+    },
 
     duplicateScenario(state: any, scenarioIndex: number) {
       if (state.currentConfiguration.scenarios) {
