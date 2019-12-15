@@ -1,25 +1,15 @@
 
 
 export class BackstopTest {
-  /* mandatory fields */
   public label: string;
   public url: string;
-
-  /* non-mandatory fields */
-  public referenceUrl!: string;
-
-  /* for custom fields */
+  /*public referenceUrl: string;*/
   [key: string]: any;
 
   constructor(data: any) {
     this.label = data && data.label || "";
     this.url = data && data.url || "";
-
-    for (const key in data) {
-      if (key !== "label" && key !== "url") {
-        this[key] = data[key];
-      }
-    }
+    /*this.referenceUrl = data && data.referenceUrl || "";*/
   }
 }
 

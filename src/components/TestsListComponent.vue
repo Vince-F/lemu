@@ -22,12 +22,9 @@
               <v-list-item-content>
                 <v-list-item-title>{{ test.label }}</v-list-item-title>
               </v-list-item-content>
-              <v-list-item-action class="my-0 flex-row">
-                <v-btn icon @click="duplicateTest(index)">
-                  <v-icon color="grey lighten-1">mdi-content-copy</v-icon>
-                </v-btn>
-                <v-btn icon @click="deleteTest(index)">
-                  <v-icon color="grey lighten-1">mdi-delete</v-icon>
+              <v-list-item-action class="my-0">
+                <v-btn icon>
+                  <v-icon color="grey lighten-1" v-on:click="deleteTest(index)">mdi-delete</v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
@@ -91,8 +88,6 @@ import TestViewComponent from "./TestViewComponent.vue";
 export default class TestsListComponent extends Vue {
   @Mutation("configurationStore/addScenario")
   private addScenario!: Function;
-  @Mutation("configurationStore/duplicateScenario")
-  private duplicateScenario!: Function;
   @Mutation("configurationStore/removeScenario")
   private removeScenario!: Function;
   @Getter("configurationStore/tests")
@@ -112,10 +107,6 @@ export default class TestsListComponent extends Vue {
 
   private deleteTest(testIndex: number) {
     this.removeScenario(testIndex);
-  }
-
-  private duplicateTest(testIndex: number) {
-    this.duplicateScenario(testIndex);
   }
 
   private openTestDetails(testIndex: number) {
