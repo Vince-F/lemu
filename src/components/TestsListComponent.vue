@@ -81,6 +81,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation } from "vuex-class";
 import { BackstopTest } from "../models/backstopTest";
 import TestViewComponent from "./TestViewComponent.vue";
+import { ConfirmationModalService } from "../services/confirmationModalService";
 
 @Component({
   name: "tests-list-component",
@@ -111,7 +112,12 @@ export default class TestsListComponent extends Vue {
   }
 
   private deleteTest(testIndex: number) {
-    this.removeScenario(testIndex);
+    ConfirmationModalService.launchConfirmationModal()
+      .then(() => {
+        this.removeScenario(testIndex);
+        this.selectedTest = null;
+        this.selectedIndex = null;
+      });
   }
 
   private duplicateTest(testIndex: number) {
