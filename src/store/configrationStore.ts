@@ -24,6 +24,28 @@ export default {
         state.currentConfiguration.scenarios.push(new BackstopTest({ label }));
       }
     },
+    
+    dismissCurrentConfiguration(state: any) {
+      state.currentConfiguration = null;
+      state.configurationPath = "";
+    },
+
+    duplicateScenario(state: any, scenarioIndex: number) {
+      if (state.currentConfiguration.scenarios) {
+        const currentTest = state.currentConfiguration.scenarios[scenarioIndex];
+        const testLabelPrefix = currentTest.label + "Copy";
+        const nbOfCopies = state.currentConfiguration.scenarios.filter((entry) => {
+          return entry.label.indexOf(testLabelPrefix) === 0;
+        }).length;
+        let testLabelName = currentTest.label + "Copy";
+        if (nbOfCopies > 0) {
+          testLabelName += nbOfCopies;
+        }
+        const newTest = new BackstopTest(currentTest);
+        newTest.label = testLabelName;
+        state.currentConfiguration.scenarios.push(newTest);
+      }
+    },
 
     setFullConfiguration(state: any, { newConfiguration }: any) {
       state.currentConfiguration = newConfiguration;
@@ -108,6 +130,10 @@ export default {
   getters: {
     tests({ currentConfiguration }: any) {
       return currentConfiguration ? currentConfiguration.scenarios : [];
+    },
+
+    hasConfiguration({ currentConfiguration }: any) {
+      return !!currentConfiguration;
     }
   }
 };
