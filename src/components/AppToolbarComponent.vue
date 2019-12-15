@@ -15,11 +15,11 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn text v-on:click="save">
+    <v-btn text v-on:click="save" v-if="hasConfiguration">
       <v-icon>mdi-content-save</v-icon>
       Save
     </v-btn>
-    <v-btn text v-on:click="close">
+    <v-btn text v-on:click="close" v-if="hasConfiguration">
       <v-icon>mdi-exit-to-app</v-icon>
       Close
     </v-btn>
@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Action, Mutation } from "vuex-class";
+import { Action, Mutation, Getter } from "vuex-class";
 
 @Component({
 
@@ -38,6 +38,8 @@ export default class AppToolbarComponent extends Vue {
   private saveConfiguration!: () => Promise<void>;
   @Mutation("configurationStore/dismissCurrentConfiguration")
   private dismissCurrentConfiguration!: () => void;
+  @Getter("configurationStore/hasConfiguration")
+  private hasConfiguration!: boolean;
 
   private close() {
     this.dismissCurrentConfiguration();
