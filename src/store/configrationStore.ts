@@ -34,7 +34,7 @@ export default {
       if (state.currentConfiguration.scenarios) {
         const currentTest = state.currentConfiguration.scenarios[scenarioIndex];
         const testLabelPrefix = currentTest.label + "Copy";
-        const nbOfCopies = state.currentConfiguration.scenarios.filter((entry) => {
+        const nbOfCopies = state.currentConfiguration.scenarios.filter((entry: BackstopTest) => {
           return entry.label.indexOf(testLabelPrefix) === 0;
         }).length;
         let testLabelName = currentTest.label + "Copy";
