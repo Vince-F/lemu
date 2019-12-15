@@ -24,7 +24,7 @@ export default {
         state.currentConfiguration.scenarios.push(new BackstopTest({ label }));
       }
     },
-    
+
     dismissCurrentConfiguration(state: any) {
       state.currentConfiguration = null;
       state.configurationPath = "";
@@ -130,10 +130,6 @@ export default {
   getters: {
     tests({ currentConfiguration }: any) {
       return currentConfiguration ? currentConfiguration.scenarios : [];
-    },
-
-    hasConfiguration({ currentConfiguration }: any) {
-      return !!currentConfiguration;
     }
   }
 };
