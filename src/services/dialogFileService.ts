@@ -8,7 +8,6 @@ export class DialogFileService {
     return electron.remote.dialog.showOpenDialog({
       properties: ['openFile']
     }).then((file: any) => {
-      console.log("file not opened");
       if (!file.canceled) {
         const filePath = file.filePaths[0];
         return this.openAndParseFile(filePath)

@@ -19,8 +19,13 @@
               link
               v-on:click="openTestDetails(index)"
             >
+              <v-list-item-icon class="ms-0 mr-1 small-icon" >
+                <v-icon v-if="hasTestBeenModified(index)" x-small color="grey">mdi-circle</v-icon>
+              </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title>{{ test.label }}</v-list-item-title>
+                <v-list-item-title >
+                  {{ test.label }}
+                </v-list-item-title>
               </v-list-item-content>
               <v-list-item-action class="my-0 flex-row">
                 <v-btn icon @click="duplicateTest(index)">
@@ -74,6 +79,10 @@
   max-height: 100%;
   overflow: auto;
 }
+
+.v-list-item__icon.small-icon {
+  min-width: 12px;
+}
 </style>
 
 <script lang="ts">
@@ -97,6 +106,8 @@ export default class TestsListComponent extends Vue {
   private removeScenario!: Function;
   @Getter("configurationStore/tests")
   private tests!: BackstopTest[];
+  @Getter("configurationStore/hasTestBeenModified")
+  private hasTestBeenModified!: (idx: number) => boolean;
   private selectedTest: BackstopTest | null;
   private selectedIndex: number | null;
 
