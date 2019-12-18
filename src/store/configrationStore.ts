@@ -9,12 +9,14 @@ export default {
   namespaced: true,
   state: {
     currentConfiguration: null as BackstopConfiguration | null,
-    configurationPath: ""
+    configurationPath: "",
+    configurationModified: false
   },
   mutations: {
     addViewport(state: any) {
       if (state.currentConfiguration) {
         state.currentConfiguration.viewports.push({label: "", width: 0, height: 0});
+        state.configurationModified = true;
       }
     },
 
@@ -22,34 +24,14 @@ export default {
       if (state.currentConfiguration.scenarios) {
         const label = "New test " + (state.currentConfiguration.scenarios.length + 1);
         state.currentConfiguration.scenarios.push(new BackstopTest({ label }));
-      }
-    },
-    
-    dismissCurrentConfiguration(state: any) {
-      state.currentConfiguration = null;
-      state.configurationPath = "";
-    },
-
-    duplicateScenario(state: any, scenarioIndex: number) {
-      if (state.currentConfiguration.scenarios) {
-        const currentTest = state.currentConfiguration.scenarios[scenarioIndex];
-        const testLabelPrefix = currentTest.label + "Copy";
-        const nbOfCopies = state.currentConfiguration.scenarios.filter((entry) => {
-          return entry.label.indexOf(testLabelPrefix) === 0;
-        }).length;
-        let testLabelName = currentTest.label + "Copy";
-        if (nbOfCopies > 0) {
-          testLabelName += nbOfCopies;
-        }
-        const newTest = new BackstopTest(currentTest);
-        newTest.label = testLabelName;
-        state.currentConfiguration.scenarios.push(newTest);
+        state.configurationModified = true;
       }
     },
 
     dismissCurrentConfiguration(state: any) {
       state.currentConfiguration = null;
       state.configurationPath = "";
+      state.configurationModified = false;
     },
 
     duplicateScenario(state: any, scenarioIndex: number) {
@@ -66,15 +48,18 @@ export default {
         const newTest = new BackstopTest(currentTest);
         newTest.label = testLabelName;
         state.currentConfiguration.scenarios.push(newTest);
+        state.configurationModified = true;
       }
     },
 
     setFullConfiguration(state: any, { newConfiguration }: any) {
       state.currentConfiguration = newConfiguration;
+      state.configurationModified = false;
     },
 
     setPath(state: any, path: string) {
       state.configurationPath = path;
+      state.configurationModified = true;
     },
 
     setConfigurationField(state: any, { field, value }: { field: string, value: any }) {
@@ -82,6 +67,7 @@ export default {
         const obj = {} as any;
         obj[field] = value;
         Object.assign(state.currentConfiguration, obj);
+        state.configurationModified = true;
       }
     },
 
@@ -90,6 +76,7 @@ export default {
         const obj = {} as any;
         obj[field] = value;
         Object.assign(state.currentConfiguration.paths, obj);
+        state.configurationModified = true;
       }
     },
 
@@ -100,6 +87,7 @@ export default {
       } else if (!kept && idx !== -1) {
         state.currentConfiguration.report.splice(idx, 1);
       }
+      state.configurationModified = true;
     },
 
     setConfigurationViewportField(
@@ -108,6 +96,7 @@ export default {
     ) {
       if (state.currentConfiguration.viewports) {
         Vue.set(state.currentConfiguration.viewports[viewportIndex], field, value);
+        state.configurationModified = true;
       }
     },
 
@@ -117,19 +106,26 @@ export default {
     ) {
       if (state.currentConfiguration.scenarios) {
         Vue.set(state.currentConfiguration.scenarios[scenarioIndex], field, value);
+        state.configurationModified = true;
       }
     },
 
     removeScenario(state: any, index: number) {
       if (state.currentConfiguration.scenarios) {
         state.currentConfiguration.scenarios.splice(index, 1);
+        state.configurationModified = true;
       }
     },
 
     removeViewport(state: any, index: number) {
       if (state.currentConfiguration) {
         state.currentConfiguration.viewports.splice(index, 1);
+        state.configurationModified = true;
       }
+    },
+
+    setConfigurationModified(state: any, modified: boolean) {
+      state.configurationModified = false;
     }
   },
   actions: {
@@ -146,7 +142,10 @@ export default {
     saveConfiguration(store: any) {
       const content = JSON.stringify(store.state.currentConfiguration, null, 4);
 
-      return FileService.writeFile(store.state.configurationPath, content);
+      return FileService.writeFile(store.state.configurationPath, content)
+        .then(() => {
+          store.commit("setConfigurationModified", false);
+        });
     }
   },
   getters: {
@@ -156,6 +155,10 @@ export default {
 
     hasConfiguration({ currentConfiguration }: any) {
       return !!currentConfiguration;
+    },
+
+    hasConfigurationBeenModified({configurationModified}: any) {
+      return configurationModified;
     }
   }
 };
