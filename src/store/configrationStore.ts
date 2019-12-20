@@ -10,7 +10,7 @@ export default {
   state: {
     currentConfiguration: null as BackstopConfiguration | null,
     configurationPath: "",
-    testsModified: [] as boolean[]
+    testsModified: [] as boolean[],
     configurationModified: false
   },
   mutations: {
@@ -64,7 +64,6 @@ export default {
 
     setPath(state: any, path: string) {
       state.configurationPath = path;
-      state.configurationModified = true;
     },
 
     setConfigurationField(state: any, { field, value }: { field: string, value: any }) {
@@ -137,7 +136,7 @@ export default {
         Vue.set(state.testsModified, i, false);
       }
     },
-  
+
     setConfigurationModified(state: any, modified: boolean) {
       state.configurationModified = false;
     }
@@ -171,14 +170,13 @@ export default {
     hasConfiguration({ currentConfiguration }: any) {
       return !!currentConfiguration;
     },
-    
+
     hasTestBeenModified({testsModified}: any) {
       return (idx: number) => !!testsModified[idx];
     },
-  
+
     hasConfigurationBeenModified({configurationModified}: any) {
       return configurationModified;
-
     }
   }
 };

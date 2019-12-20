@@ -29,6 +29,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, Getter } from "vuex-class";
+import { ConfirmationModalService } from '../services/confirmationModalService';
 
 @Component({
 
@@ -40,14 +41,35 @@ export default class AppToolbarComponent extends Vue {
   private dismissCurrentConfiguration!: () => void;
   @Getter("configurationStore/hasConfiguration")
   private hasConfiguration!: boolean;
+  @Getter("configurationStore/hasConfigurationBeenModified")
+  private hasConfigurationBeenModified!: boolean;
 
   private close() {
-    this.dismissCurrentConfiguration();
-    this.$router.push("/");
+    if (this.hasConfigurationBeenModified) {
+      ConfirmationModalService.launchSaveConfirmationModal()
+      .then((action) => {
+        switch (action) {
+          case 'discard':
+            this.dismissCurrentConfiguration();
+            this.$router.push("/");
+            break;
+          case 'save':
+            this.save()
+              .then(() => {
+                this.dismissCurrentConfiguration();
+                this.$router.push("/");
+              });
+            break;
+        }
+      });
+    } else {
+      this.dismissCurrentConfiguration();
+      this.$router.push("/");
+    }
   }
 
   private save() {
-    this.saveConfiguration()
+    return this.saveConfiguration()
       .then(() => {
         alert("File saved");
       }).catch((error) => {

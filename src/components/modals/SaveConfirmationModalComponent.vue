@@ -4,10 +4,10 @@
       max-width="400"
     >
     <v-card>
-      <v-card-title class="headline">Are you sure?</v-card-title>
+      <v-card-title class="headline">Unsaved changes</v-card-title>
 
       <v-card-text>
-        Do you really wish to delete this entry?
+        You have unsaved changes. Would you like to save them?
       </v-card-text>
 
       <v-card-actions>
@@ -16,9 +16,17 @@
         <v-btn
           color="primary darken-1"
           text
-          @click="accept"
+          @click="save"
         >
-          Yes
+          Save
+        </v-btn>
+
+        <v-btn
+          color="grey darken-1"
+          text
+          @click="discard"
+        >
+          Discard changes
         </v-btn>
 
         <v-btn
@@ -26,7 +34,7 @@
           text
           @click="dismiss"
         >
-          No
+          cancel
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -37,17 +45,22 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component({})
-export default class ConfirmationModalComponent extends Vue {
+export default class SaveConfirmationModalComponent extends Vue {
   private dialogDisplayed: boolean = true;
 
-  private accept() {
+  private discard() {
     this.dialogDisplayed = false;
-    this.$emit("accept");
+    this.$emit("discard");
   }
 
   private dismiss() {
     this.dialogDisplayed = false;
     this.$emit("dismiss");
+  }
+
+  private save() {
+    this.dialogDisplayed = false;
+    this.$emit("save");
   }
 }
 </script>
