@@ -10,6 +10,7 @@ export default {
   state: {
     currentConfiguration: null as BackstopConfiguration | null,
     configurationPath: "",
+    testsModified: [] as boolean[]
     configurationModified: false
   },
   mutations: {
@@ -54,6 +55,10 @@ export default {
 
     setFullConfiguration(state: any, { newConfiguration }: any) {
       state.currentConfiguration = newConfiguration;
+      state.testsModified = [];
+      for (let i = 0; i < state.currentConfiguration.scenarios.length; i++) {
+        state.testsModified.push(false);
+      }
       state.configurationModified = false;
     },
 
@@ -106,6 +111,7 @@ export default {
     ) {
       if (state.currentConfiguration.scenarios) {
         Vue.set(state.currentConfiguration.scenarios[scenarioIndex], field, value);
+        Vue.set(state.testsModified, scenarioIndex, true);
         state.configurationModified = true;
       }
     },
@@ -113,6 +119,7 @@ export default {
     removeScenario(state: any, index: number) {
       if (state.currentConfiguration.scenarios) {
         state.currentConfiguration.scenarios.splice(index, 1);
+        state.testsModified.splice(index, 1);
         state.configurationModified = true;
       }
     },
@@ -124,6 +131,13 @@ export default {
       }
     },
 
+
+    resetModification(state: any) {
+      for (let i = 0; i < state.testsModified.length; i++) {
+        Vue.set(state.testsModified, i, false);
+      }
+    },
+  
     setConfigurationModified(state: any, modified: boolean) {
       state.configurationModified = false;
     }
@@ -143,9 +157,10 @@ export default {
       const content = JSON.stringify(store.state.currentConfiguration, null, 4);
 
       return FileService.writeFile(store.state.configurationPath, content)
-        .then(() => {
-          store.commit("setConfigurationModified", false);
-        });
+              .then(() => {
+                store.commit("resetModification");
+                store.commit("setConfigurationModified", false);
+              });
     }
   },
   getters: {
@@ -156,9 +171,14 @@ export default {
     hasConfiguration({ currentConfiguration }: any) {
       return !!currentConfiguration;
     },
-
+    
+    hasTestBeenModified({testsModified}: any) {
+      return (idx: number) => !!testsModified[idx];
+    },
+  
     hasConfigurationBeenModified({configurationModified}: any) {
       return configurationModified;
+
     }
   }
 };
