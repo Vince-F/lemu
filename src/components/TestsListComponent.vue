@@ -19,21 +19,36 @@
               link
               v-on:click="openTestDetails(index)"
             >
-              <v-list-item-icon class="ms-0 mr-1 small-icon" >
-                <v-icon v-if="hasTestBeenModified(index)" x-small color="grey">mdi-circle</v-icon>
-              </v-list-item-icon>
+              <v-tooltip top >
+                <template v-slot:activator="{on}">
+                  <v-list-item-icon class="ms-0 mr-1 small-icon" >
+                    <v-icon v-if="hasTestBeenModified(index)" v-on="on" x-small color="grey">mdi-circle</v-icon>
+                  </v-list-item-icon>
+                </template>
+                <span>This test contains unsaved changes</span>
+              </v-tooltip>
               <v-list-item-content>
                 <v-list-item-title >
                   {{ test.label }}
                 </v-list-item-title>
               </v-list-item-content>
               <v-list-item-action class="my-0 flex-row">
-                <v-btn icon @click="duplicateTest(index)">
-                  <v-icon color="grey lighten-1">mdi-content-copy</v-icon>
-                </v-btn>
-                <v-btn icon @click="deleteTest(index)">
-                  <v-icon color="grey lighten-1">mdi-delete</v-icon>
-                </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{on}">
+                    <v-btn icon v-on="on" @click="duplicateTest(index)">
+                      <v-icon color="grey lighten-1">mdi-content-copy</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Duplicate test</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{on}">
+                    <v-btn icon v-on="on" @click="deleteTest(index)">
+                      <v-icon color="grey lighten-1">mdi-delete</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Remove test</span>
+                </v-tooltip>
               </v-list-item-action>
             </v-list-item>
           </v-list-item-group>
