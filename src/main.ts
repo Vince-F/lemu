@@ -10,8 +10,13 @@ import "./styles/font.css";
 import "@mdi/font/css/materialdesignicons.min.css";
 import "./styles/main.css";
 
+declare global {
+  interface Window {
+    vueApp: any;
+  }
+}
 
-new Vue({
+window.vueApp = new Vue({
   router,
   store,
   // @ts-ignore
