@@ -23,6 +23,23 @@
       <v-icon>mdi-exit-to-app</v-icon>
       Close
     </v-btn>
+
+    <v-snackbar v-model="snackbarDisplayed">
+      <v-icon color="green" v-if="snackbarSuccess">
+        mdi-check-circle
+      </v-icon>
+      <v-icon color="red" v-else>
+        mdi-alert
+      </v-icon>
+      {{ snackbarText }}
+      <v-btn
+        color="white"
+        text
+        @click="snackbarDisplayed = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-app-bar>
 </template>
 
@@ -43,6 +60,17 @@ export default class AppToolbarComponent extends Vue {
   private hasConfiguration!: boolean;
   @Getter("configurationStore/hasConfigurationBeenModified")
   private hasConfigurationBeenModified!: boolean;
+
+  private snackbarDisplayed: boolean;
+  private snackbarText: string;
+  private snackbarSuccess: boolean;
+
+  constructor() {
+    super(arguments);
+    this.snackbarDisplayed = false;
+    this.snackbarText = "";
+    this.snackbarSuccess = false;
+  }
 
   private close() {
     if (this.hasConfigurationBeenModified) {
@@ -71,9 +99,14 @@ export default class AppToolbarComponent extends Vue {
   private save() {
     return this.saveConfiguration()
       .then(() => {
-        alert("File saved");
+        this.snackbarDisplayed = true;
+        this.snackbarText = "File saved";
+        this.snackbarSuccess = true;
       }).catch((error) => {
         alert(error);
+        this.snackbarDisplayed = true;
+        this.snackbarText = "Failed to save file: " + error;
+        this.snackbarSuccess = false;
       });
   }
 }
