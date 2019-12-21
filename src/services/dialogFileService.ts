@@ -17,6 +17,8 @@ export class DialogFileService {
               content: fileContent
             };
           });
+      } else {
+        return Promise.reject("dismiss");
       }
     });
   }

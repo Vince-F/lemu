@@ -34,6 +34,10 @@ export default class OpenConfigurationComponent extends Vue {
     this.openConfiguration()
       .then((fileContent) => {
         this.$router.push("/tests/generalConfig");
+      }).catch((error) => {
+        if (typeof error !== "string" || error !== "dismiss") {
+          // handle error here
+        }
       });
   }
 }
