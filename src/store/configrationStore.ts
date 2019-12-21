@@ -145,6 +145,11 @@ export default {
     openConfiguration(store: any) {
       return DialogFileService.openFileDialog()
         .then(({ path, content }) => {
+          if (typeof content.id !== "string" ||
+              !Array.isArray(content.viewports) ||
+              !Array.isArray(content.scenarios)) {
+            return Promise.reject("File doesn't look like a BackstopJS configuration");
+          }
           store.commit("setFullConfiguration", {
             newConfiguration: content
           });
