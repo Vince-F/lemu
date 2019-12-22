@@ -4,7 +4,7 @@ const electron = window.require("electron");
 const fs = window.require("fs");
 
 export class DialogFileService {
-  public static openFileDialog(): Promise<{path: string, content: string}> {
+  public static openFileDialog(): Promise<{path: string, content: any}> {
     return electron.remote.dialog.showOpenDialog({
       properties: ['openFile']
     }).then((file: any) => {
