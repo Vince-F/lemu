@@ -14,7 +14,19 @@
         </v-card-text>
       </v-card>
     </v-row>
-    
+    <v-snackbar v-model="snackbarDisplayed">
+      <v-icon color="red">
+        mdi-alert
+      </v-icon>
+      {{ snackbarText }}
+      <v-btn
+        color="white"
+        text
+        @click="snackbarDisplayed = false"
+      >
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -30,10 +42,25 @@ export default class OpenConfigurationComponent extends Vue {
   @Action("configurationStore/openConfiguration")
   private openConfiguration!: () => Promise<any>;
 
+  private snackbarDisplayed: boolean;
+  private snackbarText: string;
+
+  constructor() {
+    super(arguments);
+
+    this.snackbarDisplayed = false;
+    this.snackbarText = "";
+  }
+
   private openSearchFileModal() {
     this.openConfiguration()
       .then((fileContent) => {
         this.$router.push("/tests/generalConfig");
+      }).catch((error) => {
+        if (typeof error !== "string" || error !== "dismiss") {
+          this.snackbarDisplayed = true;
+          this.snackbarText = "Failed to open file. " + error;
+        }
       });
   }
 }

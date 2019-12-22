@@ -1,34 +1,19 @@
-# lemu
+# LEMU
 
-## Project setup
-```
-npm install
-```
+## What is it?
+Lemu is a desktop application to easily configure your BackstopJS tests in a graphical application.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## How to get it?
+You can see the releases in the 'releases' tab of GitHub. Builds are only available for Windows currently, but will be soon available for Linux and MacOS.
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Changelog
+See [changelog here](CHANGELOG.md)
 
-### Run your tests
+## Build the application
+To build simply run the following command 
 ```
-npm run test
+npm run build && npm run dist
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## License
+AGPL 3.0

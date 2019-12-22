@@ -4,11 +4,10 @@ const electron = window.require("electron");
 const fs = window.require("fs");
 
 export class DialogFileService {
-  public static openFileDialog(): Promise<{path: string, content: string}> {
+  public static openFileDialog(): Promise<{path: string, content: any}> {
     return electron.remote.dialog.showOpenDialog({
       properties: ['openFile']
     }).then((file: any) => {
-      console.log("file not opened");
       if (!file.canceled) {
         const filePath = file.filePaths[0];
         return this.openAndParseFile(filePath)
@@ -18,6 +17,8 @@ export class DialogFileService {
               content: fileContent
             };
           });
+      } else {
+        return Promise.reject("dismiss");
       }
     });
   }

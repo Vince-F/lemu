@@ -1,6 +1,19 @@
 # Changelog
 
+## V1.2.0
+### New features
+- Display "save" messages as toast instead of dialog
+- Display symbol next to test name to highlight unsaved changes
+- add tooltip on icons to clarify their meaning
+- add confirmation when closing configuration while there is unsaved changes
+- add confirmation before deleting test
+ 
+### Fixes
+- Fix an error when canceling the file selection (#11)
+- Fix and display error when opening invalid file (#12)
+
 ## V1.1.0
+### New features
 - Add "close" button
 - Hide "save" & "close" button on start screen
 - Add "duplicate" for tests
