@@ -154,6 +154,7 @@ export default {
             newConfiguration: content
           });
           store.commit("setPath", path);
+          return Promise.resolve();
         });
     },
 
