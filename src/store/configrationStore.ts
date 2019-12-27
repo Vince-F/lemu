@@ -3,6 +3,7 @@ import { DialogFileService } from '@/services/dialogFileService';
 import { FileService } from "../services/fileService";
 import { BackstopConfiguration } from '@/models/backstopConfiguration';
 import { BackstopTest } from '@/models/backstopTest';
+import { BackstopService } from '@/services/backstopService';
 
 
 export default {
@@ -11,7 +12,8 @@ export default {
     currentConfiguration: null as BackstopConfiguration | null,
     configurationPath: "",
     testsModified: [] as boolean[],
-    configurationModified: false
+    configurationModified: false,
+    testRunning: false
   },
   mutations: {
     addViewport(state: any) {
@@ -137,6 +139,14 @@ export default {
       }
     },
 
+    runTest(state: any) {
+      state.testRunning = true;
+    },
+
+    stopTest(state: any) {
+      state.testRunning = false;
+    },
+
     setConfigurationModified(state: any, modified: boolean) {
       state.configurationModified = false;
     }
@@ -155,6 +165,18 @@ export default {
           });
           store.commit("setPath", path);
           return Promise.resolve();
+        });
+    },
+
+    runTest({commit, state}: any) {
+      commit("runTest");
+      return BackstopService.runTests(state.currentConfiguration)
+        .then((result) => {
+          commit("stopTest");
+          return result;
+        }).catch((error) => {
+          commit("stopTest");
+          return Promise.reject(error);
         });
     },
 
