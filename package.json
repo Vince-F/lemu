@@ -4,10 +4,11 @@
   "private": true,
   "author": "Vincent Francolin",
   "license": "AGPL-3.0",
-  "main": "electron-main.js",
+  "main": "dist-app/electron-main/main.js",
   "scripts": {
     "start": "electron .",
     "serve": "vue-cli-service serve",
+    "build:main": "cd ./mainProcess && tsc",
     "build": "vue-cli-service build",
     "build:dev": "vue-cli-service build --mode development",
     "lint": "vue-cli-service lint",

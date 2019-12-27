@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import StartScreenView from "../views/StartScreenView.vue";
 import TestsConfigurationView from "../views/TestsConfigurationView.vue";
+import ReportView from "../views/ReportView.vue";
 
 import GeneralConfigurationComponent from "../components/GeneralConfigurationComponent.vue";
 import TestsListComponent from "../components/TestsListComponent.vue";
@@ -28,6 +29,11 @@ const routes = [
         path: "list",
         name: "testsList",
         component: TestsListComponent
+      },
+      {
+        path: "report",
+        name: "report",
+        component: ReportView
       }
     ]
   }
