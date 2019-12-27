@@ -1,7 +1,7 @@
 const {app, BrowserWindow, Menu} = require('electron');
+import path = require("path");
 import "./eventBus";
 
-console.log("App launching");
 
 let mainWindow = null;
 
@@ -9,7 +9,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    icon: __dirname + "/icon.png",
+    icon: path.join(__dirname, "../../icon.png"),
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false
