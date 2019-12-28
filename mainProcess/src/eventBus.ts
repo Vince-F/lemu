@@ -11,3 +11,11 @@ electron.ipcMain.on("runTest", (event, config) => {
     });
 });
 
+electron.ipcMain.on("approveTest", (event, config) => {
+  BackstopTestRunner.approveTests(config)
+    .then(() => {
+      event.reply("approvalFinished", true);
+    }).catch((error) => {
+      event.reply("approvalFinished", false);
+    });
+});

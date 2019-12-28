@@ -5,7 +5,6 @@ import { BackstopConfiguration } from '@/models/backstopConfiguration';
 import { BackstopTest } from '@/models/backstopTest';
 import { BackstopService } from '@/services/backstopService';
 
-
 export default {
   namespaced: true,
   state: {
@@ -152,6 +151,13 @@ export default {
     }
   },
   actions: {
+    approveTests({state}: any) {
+      if (state.testRunning) {
+        return Promise.reject("Tests are running");
+      }
+      return BackstopService.approveTests(state.currentConfiguration)
+    },
+
     openConfiguration(store: any) {
       return DialogFileService.openFileDialog()
         .then(({ path, content }) => {
