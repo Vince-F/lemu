@@ -1,16 +1,27 @@
 <template>
   <div class="d-flex flex-column fill-height">
     <div class="flex-grow-0 flex-shrink-0 pa-2 text-right">
-      <v-btn color="green" @click="approveTestsResult">
+      <v-btn color="green" @click="approveTestsResult" :disabled="testRunning">
         <v-icon>
           mdi-checkbox-marked-circle
         </v-icon>
         Approve tests
       </v-btn>
     </div>
-    <div class="flex-grow-1 flex-shrink-1">
+    <div v-if="!testRunning" class="flex-grow-1 flex-shrink-1">
       <iframe ref="reportFrame" v-if="reportPath && reportPath.length > 0" :src="reportPath">
       </iframe>
+    </div>
+    <div v-if="testRunning" class="text-center pa-3">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+        :size="100"
+        :width="10"
+      ></v-progress-circular>
+      <div >
+        Tests are running...
+      </div>
     </div>
 
     <v-snackbar v-model="snackbarDisplayed">
@@ -53,6 +64,8 @@ export default class ReportComponent extends Vue {
   private readonly configuration!: BackstopConfiguration;
   @State((state) => state.configurationStore.configurationPath)
   private readonly path!: string;
+  @State((state) => state.configurationStore.testRunning)
+  private readonly testRunning!: boolean;
   @Action("configurationStore/approveTests")
   private readonly approveTests!: () => Promise<any>; 
 
