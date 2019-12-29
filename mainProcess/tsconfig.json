@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "outDir": "../dist-app/electron-main/"
+  },
+  "references": [
+    { "path": "../"}
+  ]
+}

@@ -1,5 +1,11 @@
 # Changelog
 
+## V1.3.0
+### New features
+- Add ability to run the tests
+- Add ability to approve the tests 
+- Add a report section to display HTML report
+
 ## V1.2.0
 ### New features
 - Display "save" messages as toast instead of dialog

@@ -15,6 +15,20 @@
 
     <v-spacer></v-spacer>
 
+    <v-btn text v-on:click="runTest" v-if="hasConfiguration" :disabled="testRunning">
+      <template v-if="!testRunning">
+        <v-icon>mdi-play</v-icon>
+        Run tests
+      </template>
+      <template v-else>
+        <v-progress-circular
+          indeterminate
+          color="white"
+        ></v-progress-circular>
+        Tests running
+      </template>
+    </v-btn>
+
     <v-btn text v-on:click="save" v-if="hasConfiguration">
       <v-icon>mdi-content-save</v-icon>
       Save
@@ -45,7 +59,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Action, Mutation, Getter } from "vuex-class";
+import { Action, Mutation, Getter, State } from "vuex-class";
 import { ConfirmationModalService } from '../services/confirmationModalService';
 
 @Component({
@@ -60,6 +74,10 @@ export default class AppToolbarComponent extends Vue {
   private hasConfiguration!: boolean;
   @Getter("configurationStore/hasConfigurationBeenModified")
   private hasConfigurationBeenModified!: boolean;
+  @State((state) => state.configurationStore.testRunning)
+  private testRunning!: boolean;
+  @Action("configurationStore/runTest")
+  private runBackstopTest!: () => Promise<any>;
 
   private snackbarDisplayed: boolean;
   private snackbarText: string;
@@ -94,6 +112,19 @@ export default class AppToolbarComponent extends Vue {
       this.dismissCurrentConfiguration();
       this.$router.push("/");
     }
+  }
+
+  private runTest() {
+    this.runBackstopTest()
+      .then((result) => {
+        this.snackbarDisplayed = true;
+        this.snackbarText = "Tests successful";
+        this.snackbarSuccess = true;
+      }).catch((error) => {
+        this.snackbarDisplayed = true;
+        this.snackbarText = "Tests failed. Open the report to see more details.";
+        this.snackbarSuccess = false;
+      });
   }
 
   private save() {
