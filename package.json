@@ -20,6 +20,7 @@
     "@mdi/font": "^4.5.95",
     "backstopjs": "^4.3.2",
     "core-js": "^3.3.2",
+    "v8-compile-cache": "^2.1.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^8.3.0",

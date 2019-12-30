@@ -1,5 +1,7 @@
 const {app, BrowserWindow, Menu} = require('electron');
 import path = require("path");
+import "v8-compile-cache";
+
 import "./eventBus";
 
 
