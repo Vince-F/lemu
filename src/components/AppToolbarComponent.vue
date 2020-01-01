@@ -37,23 +37,6 @@
       <v-icon>mdi-exit-to-app</v-icon>
       Close
     </v-btn>
-
-    <v-snackbar v-model="snackbarDisplayed">
-      <v-icon color="green" v-if="snackbarSuccess">
-        mdi-check-circle
-      </v-icon>
-      <v-icon color="red" v-else>
-        mdi-alert
-      </v-icon>
-      {{ snackbarText }}
-      <v-btn
-        color="white"
-        text
-        @click="snackbarDisplayed = false"
-      >
-        Close
-      </v-btn>
-    </v-snackbar>
   </v-app-bar>
 </template>
 
@@ -61,6 +44,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
 import { ConfirmationModalService } from '../services/confirmationModalService';
+import { SnackbarService } from '../services/snackbarService';
 
 @Component({
 
@@ -78,17 +62,8 @@ export default class AppToolbarComponent extends Vue {
   private testRunning!: boolean;
   @Action("configurationStore/runTest")
   private runBackstopTest!: () => Promise<any>;
-
-  private snackbarDisplayed: boolean;
-  private snackbarText: string;
-  private snackbarSuccess: boolean;
-
-  constructor() {
-    super(arguments);
-    this.snackbarDisplayed = false;
-    this.snackbarText = "";
-    this.snackbarSuccess = false;
-  }
+  @Mutation("applicationStore/displaySnackbar")
+  private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
   private close() {
     if (this.hasConfigurationBeenModified) {
@@ -117,27 +92,18 @@ export default class AppToolbarComponent extends Vue {
   private runTest() {
     this.runBackstopTest()
       .then((result) => {
-        this.snackbarDisplayed = true;
-        this.snackbarText = "Tests successful";
-        this.snackbarSuccess = true;
+        this.displaySnackbar({text: "Tests successful", success: true});
       }).catch((error) => {
-        this.snackbarDisplayed = true;
-        this.snackbarText = "Tests failed. Open the report to see more details.";
-        this.snackbarSuccess = false;
+        this.displaySnackbar({text: "Tests failed. Open the report to see more details.", success: false});
       });
   }
 
   private save() {
     return this.saveConfiguration()
       .then(() => {
-        this.snackbarDisplayed = true;
-        this.snackbarText = "File saved";
-        this.snackbarSuccess = true;
+        this.displaySnackbar({text: "File saved", success: true});
       }).catch((error) => {
-        alert(error);
-        this.snackbarDisplayed = true;
-        this.snackbarText = "Failed to save file: " + error;
-        this.snackbarSuccess = false;
+        this.displaySnackbar({text: "Failed to save file: " + error, success: false});
       });
   }
 }
