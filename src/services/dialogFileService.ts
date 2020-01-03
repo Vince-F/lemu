@@ -23,7 +23,20 @@ export class DialogFileService {
     });
   }
 
-  private static openAndParseFile(filePath: string) {
+  public static selectDirectory(): Promise<string> {
+    return electron.remote.dialog.showOpenDialog({
+      properties: ['openDirectory']
+    }).then((directorySelection: any) => {
+      if (!directorySelection.canceled) {
+        const filePath = directorySelection.filePaths[0];
+        return filePath;
+      } else {
+        return Promise.reject("dismiss");
+      }
+    });
+  }
+
+  public static openAndParseFile(filePath: string) {
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, {encoding: "utf-8"}, (err: any, content: string) => {
         if (err) {
