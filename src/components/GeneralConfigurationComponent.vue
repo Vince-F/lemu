@@ -13,14 +13,16 @@
       </v-expansion-panel>
 
       <v-expansion-panel>
-        <v-expansion-panel-header>Viewports</v-expansion-panel-header>
+        <v-expansion-panel-header>Viewports ({{configuration.viewports.length || 0}})</v-expansion-panel-header>
         <v-expansion-panel-content>
           <div v-for="(viewport, index) in configuration.viewports" :key="index">
+            <hr v-if="index > 0" class="ma-4">
             <div class="d-flex">
               <strong class="flex-grow-1 flex-shrink-1">
                 Viewport {{index}}
               </strong>
-              <v-btn color="primary" class="flex-grow-0 flex-shrink-0" @click="removeViewport(index)">
+              <v-btn color="error" class="flex-grow-0 flex-shrink-0" @click="removeViewport(index)">
+                <v-icon>mdi-delete</v-icon>
                 Remove viewport
               </v-btn>
             </div>
