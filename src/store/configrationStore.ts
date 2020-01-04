@@ -158,6 +158,22 @@ export default {
       return BackstopService.approveTests(state.currentConfiguration)
     },
 
+    initConfig({state, commit}: any) {
+      return DialogFileService.selectDirectory()
+        .then((path) => {
+          return BackstopService.initTests(path)
+            .then(() => {
+              return DialogFileService.openAndParseFile(path + "/backstop.json")
+                .then((content) => {
+                  commit("setFullConfiguration", {
+                    newConfiguration: content
+                  });
+                  commit("setPath", path + "/backstop.json");
+                });
+            });
+        });
+    },
+
     openConfiguration(store: any) {
       return DialogFileService.openFileDialog()
         .then(({ path, content }) => {
