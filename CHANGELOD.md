@@ -1,5 +1,14 @@
 # Changelog
 
+## V1.4.0
+### New features
+- Reduce binary size and improve performance
+- Add ability to create a BackstopJS config from start screen
+- Improve layout for "viewports" section in "General configuration"
+
+### Fixes
+- stop overriding "report" field when executing tests
+
 ## V1.3.0
 ### New features
 - Add ability to run the tests
