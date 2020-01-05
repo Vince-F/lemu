@@ -11,6 +11,10 @@
           <v-btn large color="primary" v-on:click="openSearchFileModal">
           Open backstop.json file...
           </v-btn>
+          Or
+          <v-btn large color="primary" @click="createNewConfig">
+            Create new config...
+          </v-btn> 
         </v-card-text>
       </v-card>
     </v-row>
@@ -41,6 +45,8 @@ import {DialogFileService} from "../services/dialogFileService";
 export default class OpenConfigurationComponent extends Vue {
   @Action("configurationStore/openConfiguration")
   private openConfiguration!: () => Promise<any>;
+  @Action("configurationStore/initConfig")
+  private initTests!: () => Promise<void>;
 
   private snackbarDisplayed: boolean;
   private snackbarText: string;
@@ -50,6 +56,18 @@ export default class OpenConfigurationComponent extends Vue {
 
     this.snackbarDisplayed = false;
     this.snackbarText = "";
+  }
+
+  private createNewConfig() {
+    this.initTests()
+      .then(() => {
+        this.$router.push("/tests/generalConfig");
+      }).catch((error) => {
+        if (typeof error !== "string" || error !== "dismiss") {
+          this.snackbarDisplayed = true;
+          this.snackbarText = "Failed to open file. " + error;
+        }
+      });
   }
 
   private openSearchFileModal() {

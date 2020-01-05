@@ -18,3 +18,12 @@ electron.ipcMain.on("approveTest", (event, config) => {
       event.reply("approvalFinished", false);
     });
 });
+
+electron.ipcMain.on("initTest", (event, path) => {
+  BackstopTestRunner.initTest(path)
+    .then(() => {
+      event.reply("initFinished", true);
+    }).catch((error) => {
+      event.reply("initFinished", false, error);
+    });
+})
