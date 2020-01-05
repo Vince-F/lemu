@@ -34,7 +34,6 @@
 import { Vue, Component } from "vue-property-decorator";
 import {Action, Mutation, State} from "vuex-class";
 import AppToolbarComponent from "./components/AppToolbarComponent.vue";
-import { SnackbarService } from "./services/snackbarService";
 
 @Component({
   components: {
