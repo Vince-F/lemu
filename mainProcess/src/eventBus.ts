@@ -27,4 +27,4 @@ electron.ipcMain.on("initTest", (event, path) => {
     }).catch((error) => {
       event.reply("initFinished", false, error);
     });
-})
+});

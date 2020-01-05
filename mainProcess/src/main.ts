@@ -18,7 +18,7 @@ function createWindow() {
     }
   });
 
-  mainWindow.loadFile('./dist-app/index.html')
+  mainWindow.loadFile('./dist-app/index.html');
   // mainWindow.loadURL("http://localhost:8080");
   Menu.setApplicationMenu(null);
 

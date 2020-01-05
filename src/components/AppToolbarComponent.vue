@@ -44,7 +44,6 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
 import { ConfirmationModalService } from '../services/confirmationModalService';
-import { SnackbarService } from '../services/snackbarService';
 
 @Component({
 
