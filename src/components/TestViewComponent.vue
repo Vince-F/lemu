@@ -84,12 +84,36 @@
         <v-tab-item>
           <v-expansion-panels multiple>
           <v-expansion-panel v-for="result in testResult" :key="result.pair.viewportLabel">
-              <v-expansion-panel-header >
-                {{result.pair.viewportLabel}}
-                ({{result.status}})
+              <v-expansion-panel-header>
+                <div>
+                  <strong>{{result.pair.viewportLabel}}</strong>
+                  ({{result.status}})
+                  <v-icon color="green" v-if="result.status === 'success'">
+                    mdi-check-circle
+                  </v-icon>
+                  <v-icon color="red" v-else>
+                    mdi-alert
+                  </v-icon>
+                </div>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                Images goes here!
+                <hr class="panel-separator">
+                <div class="d-flex">
+                  <div class="flex-grow-1 flex-shrink-1 image-container">
+                    <p><strong>Test</strong></p>
+                    <img :src="getTestImagePath(result)" />
+                  </div>
+                  <div class="flex-grow-1 flex-shrink-1 image-container">
+                    <p><strong>Reference</strong></p>
+                    <img :src="getReferenceImagePath(result)" />
+                  </div>
+                  <div class="flex-grow-1 flex-shrink-1 image-container" 
+                    v-if="result.status === 'fail' && result.pair.diffImage">
+                    <p><strong>Diff</strong></p>
+                    <img :src="getDiffImagePath(result)" />
+                  </div>
+                  
+                </div>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -98,6 +122,22 @@
     </v-card-text>
   </v-card>
 </template>
+
+<style scoped >
+  .image-container {
+    flex-basis: 0;
+  } 
+
+  .image-container img {
+    max-width: 90%;
+  }
+
+  .panel-separator {
+    margin-left: -24px;
+    margin-right: -24px;
+    margin-bottom: 24px;
+  }
+</style>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
@@ -121,6 +161,8 @@ export default class TestViewComponent extends Vue {
   private readonly getTestByLabel!: (labelName: string) => BackstopTestResult[];
   @Action("testResultStore/retrieveTestsResult")
   private readonly retrieveTestsResult!: () => Promise<void>;
+  @Getter("configurationStore/htmlReportDirectory")
+  private readonly htmlReportDirectory!: string;
 
   private addingNewField: boolean;
   // private additionnalFieldsReference: Array<{text: string; value: { name: string; type: string }}>;
@@ -169,12 +211,24 @@ export default class TestViewComponent extends Vue {
     return result;
   }
 
+  private get testResult() {
+    return this.getTestByLabel(this.testContent.label);
+  }
+
   private addNewField() {
     this.addingNewField = true;
   }
 
-  private get testResult() {
-    return this.getTestByLabel(this.testContent.label);
+  private getDiffImagePath(testResult: BackstopTestResult) {
+    return FileService.resolvePath([this.htmlReportDirectory, testResult.pair.diffImage]);
+  }
+
+  private getReferenceImagePath(testResult: BackstopTestResult) {
+    return FileService.resolvePath([this.htmlReportDirectory, testResult.pair.reference]);
+  }
+
+  private getTestImagePath(testResult: BackstopTestResult) {
+    return FileService.resolvePath([this.htmlReportDirectory, testResult.pair.test]);
   }
 
   private updateField(field: string, value: any) {
