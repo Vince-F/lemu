@@ -82,7 +82,17 @@
           Result
         </v-tab>
         <v-tab-item>
-          <iframe ref="reportFrame" :src="reportPath" @load="focusReportOnCurrentTest"></iframe>
+          <v-expansion-panels multiple>
+          <v-expansion-panel v-for="result in testResult" :key="result.pair.viewportLabel">
+              <v-expansion-panel-header >
+                {{result.pair.viewportLabel}}
+                ({{result.status}})
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                Images goes here!
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-tab-item>
       </v-tabs>
     </v-card-text>
@@ -91,10 +101,11 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import {Mutation, State} from "vuex-class";
+import { Action, Mutation, State, Getter } from "vuex-class";
 import { BackstopTest } from '../models/backstopTest';
 import { BackstopConfiguration } from '../models/backstopConfiguration';
 import { FileService } from '../services/fileService';
+import { BackstopTestResult } from '../models/backstopTestResult';
 
 @Component({
   name: "test-view-component"
@@ -106,6 +117,11 @@ export default class TestViewComponent extends Vue {
   private readonly configuration!: BackstopConfiguration;
   @State((state) => state.configurationStore.configurationPath)
   private readonly path!: string;
+  @Getter("testResultStore/getTestByLabel")
+  private readonly getTestByLabel!: (labelName: string) => BackstopTestResult[];
+  @Action("testResultStore/retrieveTestsResult")
+  private readonly retrieveTestsResult!: () => Promise<void>;
+
   private addingNewField: boolean;
   // private additionnalFieldsReference: Array<{text: string; value: { name: string; type: string }}>;
   // private additionnalFields: Array<{name: string, value: string | number, type: string}>;
@@ -128,6 +144,13 @@ export default class TestViewComponent extends Vue {
     this.types = ["number", "boolean", "array", "string"];
   }
 
+  public created() {
+    this.retrieveTestsResult()
+      .then(() => {
+        // announce stop of loading
+      });
+  }
+
   private get additionnalFields(): Array<{name: string, value: string | number | boolean, type: string}> {
     const result = [];
     for (const key in this.testContent) {
@@ -146,42 +169,12 @@ export default class TestViewComponent extends Vue {
     return result;
   }
 
-  private get reportPath() {
-    const configurationPath = this.configuration && this.configuration.paths &&
-        this.configuration.paths.html_report || "";
-    const prefixPath = this.path.substr(0, this.path.length - "backstop.json".length);
-    return configurationPath &&
-          FileService.resolvePath([prefixPath, configurationPath, "index.html"]) || "";
-  }
-
   private addNewField() {
     this.addingNewField = true;
   }
 
-  private focusReportOnCurrentTest() {
-    const reportFrame = this.$refs.reportFrame;
-    /*
-      this is really hacky, the goal being to focus
-      the input of the report and set the filter so it
-      displays only current test.
-      The clean way to do it is to add feature in BackstopJS 
-      report to achieve the same via URLs, I plan to do that
-      later, this code here should be temporary!!!
-      */
-    const interval = setInterval(() => {
-      if (reportFrame instanceof HTMLIFrameElement && reportFrame
-        && reportFrame.contentWindow) {
-        const searchInput = reportFrame.contentWindow.document.getElementsByTagName("input");
-        if (searchInput[0] !== null) {
-          searchInput[0].value = this.testContent.label;
-          const changeEvent = new Event('change');
-          searchInput[0].dispatchEvent(changeEvent);
-          clearInterval(interval);
-        }
-      } else {
-        clearInterval(interval);
-      }
-    }, 300);
+  private get testResult() {
+    return this.getTestByLabel(this.testContent.label);
   }
 
   private updateField(field: string, value: any) {
