@@ -3,8 +3,9 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-import configurationStore from "./configrationStore";
+import configurationStore from "./configurationStore";
 import applicationStore from "./applicationStore";
+import testResultStore from "./testResultStore";
 
 export default new Vuex.Store({
   state: {
@@ -15,6 +16,7 @@ export default new Vuex.Store({
   },
   modules: {
     configurationStore,
-    applicationStore
+    applicationStore,
+    testResultStore
   },
 });

@@ -72,7 +72,7 @@ export default class ReportComponent extends Vue {
           reportFrame.contentWindow.location.reload(true);
         }
       }).catch((error) => {
-        this.displaySnackbar({text: "Test approval failed. Error: " + error, success: false})
+        this.displaySnackbar({text: "Test approval failed. Error: " + error, success: false});
       });
   }
 }

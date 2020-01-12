@@ -227,6 +227,14 @@ export default {
 
     hasConfigurationBeenModified({configurationModified}: any) {
       return configurationModified;
-    }
+    },
+
+    htmlReportDirectory({ currentConfiguration, configurationPath }: any) {
+      const reportPath = currentConfiguration && currentConfiguration.paths &&
+        currentConfiguration.paths.html_report || "";
+      const prefixPath = configurationPath.substr(0, configurationPath.length - "backstop.json".length);
+      return reportPath &&
+            FileService.resolvePath([prefixPath, reportPath]) || "";
+    },
   }
 };
