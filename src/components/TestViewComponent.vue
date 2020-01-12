@@ -53,7 +53,7 @@
                 <div>
                   <strong>{{result.pair.viewportLabel}}</strong>
                   ({{result.status}})
-                  <v-icon color="green" v-if="result.status === 'success'">
+                  <v-icon color="green" v-if="result.status === 'pass'">
                     mdi-check-circle
                   </v-icon>
                   <v-icon color="red" v-else>
