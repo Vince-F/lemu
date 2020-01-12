@@ -22,9 +22,16 @@ export class BackstopTestRunner {
     });
   }
 
-  public static approveTests(config: any): Promise<any> {
+  public static approveTests(config: any, scenarioLabel?: string): Promise<any> {
+    let filterRegex;
+    if (scenarioLabel && scenarioLabel.length) {
+      filterRegex = "^" + config.id + "_" + scenarioLabel.replace(/\s/g,"_")
+                    .replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + 
+                    "_\\d";
+    }
     return backstop('approve', {
-      config
+      config,
+      filter: filterRegex
     });
   }
 }

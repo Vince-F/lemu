@@ -82,6 +82,16 @@
           Result
         </v-tab>
         <v-tab-item>
+          <div class="pa-2 text-right">
+            <v-btn color="green" :disabled="testRunning"
+              @click="approveCurrentTest"
+            >
+              <v-icon>
+                mdi-checkbox-marked-circle
+              </v-icon>
+              Approve this test
+            </v-btn>
+          </div>
           <v-expansion-panels multiple>
           <v-expansion-panel v-for="result in testResult" :key="result.pair.viewportLabel">
               <v-expansion-panel-header>
@@ -163,6 +173,12 @@ export default class TestViewComponent extends Vue {
   private readonly retrieveTestsResult!: () => Promise<void>;
   @Getter("configurationStore/htmlReportDirectory")
   private readonly htmlReportDirectory!: string;
+  @Action("configurationStore/approveTest")
+  private readonly approveTest!: (testLabel: string) => Promise<void>;
+  @State((state) => state.configurationStore.testRunning)
+  private readonly testRunning!: boolean;
+  @Mutation("applicationStore/displaySnackbar")
+  private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
   private addingNewField: boolean;
   // private additionnalFieldsReference: Array<{text: string; value: { name: string; type: string }}>;
@@ -217,6 +233,15 @@ export default class TestViewComponent extends Vue {
 
   private addNewField() {
     this.addingNewField = true;
+  }
+
+  private approveCurrentTest() {
+    this.approveTest(this.testContent.label)
+      .then(() => {
+        this.displaySnackbar({text: "Test successfully approved", success: true});
+      }).catch((err) => {
+        this.displaySnackbar({text: "Fail to approve test, error: " + err, success: false});
+      });
   }
 
   private getDiffImagePath(testResult: BackstopTestResult) {
