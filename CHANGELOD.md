@@ -1,5 +1,11 @@
 # Changelog
 
+## V1.5.0
+### New features
+- make "Add field" flow in test view clearer
+- Add a test level report
+- Add ability to approve per test
+
 ## V1.4.0
 ### New features
 - Reduce binary size and improve performance

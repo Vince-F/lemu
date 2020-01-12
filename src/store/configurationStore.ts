@@ -155,7 +155,14 @@ export default {
       if (state.testRunning) {
         return Promise.reject("Tests are running");
       }
-      return BackstopService.approveTests(state.currentConfiguration)
+      return BackstopService.approveTests(state.currentConfiguration);
+    },
+
+    approveTest({state}: any, testLabel: string) {
+      if (state.testRunning) {
+        return Promise.reject("Tests are running");
+      }
+      return BackstopService.approveTest(state.currentConfiguration, testLabel);
     },
 
     initConfig({state, commit}: any) {
@@ -227,6 +234,14 @@ export default {
 
     hasConfigurationBeenModified({configurationModified}: any) {
       return configurationModified;
-    }
+    },
+
+    htmlReportDirectory({ currentConfiguration, configurationPath }: any) {
+      const reportPath = currentConfiguration && currentConfiguration.paths &&
+        currentConfiguration.paths.html_report || "";
+      const prefixPath = configurationPath.substr(0, configurationPath.length - "backstop.json".length);
+      return reportPath &&
+            FileService.resolvePath([prefixPath, reportPath]) || "";
+    },
   }
 };

@@ -25,8 +25,7 @@
       {{ snackbarText }}
       <v-btn
         color="white"
-        text
-        @click="snackbarDisplayed = false"
+        text @click="snackbarDisplayed = false"
       >
         Close
       </v-btn>
