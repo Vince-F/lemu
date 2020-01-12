@@ -43,7 +43,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
-import { ConfirmationModalService } from '../services/confirmationModalService';
+import { ModalService } from '../services/modalService';
 
 @Component({
 
@@ -66,7 +66,7 @@ export default class AppToolbarComponent extends Vue {
 
   private close() {
     if (this.hasConfigurationBeenModified) {
-      ConfirmationModalService.launchSaveConfirmationModal()
+      ModalService.launchSaveConfirmationModal()
       .then((action) => {
         switch (action) {
           case 'discard':
