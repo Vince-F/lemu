@@ -155,7 +155,14 @@ export default {
       if (state.testRunning) {
         return Promise.reject("Tests are running");
       }
-      return BackstopService.approveTests(state.currentConfiguration)
+      return BackstopService.approveTests(state.currentConfiguration);
+    },
+
+    approveTest({state}: any, testLabel: string) {
+      if (state.testRunning) {
+        return Promise.reject("Tests are running");
+      }
+      return BackstopService.approveTest(state.currentConfiguration, testLabel);
     },
 
     initConfig({state, commit}: any) {
