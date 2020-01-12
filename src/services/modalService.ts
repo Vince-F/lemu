@@ -1,7 +1,28 @@
 import ConfirmationModalComponent from "../components/modals/ConfirmationModalComponent.vue";
 import SaveConfirmationModalComponent from "../components/modals/SaveConfirmationModalComponent.vue";
+import { VueConstructor } from 'vue';
 
-export class ConfirmationModalService {
+export class ModalService {
+  public static launchModal(modalComponent: VueConstructor): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const element = this.getModalContainerElement();
+      const modal = new modalComponent({
+        parent: window.vueApp
+      });
+
+      modal.$on('validate', (payload: any) => {
+        modal.$destroy();
+        resolve(payload);
+      });
+      modal.$on('dimiss', () => {
+        modal.$destroy();
+        reject();
+      });
+
+      modal.$mount(element);
+    });
+  }
+
   public static launchConfirmationModal(): Promise<void> {
     return new Promise((resolve, reject) => {
       const element = this.getModalContainerElement();

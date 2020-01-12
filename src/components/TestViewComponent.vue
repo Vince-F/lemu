@@ -28,55 +28,10 @@
                 ></v-text-field>
             </template>
           </form>
-          <v-btn v-show="!addingNewField" color="primary" v-on:click="addNewField()">
+          <v-btn color="primary" v-on:click="addNewField()">
             <v-icon>mdi-add</v-icon>
             Add new field
           </v-btn>
-          <v-card v-if="addingNewField" elevation="4">
-            <v-card-title>Add new field</v-card-title>
-            <v-card-text class="align-self-stretch">
-              <div>
-                <v-text-field class="ma-2"
-                  label="Field name"
-                  v-model="newFieldName"></v-text-field>
-                <!--
-                <v-combobox
-                  class="ma-2"
-                  v-model="newFieldName"
-                  :items="additionnalFieldsReference"
-                  label="Field name"
-                ></v-combobox> -->
-              </div>
-              <div class="d-flex">
-                <v-select
-                  class="ma-2"
-                  :items="types"
-                  label="Type"
-                  v-model="newFieldType"
-                  @change="updateNewValueType"
-                ></v-select>
-                <v-text-field class="ma-2"
-                  v-if="newFieldType === 'number'" label="Value" 
-                  type="number" v-model="newFieldValue"
-                  ></v-text-field>
-                <v-checkbox class="ma-2" v-else-if="newFieldType === 'boolean'" label="Value"
-                  v-model="newFieldValue"
-                  ></v-checkbox>
-                <v-combobox class="ma-2" v-else-if="newFieldType === 'array'" multiple chips
-                  label="Value" v-model="newFieldValue"
-                  ></v-combobox>
-                <v-text-field class="ma-2"
-                  v-else label="Value" v-model="newFieldValue"
-                  ></v-text-field>
-              </div>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" v-on:click="validateField()">
-                <v-icon>mdi-check</v-icon>
-                Validate field
-              </v-btn>
-            </v-card-actions>
-          </v-card>
         </v-tab-item>
         <v-tab>
           Result
@@ -146,13 +101,15 @@ import { BackstopTest } from '../models/backstopTest';
 import { BackstopConfiguration } from '../models/backstopConfiguration';
 import { FileService } from '../services/fileService';
 import { BackstopTestResult } from '../models/backstopTestResult';
+import { ModalService } from "../services/modalService";
+import AddTestFieldModalComponent from "./AddTestFieldModalComponent.vue";
 
 @Component({
   name: "test-view-component"
 })
 export default class TestViewComponent extends Vue {
   @Mutation("configurationStore/setScenarioField")
-  private setScenarioField!: Function;
+  private setScenarioField!: (paylod: {scenarioIndex: number, field: string, value: any}) => void;
   @State((state) => state.configurationStore.currentConfiguration)
   private readonly configuration!: BackstopConfiguration;
   @State((state) => state.configurationStore.configurationPath)
@@ -164,13 +121,8 @@ export default class TestViewComponent extends Vue {
   @Getter("configurationStore/htmlReportDirectory")
   private readonly htmlReportDirectory!: string;
 
-  private addingNewField: boolean;
   // private additionnalFieldsReference: Array<{text: string; value: { name: string; type: string }}>;
   // private additionnalFields: Array<{name: string, value: string | number, type: string}>;
-  private newFieldName: string | null;
-  private newFieldValue: number | boolean | string | string[];
-  private newFieldType: string;
-  private readonly types: string[];
 
   @Prop()
   private testContent!: BackstopTest;
@@ -179,11 +131,6 @@ export default class TestViewComponent extends Vue {
 
   constructor() {
     super(arguments);
-    this.addingNewField = false;
-    this.newFieldName = null;
-    this.newFieldValue = "";
-    this.newFieldType = "string";
-    this.types = ["number", "boolean", "array", "string"];
   }
 
   public created() {
@@ -216,7 +163,10 @@ export default class TestViewComponent extends Vue {
   }
 
   private addNewField() {
-    this.addingNewField = true;
+    ModalService.launchModal(AddTestFieldModalComponent)
+      .then((newField: {name: string, value: any, type: string}) => {
+        this.validateField(newField);
+      });
   }
 
   private getDiffImagePath(testResult: BackstopTestResult) {
@@ -235,33 +185,12 @@ export default class TestViewComponent extends Vue {
     this.setScenarioField({scenarioIndex: this.testIndex, field, value});
   }
 
-  private updateNewValueType() {
-    switch (this.newFieldType) {
-      case 'array':
-        this.newFieldValue = [];
-        break;
-      case 'boolean':
-        this.newFieldValue = false;
-        break;
-      case 'number':
-        this.newFieldValue = 0;
-        break;
-      default:
-        this.newFieldValue = "";
-        break;
-    }
-  }
-
-  private validateField() {
-    if (this.newFieldName !== null) {
-      if (this.newFieldType === 'number' && typeof this.newFieldValue === "string") {
-        this.newFieldValue = Number.parseFloat(this.newFieldValue);
+  private validateField(newField: {name: string, value: any, type: string}) {
+    if (newField.name !== null) {
+      if (newField.type === 'number' && typeof newField.value === "string") {
+        newField.value = Number.parseFloat(newField.value);
       }
-      this.updateField(this.newFieldName, this.newFieldValue);
-      this.newFieldName = null;
-      this.newFieldValue = "";
-      this.newFieldType = "string";
-      this.addingNewField = false;
+      this.updateField(newField.name, newField.value);
     }
   }
 }
