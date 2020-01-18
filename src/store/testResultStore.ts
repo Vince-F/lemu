@@ -10,6 +10,10 @@ export default {
     resultExpired: true
   },
   mutations: {
+    expireTestsResult(state: any) {
+      state.resultExpired = true;
+    },
+
     setTestsResult(state: any, result: BackstopTestResult[]) {
       state.testsResult = result;
       state.resultExpired = false;

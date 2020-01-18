@@ -10,14 +10,20 @@ export class BackstopTestRunner {
       });
   }
 
-  public static runTest(config: any): Promise<any> {
+  public static runTest(config: any, scenarioLabel?: string): Promise<any> {
     if (Array.isArray(config.report)) {
       const idx = config.report.indexOf("browser");
       if (idx > -1) {
         config.report.splice(idx, 1); // to prevent opening the browser
       }
     }
+    let filterRegex;
+    if (scenarioLabel && scenarioLabel.length) {
+      filterRegex = "^" + scenarioLabel + "$";
+    }
+    console.log("Test filtered with ", filterRegex);
     return backstop('test', {
+      filter: filterRegex,
       config
     });
   }
