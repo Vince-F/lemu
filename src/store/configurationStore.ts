@@ -57,7 +57,7 @@ export default {
     setFullConfiguration(state: any, { newConfiguration }: any) {
       state.currentConfiguration = newConfiguration;
       state.testsModified = [];
-      for (let i = 0; i < state.currentConfiguration.scenarios.length; i++) {
+      for (const scenario of state.currentConfiguration.scenarios) {
         state.testsModified.push(false);
       }
       state.configurationModified = false;
@@ -204,15 +204,29 @@ export default {
         });
     },
 
-    runTest({commit, state}: any) {
+    runTests({commit, state}: any) {
       commit("runTest");
       return BackstopService.runTests(state.currentConfiguration)
         .then((result) => {
-          commit("stopTest");
           return result;
         }).catch((error) => {
-          commit("stopTest");
           return Promise.reject(error);
+        }).finally(() => {
+          commit("stopTest");
+          commit("testResultStore/expireTestsResult", undefined, {root: true});
+        });
+    },
+
+    runTest({commit, state}: any, testLabel: string) {
+      commit("runTest");
+      return BackstopService.runTest(state.currentConfiguration, testLabel)
+        .then((result) => {
+          return result;
+        }).catch((error) => {
+          return Promise.reject(error);
+        }).finally(() => {
+          commit("stopTest");
+          commit("testResultStore/expireTestsResult", undefined, {root: true});
         });
     },
 

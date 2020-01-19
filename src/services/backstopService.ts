@@ -18,6 +18,19 @@ export class BackstopService {
     });
   }
 
+  public static runTest(config: BackstopConfiguration, testLabel: string) {
+    return new Promise((resolve, reject) => {
+      electron.ipcRenderer.once("testFinished", (event: any, success: boolean, payload: any) => {
+          if (success) {
+            resolve(payload);
+          } else {
+            reject(payload);
+          }
+      });
+      electron.ipcRenderer.send("runTest", config, testLabel);
+    });
+  }
+
   public static approveTests(config: BackstopConfiguration) {
     return new Promise((resolve, reject) => {
       electron.ipcRenderer.once("approvalFinished", (event: any, success: boolean, payload: any) => {

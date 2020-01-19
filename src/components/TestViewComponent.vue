@@ -6,6 +6,16 @@
           Configuration
         </v-tab>
         <v-tab-item>
+          <div class="pa-2 text-right">
+            <v-btn color="primary" :disabled="testRunning"
+              @click="runCurrentTest"
+            >
+              <v-icon>
+                mdi-play
+              </v-icon>
+              Run this test
+            </v-btn>
+          </div>
           <form>
             <v-text-field label="label" :value="testContent.label" @input="updateField('label', $event)"></v-text-field>
             <v-text-field label="url" :value="testContent.url" @input="updateField('url', $event)"></v-text-field>
@@ -141,6 +151,8 @@ export default class TestViewComponent extends Vue {
   private readonly htmlReportDirectory!: string;
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
+  @Action("configurationStore/runTest")
+  private readonly runTest!: (testLabel: string) => Promise<any>;
   @State((state) => state.configurationStore.testRunning)
   private readonly testRunning!: boolean;
   @Mutation("applicationStore/displaySnackbar")
@@ -224,6 +236,15 @@ export default class TestViewComponent extends Vue {
 
   private updateField(field: string, value: any) {
     this.setScenarioField({scenarioIndex: this.testIndex, field, value});
+  }
+
+  private runCurrentTest() {
+    this.runTest(this.testContent.label)
+      .then(() => {
+        this.displaySnackbar({text: "Test successfully run", success: true});
+      }).catch((err) => {
+        this.displaySnackbar({text: "Test failed, error: " + err, success: false});
+      });
   }
 
   private validateField(newField: {name: string, value: any, type: string}) {
