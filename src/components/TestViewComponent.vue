@@ -60,8 +60,19 @@
               Approve this test
             </v-btn>
           </div>
-          <v-expansion-panels multiple>
-          <v-expansion-panel v-for="result in testResult" :key="result.pair.viewportLabel">
+          <div v-if="resultLoading" class="text-center pa-3">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              :size="100"
+              :width="10"
+            ></v-progress-circular>
+            <div >
+              Loading tests results...
+            </div>
+          </div>
+          <v-expansion-panels multiple v-else>
+            <v-expansion-panel v-for="result in testResult" :key="result.pair.viewportLabel">
               <v-expansion-panel-header>
                 <div>
                   <strong>{{result.pair.viewportLabel}}</strong>
@@ -122,7 +133,7 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Action, Mutation, State, Getter } from "vuex-class";
 import { BackstopTest } from '../models/backstopTest';
 import { BackstopConfiguration } from '../models/backstopConfiguration';
@@ -143,6 +154,8 @@ export default class TestViewComponent extends Vue {
   private readonly configuration!: BackstopConfiguration;
   @State((state) => state.configurationStore.configurationPath)
   private readonly path!: string;
+  @State((state) => state.testResultStore.resultExpired)
+  private readonly resultExpired!: boolean;
   @Getter("testResultStore/getTestByLabel")
   private readonly getTestByLabel!: (labelName: string) => BackstopTestResult[];
   @Action("testResultStore/retrieveTestsResult")
@@ -166,14 +179,18 @@ export default class TestViewComponent extends Vue {
   @Prop()
   private testIndex!: number;
 
+  private resultLoading: boolean;
+
   constructor() {
     super(arguments);
+    this.resultLoading = false;
   }
 
   public created() {
+    this.resultLoading = true;
     this.retrieveTestsResult()
-      .then(() => {
-        // announce stop of loading
+      .finally(() => {
+        this.resultLoading = false;
       });
   }
 
@@ -197,6 +214,15 @@ export default class TestViewComponent extends Vue {
 
   private get testResult() {
     return this.getTestByLabel(this.testContent.label);
+  }
+
+  @Watch('resultExpired')
+  private updateTestResult() {
+    this.resultLoading = true;
+    this.retrieveTestsResult()
+      .finally(() => {
+        this.resultLoading = false;
+      });
   }
 
   private addNewField() {
