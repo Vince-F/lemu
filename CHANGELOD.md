@@ -1,5 +1,14 @@
 # Changelog
 
+## V1.6.0
+### New features
+- Add pre-defined Backstop properties when adding a scenario property
+- Add ability to remove a scenario property
+- Allow to run a single test 
+
+### Fixes
+- correctly update test results after running tests
+
 ## V1.5.0
 ### New features
 - make "Add field" flow in test view clearer

@@ -6,27 +6,40 @@
           Configuration
         </v-tab>
         <v-tab-item>
+          <div class="pa-2 text-right">
+            <v-btn color="primary" :disabled="testRunning"
+              @click="runCurrentTest"
+            >
+              <v-icon>
+                mdi-play
+              </v-icon>
+              Run this test
+            </v-btn>
+          </div>
           <form>
             <v-text-field label="label" :value="testContent.label" @input="updateField('label', $event)"></v-text-field>
             <v-text-field label="url" :value="testContent.url" @input="updateField('url', $event)"></v-text-field>
-            <template v-for="(additionnalField, index) in additionnalFields">
+            <div class="d-flex" v-for="(additionnalField, index) in additionnalFields" :key="additionnalField.name">
               <v-text-field 
                 v-if="additionnalField.type === 'number'" :label="additionnalField.name" 
                 type="number" :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, Number.parseInt($event))"
-                ></v-text-field>
+                class="flex-grow-1 flex-shrink-1"></v-text-field>
               <v-checkbox v-else-if="additionnalField.type === 'boolean'" :label="additionnalField.name"
                 :input-value="additionnalField.value"
                 :key="index" @change="updateField(additionnalField.name, $event)"
-                ></v-checkbox>
+                class="flex-grow-1 flex-shrink-1"></v-checkbox>
               <v-combobox v-else-if="additionnalField.type === 'array'" multiple chips
                 :label="additionnalField.name" :value="additionnalField.value"
                 :key="index" @change="updateField(additionnalField.name, $event)"
-                ></v-combobox>
+                class="flex-grow-1 flex-shrink-1"></v-combobox>
               <v-text-field 
                 v-else :label="additionnalField.name" 
                 :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, $event)"
-                ></v-text-field>
-            </template>
+                class="flex-grow-1 flex-shrink-1"></v-text-field>
+              <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" @click="removeField(additionnalField.name)">
+                <v-icon color="grey">mdi-delete</v-icon>
+              </v-btn>
+            </div>
           </form>
           <v-btn color="primary" v-on:click="addNewField()">
             <v-icon>mdi-add</v-icon>
@@ -47,8 +60,19 @@
               Approve this test
             </v-btn>
           </div>
-          <v-expansion-panels multiple>
-          <v-expansion-panel v-for="result in testResult" :key="result.pair.viewportLabel">
+          <div v-if="resultLoading" class="text-center pa-3">
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              :size="100"
+              :width="10"
+            ></v-progress-circular>
+            <div >
+              Loading tests results...
+            </div>
+          </div>
+          <v-expansion-panels multiple v-else>
+            <v-expansion-panel v-for="result in testResult" :key="result.pair.viewportLabel">
               <v-expansion-panel-header>
                 <div>
                   <strong>{{result.pair.viewportLabel}}</strong>
@@ -102,10 +126,14 @@
     margin-right: -24px;
     margin-bottom: 24px;
   }
+
+  .input-action-btn {
+    align-self: center;
+  }
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { Action, Mutation, State, Getter } from "vuex-class";
 import { BackstopTest } from '../models/backstopTest';
 import { BackstopConfiguration } from '../models/backstopConfiguration';
@@ -120,10 +148,14 @@ import AddTestFieldModalComponent from "./AddTestFieldModalComponent.vue";
 export default class TestViewComponent extends Vue {
   @Mutation("configurationStore/setScenarioField")
   private setScenarioField!: (paylod: {scenarioIndex: number, field: string, value: any}) => void;
+  @Mutation("configurationStore/removeScenarioField")
+  private readonly removeScenarioField!: (payload: {index: number, fieldName: string}) => void;
   @State((state) => state.configurationStore.currentConfiguration)
   private readonly configuration!: BackstopConfiguration;
   @State((state) => state.configurationStore.configurationPath)
   private readonly path!: string;
+  @State((state) => state.testResultStore.resultExpired)
+  private readonly resultExpired!: boolean;
   @Getter("testResultStore/getTestByLabel")
   private readonly getTestByLabel!: (labelName: string) => BackstopTestResult[];
   @Action("testResultStore/retrieveTestsResult")
@@ -132,6 +164,8 @@ export default class TestViewComponent extends Vue {
   private readonly htmlReportDirectory!: string;
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
+  @Action("configurationStore/runTest")
+  private readonly runTest!: (testLabel: string) => Promise<any>;
   @State((state) => state.configurationStore.testRunning)
   private readonly testRunning!: boolean;
   @Mutation("applicationStore/displaySnackbar")
@@ -145,14 +179,18 @@ export default class TestViewComponent extends Vue {
   @Prop()
   private testIndex!: number;
 
+  private resultLoading: boolean;
+
   constructor() {
     super(arguments);
+    this.resultLoading = false;
   }
 
   public created() {
+    this.resultLoading = true;
     this.retrieveTestsResult()
-      .then(() => {
-        // announce stop of loading
+      .finally(() => {
+        this.resultLoading = false;
       });
   }
 
@@ -176,6 +214,15 @@ export default class TestViewComponent extends Vue {
 
   private get testResult() {
     return this.getTestByLabel(this.testContent.label);
+  }
+
+  @Watch('resultExpired')
+  private updateTestResult() {
+    this.resultLoading = true;
+    this.retrieveTestsResult()
+      .finally(() => {
+        this.resultLoading = false;
+      });
   }
 
   private addNewField() {
@@ -206,8 +253,24 @@ export default class TestViewComponent extends Vue {
     return FileService.resolvePath([this.htmlReportDirectory, testResult.pair.test]);
   }
 
+  private removeField(fieldName: string) {
+    ModalService.launchConfirmationModal()
+      .then(() => {
+        this.removeScenarioField({index: this.testIndex, fieldName});
+      })
+  }
+
   private updateField(field: string, value: any) {
     this.setScenarioField({scenarioIndex: this.testIndex, field, value});
+  }
+
+  private runCurrentTest() {
+    this.runTest(this.testContent.label)
+      .then(() => {
+        this.displaySnackbar({text: "Test successfully run", success: true});
+      }).catch((err) => {
+        this.displaySnackbar({text: "Test failed, error: " + err, success: false});
+      });
   }
 
   private validateField(newField: {name: string, value: any, type: string}) {

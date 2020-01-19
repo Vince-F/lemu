@@ -6,11 +6,11 @@
     <v-card>
       <v-card-title class="headline">Add field</v-card-title>
       <v-card-text>
-        <!--<v-select
+        <v-select
           :items="modes"
           label="Mode"
           v-model="currentMode"
-        ></v-select>-->
+        ></v-select>
         <div v-if="currentMode === 'custom'">
           <v-text-field
             label="Field name"
@@ -24,7 +24,14 @@
           ></v-select>
         </div>
         <div v-else-if="currentMode === 'pre-defined'">
-
+          <v-select
+            :items="predefinedFields"
+            label="Predefined field"
+            v-model="selectedField"
+            item-text="name"
+            return-object
+            @change="updateNewValueTypeWithPredefinedField"
+          ></v-select>                
         </div>
         <v-text-field class=""
           v-if="fieldType === 'number'" label="Value" 
@@ -65,26 +72,31 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { backstopScenarioProperties } from '../constants/backstopScenarioProperties';
 
 @Component({})
 export default class AddTestFieldModalComponent extends Vue {
   private dialogDisplayed: boolean = true;
+  private readonly predefinedFields: Array<{name: string,  type: "string" | "number" | "array" | "boolean" }>;
   private readonly modes: string[];
   private readonly types: string[];
   private currentMode: string;
+  private selectedField: {name: string,  type: "string" | "number" | "array" | "boolean" } | null;
   private fieldName: string;
   private fieldType: string;
   private fieldValue: number | boolean | string | string[];
 
   constructor() {
     super(arguments);
+    this.predefinedFields = backstopScenarioProperties;
     this.modes = ["pre-defined", "custom"];
     this.types = ["number", "boolean", "array", "string"];
 
-    this.currentMode = "custom";
+    this.currentMode = "pre-defined";
     this.fieldName = "";
     this.fieldType = "";
     this.fieldValue = "";
+    this.selectedField = null;
   }
 
   private addField() {
@@ -115,6 +127,14 @@ export default class AddTestFieldModalComponent extends Vue {
       default:
         this.fieldValue = "";
         break;
+    }
+  }
+
+  private updateNewValueTypeWithPredefinedField() {
+    if (this.selectedField) {
+      this.fieldName = this.selectedField.name;
+      this.fieldType = this.selectedField.type;
+      this.updateNewValueType();
     }
   }
 }

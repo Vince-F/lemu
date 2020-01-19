@@ -15,7 +15,7 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn text v-on:click="runTest" v-if="hasConfiguration" :disabled="testRunning">
+    <v-btn text v-on:click="runTests" v-if="hasConfiguration" :disabled="testRunning">
       <template v-if="!testRunning">
         <v-icon>mdi-play</v-icon>
         Run tests
@@ -59,8 +59,8 @@ export default class AppToolbarComponent extends Vue {
   private hasConfigurationBeenModified!: boolean;
   @State((state) => state.configurationStore.testRunning)
   private testRunning!: boolean;
-  @Action("configurationStore/runTest")
-  private runBackstopTest!: () => Promise<any>;
+  @Action("configurationStore/runTests")
+  private runBackstopTests!: () => Promise<any>;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
@@ -88,8 +88,8 @@ export default class AppToolbarComponent extends Vue {
     }
   }
 
-  private runTest() {
-    this.runBackstopTest()
+  private runTests() {
+    this.runBackstopTests()
       .then((result) => {
         this.displaySnackbar({text: "Tests successful", success: true});
       }).catch((error) => {

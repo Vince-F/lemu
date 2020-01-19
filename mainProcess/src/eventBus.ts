@@ -2,8 +2,8 @@ import electron = require("electron");
 import { BackstopTestRunner } from "./controllers/backstopTestRunner";
 import { BackstopTestResultReader } from "./controllers/backstopTestResultReader";
 
-electron.ipcMain.on("runTest", (event, config) => {
-  BackstopTestRunner.runTest(config)
+electron.ipcMain.on("runTest", (event, config, scenarioLabel) => {
+  BackstopTestRunner.runTest(config, scenarioLabel)
     .then((result) => {
       event.reply("testFinished", true, result);
     }).catch((error) => {
