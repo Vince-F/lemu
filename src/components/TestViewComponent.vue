@@ -9,24 +9,27 @@
           <form>
             <v-text-field label="label" :value="testContent.label" @input="updateField('label', $event)"></v-text-field>
             <v-text-field label="url" :value="testContent.url" @input="updateField('url', $event)"></v-text-field>
-            <template v-for="(additionnalField, index) in additionnalFields">
+            <div class="d-flex" v-for="(additionnalField, index) in additionnalFields" :key="additionnalField.name">
               <v-text-field 
                 v-if="additionnalField.type === 'number'" :label="additionnalField.name" 
                 type="number" :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, Number.parseInt($event))"
-                ></v-text-field>
+                class="flex-grow-1 flex-shrink-1"></v-text-field>
               <v-checkbox v-else-if="additionnalField.type === 'boolean'" :label="additionnalField.name"
                 :input-value="additionnalField.value"
                 :key="index" @change="updateField(additionnalField.name, $event)"
-                ></v-checkbox>
+                class="flex-grow-1 flex-shrink-1"></v-checkbox>
               <v-combobox v-else-if="additionnalField.type === 'array'" multiple chips
                 :label="additionnalField.name" :value="additionnalField.value"
                 :key="index" @change="updateField(additionnalField.name, $event)"
-                ></v-combobox>
+                class="flex-grow-1 flex-shrink-1"></v-combobox>
               <v-text-field 
                 v-else :label="additionnalField.name" 
                 :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, $event)"
-                ></v-text-field>
-            </template>
+                class="flex-grow-1 flex-shrink-1"></v-text-field>
+              <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" @click="removeField(additionnalField.name)">
+                <v-icon color="grey">mdi-delete</v-icon>
+              </v-btn>
+            </div>
           </form>
           <v-btn color="primary" v-on:click="addNewField()">
             <v-icon>mdi-add</v-icon>
@@ -102,6 +105,10 @@
     margin-right: -24px;
     margin-bottom: 24px;
   }
+
+  .input-action-btn {
+    align-self: center;
+  }
 </style>
 
 <script lang="ts">
@@ -120,6 +127,8 @@ import AddTestFieldModalComponent from "./AddTestFieldModalComponent.vue";
 export default class TestViewComponent extends Vue {
   @Mutation("configurationStore/setScenarioField")
   private setScenarioField!: (paylod: {scenarioIndex: number, field: string, value: any}) => void;
+  @Mutation("configurationStore/removeScenarioField")
+  private readonly removeScenarioField!: (payload: {index: number, fieldName: string}) => void;
   @State((state) => state.configurationStore.currentConfiguration)
   private readonly configuration!: BackstopConfiguration;
   @State((state) => state.configurationStore.configurationPath)
@@ -204,6 +213,13 @@ export default class TestViewComponent extends Vue {
 
   private getTestImagePath(testResult: BackstopTestResult) {
     return FileService.resolvePath([this.htmlReportDirectory, testResult.pair.test]);
+  }
+
+  private removeField(fieldName: string) {
+    ModalService.launchConfirmationModal()
+      .then(() => {
+        this.removeScenarioField({index: this.testIndex, fieldName});
+      })
   }
 
   private updateField(field: string, value: any) {
