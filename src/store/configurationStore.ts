@@ -124,13 +124,20 @@ export default {
       }
     },
 
+    removeScenarioField(state: any, {index, fieldName}: { index: number, fieldName: string}) {
+      if (state.currentConfiguration.scenarios) {
+        Vue.delete(state.currentConfiguration.scenarios[index], fieldName);
+        Vue.set(state.testsModified, index, true);
+        state.configurationModified = true;
+      }
+    },
+
     removeViewport(state: any, index: number) {
       if (state.currentConfiguration) {
         state.currentConfiguration.viewports.splice(index, 1);
         state.configurationModified = true;
       }
     },
-
 
     resetModification(state: any) {
       for (let i = 0; i < state.testsModified.length; i++) {
