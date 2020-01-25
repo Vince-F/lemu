@@ -145,14 +145,6 @@ export default {
       }
     },
 
-    runTest(state: any) {
-      state.testRunning = true;
-    },
-
-    stopTest(state: any) {
-      state.testRunning = false;
-    },
-
     setConfigurationModified(state: any, modified: boolean) {
       state.configurationModified = false;
     }
@@ -201,32 +193,6 @@ export default {
           });
           store.commit("setPath", path);
           return Promise.resolve();
-        });
-    },
-
-    runTests({commit, state}: any) {
-      commit("runTest");
-      return BackstopService.runTests(state.currentConfiguration)
-        .then((result) => {
-          return result;
-        }).catch((error) => {
-          return Promise.reject(error);
-        }).finally(() => {
-          commit("stopTest");
-          commit("testResultStore/expireTestsResult", undefined, {root: true});
-        });
-    },
-
-    runTest({commit, state}: any, testLabel: string) {
-      commit("runTest");
-      return BackstopService.runTest(state.currentConfiguration, testLabel)
-        .then((result) => {
-          return result;
-        }).catch((error) => {
-          return Promise.reject(error);
-        }).finally(() => {
-          commit("stopTest");
-          commit("testResultStore/expireTestsResult", undefined, {root: true});
         });
     },
 
