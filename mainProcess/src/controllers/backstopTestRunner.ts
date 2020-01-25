@@ -1,4 +1,5 @@
 import backstop = require("backstopjs");
+import puppeteer = require("puppeteer");
 
 export class BackstopTestRunner {
   public static initTest(path: string) {
@@ -22,6 +23,7 @@ export class BackstopTestRunner {
       filterRegex = "^" + scenarioLabel + "$";
     }
     console.log("Test filtered with ", filterRegex);
+    config = this.setPuppeteerExecutablePath(config);
     return backstop('test', {
       filter: filterRegex,
       config
@@ -39,5 +41,16 @@ export class BackstopTestRunner {
       config,
       filter: filterRegex
     });
+  }
+
+  private static setPuppeteerExecutablePath(config: any) {
+    if (!config.engineOptions) {
+      config.engineOptions = {};
+    }
+    if (!config.engineOptions.executablePath) {
+      config.engineOptions.executablePath = puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked');
+      console.log("changed puppeteer path to ", config.engineOptions.executablePath);
+    }
+    return config;
   }
 }
