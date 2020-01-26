@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.6.1
+### Fixes
+- Fix error preventing backstopjs with puppeteer to run when packed in asar file 
+
 ## V1.6.0
 ### New features
 - Add pre-defined Backstop properties when adding a scenario property
