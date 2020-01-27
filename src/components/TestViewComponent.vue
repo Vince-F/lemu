@@ -90,7 +90,7 @@
                 <div class="d-flex">
                   <div class="flex-grow-1 flex-shrink-1 image-container">
                     <p><strong>Test</strong></p>
-                    <img :src="getTestImagePath(result)" />
+                    <ZoomableImageComponent :imgSrc="getTestImagePath(result)" />
                   </div>
                   <div class="flex-grow-1 flex-shrink-1 image-container">
                     <p><strong>Reference</strong></p>
@@ -141,9 +141,13 @@ import { FileService } from '../services/fileService';
 import { BackstopTestResult } from '../models/backstopTestResult';
 import { ModalService } from "../services/modalService";
 import AddTestFieldModalComponent from "./AddTestFieldModalComponent.vue";
+import ZoomableImageComponent from "./ZoomableImageComponent.vue";
 
 @Component({
-  name: "test-view-component"
+  name: "test-view-component",
+  components: {
+    ZoomableImageComponent
+  }
 })
 export default class TestViewComponent extends Vue {
   @Mutation("configurationStore/setScenarioField")
