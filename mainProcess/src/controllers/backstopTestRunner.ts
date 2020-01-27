@@ -33,8 +33,7 @@ export class BackstopTestRunner {
   public static approveTests(config: any, scenarioLabel?: string): Promise<any> {
     let filterRegex;
     if (scenarioLabel && scenarioLabel.length) {
-      filterRegex = "^" + config.id + "_" + scenarioLabel.replace(/\s/g,"_")
-                    .replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') + 
+      filterRegex = "^" + config.id + "_" + this.cleanFilename(scenarioLabel) +
                     "_\\d";
     }
     return backstop('approve', {
@@ -52,5 +51,11 @@ export class BackstopTestRunner {
       console.log("changed puppeteer path to ", config.engineOptions.executablePath);
     }
     return config;
+  }
+
+  private static cleanFilename(filename: string) {
+    // imitate backstop behavior to have a filename that looks alike
+    return filename.replace(/[ /]/g, '_')
+      .replace(/[^a-z0-9_-]/gi, ''); // remove anything that's not a letter or a number or dash or underscore.
   }
 }

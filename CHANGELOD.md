@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.6.2
+### Fixes
+- For approval of single test, correctly clean filename the same way BackstopJS does
+
 ## V1.6.1
 ### Fixes
 - Fix error preventing backstopjs with puppeteer to run when packed in asar file 
