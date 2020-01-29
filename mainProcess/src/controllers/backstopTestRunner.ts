@@ -2,13 +2,13 @@ import backstop = require("backstopjs");
 import puppeteer = require("puppeteer");
 
 export class BackstopTestRunner {
-  public static initTest(path: string) {
-    const oldPath = process.cwd();
+  public static setWorkingDir(path: string) {
     process.chdir(path);
-    return backstop('init')
-      .then(() => {
-        process.chdir(oldPath);
-      });
+  }
+
+  public static initTest(path: string) {
+    process.chdir(path);
+    return backstop('init');
   }
 
   public static runTest(config: any, scenarioLabel?: string): Promise<any> {
