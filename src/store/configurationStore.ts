@@ -200,6 +200,7 @@ export default {
             newConfiguration: content
           });
           store.commit("setPath", path);
+          BackstopService.setWorkingDir(store.getters.backstopConfigurationDirectory);
           return Promise.resolve();
         });
     },
@@ -255,6 +256,10 @@ export default {
 
     hasConfigurationBeenModified({configurationModified}: any) {
       return configurationModified;
+    },
+
+    backstopConfigurationDirectory({configurationPath}: any) {
+      return configurationPath.substr(0, configurationPath.length - "backstop.json".length);
     },
 
     htmlReportDirectory({ currentConfiguration, configurationPath }: any) {
