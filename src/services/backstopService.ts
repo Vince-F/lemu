@@ -5,6 +5,11 @@ import { BackstopReport } from '@/models/backstopReport';
 const electron = window.require("electron");
 
 export class BackstopService {
+  public static setWorkingDir(path: string) {
+    console.log("set working directory to ", path);
+    electron.ipcRenderer.send("setWorkingDir", path);
+  }
+
   public static runTests(config: BackstopConfiguration) {
     return new Promise((resolve, reject) => {
       electron.ipcRenderer.once("testFinished", (event: any, success: boolean, payload: any) => {

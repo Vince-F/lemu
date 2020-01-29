@@ -2,6 +2,10 @@ import electron = require("electron");
 import { BackstopTestRunner } from "./controllers/backstopTestRunner";
 import { BackstopTestResultReader } from "./controllers/backstopTestResultReader";
 
+electron.ipcMain.on("setWorkingDir", (event, path) => {
+  BackstopTestRunner.setWorkingDir(path);
+});
+
 electron.ipcMain.on("runTest", (event, config, scenarioLabel) => {
   BackstopTestRunner.runTest(config, scenarioLabel)
     .then((result) => {
