@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.6.3
+### Fixes
+- set working directory to the one of backstop configuration file 
+
 ## V1.6.2
 ### Fixes
 - For approval of single test, correctly clean filename the same way BackstopJS does
