@@ -51,7 +51,19 @@
             <v-combobox v-if="Array.isArray(value)" multiple chips
               :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"
               ></v-combobox>
+            <v-text-field v-else-if="typeof value === 'number'" type="number"
+              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"
+              ></v-text-field>
+            <v-checkbox v-else-if="typeof value === 'boolean'" 
+              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: !!$event})"
+              ></v-checkbox>
+            <v-text-field v-else
+              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"></v-text-field>
           </div>
+          <v-btn color="primary" v-on:click="addEngineOption()">
+            <v-icon>mdi-add</v-icon>
+            Add engine option
+          </v-btn>
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -74,6 +86,8 @@
 import { Vue, Component } from "vue-property-decorator";
 import { State, Mutation } from "vuex-class";
 import { BackstopConfiguration } from "../models/backstopConfiguration";
+import { ModalService } from '../services/modalService';
+import AddEngineOptionModalComponent from "./AddEngineOptionModalComponent.vue";
 
 @Component({
   name: "general-configuration-component"
@@ -106,6 +120,16 @@ export default class GeneralConfigurationComponent extends Vue {
 
   private get htmlReportEnabled() {
     return this.configuration.report.indexOf("browser") > -1;
+  }
+
+  private addEngineOption() {
+    ModalService.launchModal(AddEngineOptionModalComponent)
+      .then((newField: {name: string, value: any, type: string}) => {
+        if (newField.type === "number") {
+          newField.value = Number.parseFloat(newField.value);
+        }
+        this.setConfigurationEngineOptionsField({field: newField.name, value: newField.value});
+      });
   }
 
   private addViewport() {
