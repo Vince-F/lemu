@@ -2,7 +2,13 @@
   <v-card class="card">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
       <div class="flex-grow-1 flex-shrink-1">
-        {{testContent.label}}
+        {{testContent.label}} 
+        <v-icon color="green" v-if="testStatus === 'pass'">
+          mdi-check-circle
+        </v-icon>
+        <v-icon color="red" v-else>
+          mdi-alert
+        </v-icon>
       </div>
       <div class="flex-grow-0 flex-shrink-0">
         <v-btn icon :disabled="testRunning" @click="runCurrentTest">
@@ -254,6 +260,16 @@ export default class TestViewComponent extends Vue {
 
   private get testResult() {
     return this.getTestByLabel(this.testContent.label);
+  }
+
+  private get testStatus() {
+    let status = 'pass';
+    this.testResult.forEach((result) => {
+      if (result.status !== "pass") {
+        status = 'failed';
+      }
+    });
+    return status;
   }
 
   @Watch('resultExpired')
