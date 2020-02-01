@@ -67,6 +67,13 @@ export default {
       state.configurationPath = path;
     },
 
+    setConfigurationEngineOptionsField(state: any, { field, value }: { field: string, value: any }) {
+      if (state.currentConfiguration.paths) {
+        Vue.set(state.currentConfiguration.engineOptions, field, value);
+        state.configurationModified = true;
+      }
+    },
+
     setConfigurationField(state: any, { field, value }: { field: string, value: any }) {
       if (state.currentConfiguration) {
         const obj = {} as any;

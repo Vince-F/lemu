@@ -46,6 +46,12 @@
             <v-radio label="Puppeteer" value="puppeteer"></v-radio>
             <v-radio label="Chromy" value="chromy"></v-radio>
           </v-radio-group>
+          <strong>Engine options</strong>
+          <div v-for="(value, key) of configuration.engineOptions" :key="key">
+            <v-combobox v-if="Array.isArray(value)" multiple chips
+              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"
+              ></v-combobox>
+          </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -87,6 +93,8 @@ export default class GeneralConfigurationComponent extends Vue {
   private setConfigurationReport!: Function;
   @Mutation("configurationStore/setConfigurationViewportField")
   private setConfigurationViewportField!: Function;
+  @Mutation("configurationStore/setConfigurationEngineOptionsField")
+  private setConfigurationEngineOptionsField!: (payload: {field: string, value: any}) => void;
 
   private get ciReportEnabled() {
     return this.configuration.report.indexOf("CI") > -1;
