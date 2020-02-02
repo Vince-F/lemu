@@ -1,11 +1,16 @@
+import { ApplicationService } from '@/services/applicationService';
 
 
 export default {
   namespaced: true,
   state: {
-    snackbarText: "" as string,
-    snackbarDisplayed: false as boolean,
-    snackbarSuccess: false as boolean
+    snackbarText: "",
+    snackbarDisplayed: false,
+    snackbarSuccess: false,
+    appInfos: null as {
+      appVersion: string,
+      backstopVersion: string
+    } | null
   },
   mutations: {
     displaySnackbar(state: any, {text, success}: {text: string, success:boolean}) {
@@ -17,7 +22,19 @@ export default {
 
     hideSnackbar(state: any) {
       state.snackbarDisplayed = false;
+    },
+
+    fillAppInfos(state: any, appInfos: any) {
+      state.appInfos = appInfos;
+    }
+  },
+  actions: {
+    retrieveAppInfos({commit}: any) {
+      return ApplicationService.getVersionsInfo()
+        .then((result) => {
+          commit("fillAppInfos", result);
+        });
     }
   }
-}
+};
 
