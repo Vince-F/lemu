@@ -1,6 +1,7 @@
 import electron = require("electron");
 import { BackstopTestRunner } from "./controllers/backstopTestRunner";
 import { BackstopTestResultReader } from "./controllers/backstopTestResultReader";
+import { AppInfoReader } from "./controllers/appInfoReader";
 
 electron.ipcMain.on("setWorkingDir", (event, path) => {
   BackstopTestRunner.setWorkingDir(path);
@@ -40,5 +41,16 @@ electron.ipcMain.on("retrieveTestsResult", (event, path) => {
     }).catch((error) => {
       console.error("Result retrieval failed", error);
       event.reply("testsResult", false, error);
+    });
+});
+
+electron.ipcMain.on("retrieveAppInfos", (event) => {
+  Promise.all([AppInfoReader.getAppVersion(), AppInfoReader.getBackstopVersion()])
+    .then((results) => {
+      const data = {
+        appVersion: results[0],
+        backstopVersion: results[1]
+      };
+      event.reply("appInfos", data);
     });
 });

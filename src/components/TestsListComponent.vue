@@ -56,7 +56,8 @@
       </v-navigation-drawer>
     </div>
     <template v-if="selectedTest">
-      <test-view-component :testContent="selectedTest" :testIndex="selectedIndex" class="content"></test-view-component>
+      <test-view-component :testContent="selectedTest" :testIndex="selectedIndex" 
+        class="content" @duplicate-test="duplicateTest" @delete-test="deleteTest"></test-view-component>
     </template>
     <v-row v-else align="center" justify="center" class="ma-0">
       <v-card>

@@ -37,6 +37,10 @@
       <v-icon>mdi-exit-to-app</v-icon>
       Close
     </v-btn>
+    <v-btn text v-on:click="displayAbout">
+      <v-icon>mdi-information</v-icon>
+      About
+    </v-btn>
   </v-app-bar>
 </template>
 
@@ -44,6 +48,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
 import { ModalService } from '../services/modalService';
+import AboutModalComponent from "./modals/AboutModalComponent.vue";
 
 @Component({
 
@@ -59,7 +64,7 @@ export default class AppToolbarComponent extends Vue {
   private hasConfigurationBeenModified!: boolean;
   @State((state) => state.configurationStore.testRunning)
   private testRunning!: boolean;
-  @Action("configurationStore/runTests")
+  @Action("testRunnerStore/runTests")
   private runBackstopTests!: () => Promise<any>;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
@@ -86,6 +91,10 @@ export default class AppToolbarComponent extends Vue {
       this.dismissCurrentConfiguration();
       this.$router.push("/");
     }
+  }
+
+  private displayAbout() {
+    ModalService.launchModal(AboutModalComponent);
   }
 
   private runTests() {

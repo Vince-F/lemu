@@ -67,6 +67,13 @@ export default {
       state.configurationPath = path;
     },
 
+    setConfigurationEngineOptionsField(state: any, { field, value }: { field: string, value: any }) {
+      if (state.currentConfiguration.paths) {
+        Vue.set(state.currentConfiguration.engineOptions, field, value);
+        state.configurationModified = true;
+      }
+    },
+
     setConfigurationField(state: any, { field, value }: { field: string, value: any }) {
       if (state.currentConfiguration) {
         const obj = {} as any;
@@ -116,6 +123,13 @@ export default {
       }
     },
 
+    removeEngineOption(state: any, fieldName: string) {
+      if (state.currentConfiguration.engineOptions) {
+        Vue.delete(state.currentConfiguration.engineOptions, fieldName);
+        state.configurationModified = true;
+      }
+    },
+
     removeScenario(state: any, index: number) {
       if (state.currentConfiguration.scenarios) {
         state.currentConfiguration.scenarios.splice(index, 1);
@@ -143,14 +157,6 @@ export default {
       for (let i = 0; i < state.testsModified.length; i++) {
         Vue.set(state.testsModified, i, false);
       }
-    },
-
-    runTest(state: any) {
-      state.testRunning = true;
-    },
-
-    stopTest(state: any) {
-      state.testRunning = false;
     },
 
     setConfigurationModified(state: any, modified: boolean) {
@@ -202,32 +208,6 @@ export default {
           store.commit("setPath", path);
           BackstopService.setWorkingDir(store.getters.backstopConfigurationDirectory);
           return Promise.resolve();
-        });
-    },
-
-    runTests({commit, state}: any) {
-      commit("runTest");
-      return BackstopService.runTests(state.currentConfiguration)
-        .then((result) => {
-          return result;
-        }).catch((error) => {
-          return Promise.reject(error);
-        }).finally(() => {
-          commit("stopTest");
-          commit("testResultStore/expireTestsResult", undefined, {root: true});
-        });
-    },
-
-    runTest({commit, state}: any, testLabel: string) {
-      commit("runTest");
-      return BackstopService.runTest(state.currentConfiguration, testLabel)
-        .then((result) => {
-          return result;
-        }).catch((error) => {
-          return Promise.reject(error);
-        }).finally(() => {
-          commit("stopTest");
-          commit("testResultStore/expireTestsResult", undefined, {root: true});
         });
     },
 

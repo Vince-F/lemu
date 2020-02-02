@@ -1,5 +1,12 @@
 # Changelog
 
+## V1.7.0
+### New features
+- Expand window by default
+- add "About" modal
+- Improve design of test view
+- Add ability to edit engine options
+
 ## V1.6.3
 ### Fixes
 - set working directory to the one of backstop configuration file 
