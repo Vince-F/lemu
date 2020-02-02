@@ -5,18 +5,20 @@ import "v8-compile-cache";
 import "./eventBus";
 
 
-let mainWindow = null;
+let mainWindow: Electron.BrowserWindow = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 0,
+    height: 0,
     icon: path.join(__dirname, "../../icon.png"),
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false
-    }
+    },
+    backgroundColor: "#fafafa"
   });
+  mainWindow.maximize();
 
   mainWindow.loadFile('./dist-app/index.html');
   // mainWindow.loadURL("http://localhost:8080");
