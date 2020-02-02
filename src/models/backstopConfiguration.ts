@@ -17,7 +17,7 @@ export class BackstopConfiguration {
     };
     public report: Array<"browser"|"CI"|"json">;
     public engine: string;
-    public engineOptions: string[];
+    public engineOptions: {[key: string]: any};
     public asyncCaptureLimit: number | null;
     public asyncCompareLimit: number | null;
     public debug: boolean | null;

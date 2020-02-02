@@ -67,6 +67,13 @@ export default {
       state.configurationPath = path;
     },
 
+    setConfigurationEngineOptionsField(state: any, { field, value }: { field: string, value: any }) {
+      if (state.currentConfiguration.paths) {
+        Vue.set(state.currentConfiguration.engineOptions, field, value);
+        state.configurationModified = true;
+      }
+    },
+
     setConfigurationField(state: any, { field, value }: { field: string, value: any }) {
       if (state.currentConfiguration) {
         const obj = {} as any;
@@ -112,6 +119,13 @@ export default {
       if (state.currentConfiguration.scenarios) {
         Vue.set(state.currentConfiguration.scenarios[scenarioIndex], field, value);
         Vue.set(state.testsModified, scenarioIndex, true);
+        state.configurationModified = true;
+      }
+    },
+
+    removeEngineOption(state: any, fieldName: string) {
+      if (state.currentConfiguration.engineOptions) {
+        Vue.delete(state.currentConfiguration.engineOptions, fieldName);
         state.configurationModified = true;
       }
     },

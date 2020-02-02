@@ -46,6 +46,27 @@
             <v-radio label="Puppeteer" value="puppeteer"></v-radio>
             <v-radio label="Chromy" value="chromy"></v-radio>
           </v-radio-group>
+          <strong>Engine options</strong>
+          <div v-for="(value, key) of configuration.engineOptions" :key="key" class="d-flex">
+            <v-combobox v-if="Array.isArray(value)" class="flex-shrink-1 flex-grow-1" multiple chips
+              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"
+              ></v-combobox>
+            <v-text-field v-else-if="typeof value === 'number'" class="flex-shrink-1 flex-grow-1" type="number"
+              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"
+              ></v-text-field>
+            <v-checkbox v-else-if="typeof value === 'boolean'" class="flex-shrink-1 flex-grow-1"
+              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: !!$event})"
+              ></v-checkbox>
+            <v-text-field v-else class="flex-shrink-1 flex-grow-1"
+              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"></v-text-field>
+            <v-btn icon class="flex-shrink-0 flex-grow-0 delete-action-btn" @click="confirmEngineOptionRemove(key)">
+              <v-icon color="grey">mdi-delete</v-icon>
+            </v-btn>
+          </div>
+          <v-btn color="primary" v-on:click="addEngineOption()">
+            <v-icon>mdi-add</v-icon>
+            Add engine option
+          </v-btn>
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -64,10 +85,18 @@
   </v-card>
 </template>
 
+<style scoped>
+  .delete-action-btn {
+    align-self: center;
+  }
+</style>
+
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { State, Mutation } from "vuex-class";
 import { BackstopConfiguration } from "../models/backstopConfiguration";
+import { ModalService } from '../services/modalService';
+import AddEngineOptionModalComponent from "./AddEngineOptionModalComponent.vue";
 
 @Component({
   name: "general-configuration-component"
@@ -87,6 +116,10 @@ export default class GeneralConfigurationComponent extends Vue {
   private setConfigurationReport!: Function;
   @Mutation("configurationStore/setConfigurationViewportField")
   private setConfigurationViewportField!: Function;
+  @Mutation("configurationStore/setConfigurationEngineOptionsField")
+  private setConfigurationEngineOptionsField!: (payload: {field: string, value: any}) => void;
+  @Mutation("configurationStore/removeEngineOption")
+  private removeEngineOption!: (fieldName: string) => void;
 
   private get ciReportEnabled() {
     return this.configuration.report.indexOf("CI") > -1;
@@ -100,8 +133,25 @@ export default class GeneralConfigurationComponent extends Vue {
     return this.configuration.report.indexOf("browser") > -1;
   }
 
+  private addEngineOption() {
+    ModalService.launchModal(AddEngineOptionModalComponent)
+      .then((newField: {name: string, value: any, type: string}) => {
+        if (newField.type === "number") {
+          newField.value = Number.parseFloat(newField.value);
+        }
+        this.setConfigurationEngineOptionsField({field: newField.name, value: newField.value});
+      });
+  }
+
   private addViewport() {
     this.addViewportInConfig();
+  }
+
+  private confirmEngineOptionRemove(fieldName: string) {
+    ModalService.launchConfirmationModal()
+      .then(() => {
+        this.removeEngineOption(fieldName);
+      });
   }
 
   private removeViewport(index: number) {
