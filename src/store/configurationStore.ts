@@ -123,6 +123,13 @@ export default {
       }
     },
 
+    removeEngineOption(state: any, fieldName: string) {
+      if (state.currentConfiguration.engineOptions) {
+        Vue.delete(state.currentConfiguration.engineOptions, fieldName);
+        state.configurationModified = true;
+      }
+    },
+
     removeScenario(state: any, index: number) {
       if (state.currentConfiguration.scenarios) {
         state.currentConfiguration.scenarios.splice(index, 1);
