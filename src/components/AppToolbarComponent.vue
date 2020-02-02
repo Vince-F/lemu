@@ -64,7 +64,7 @@ export default class AppToolbarComponent extends Vue {
   private hasConfigurationBeenModified!: boolean;
   @State((state) => state.configurationStore.testRunning)
   private testRunning!: boolean;
-  @Action("configurationStore/runTests")
+  @Action("testRunnerStore/runTests")
   private runBackstopTests!: () => Promise<any>;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;

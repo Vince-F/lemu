@@ -164,7 +164,7 @@ export default class TestViewComponent extends Vue {
   private readonly htmlReportDirectory!: string;
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
-  @Action("configurationStore/runTest")
+  @Action("testRunnerStore/runTest")
   private readonly runTest!: (testLabel: string) => Promise<any>;
   @State((state) => state.configurationStore.testRunning)
   private readonly testRunning!: boolean;
