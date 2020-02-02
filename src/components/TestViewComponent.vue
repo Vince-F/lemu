@@ -1,6 +1,39 @@
 <template>
-  <v-card>
-    <v-card-text>
+  <v-card class="card">
+    <v-card-title class="header flex-grow-0 flex-shrink-0">
+      <div class="flex-grow-1 flex-shrink-1">
+        {{testContent.label}} 
+        <v-icon color="green" v-if="testStatus === 'pass'">
+          mdi-check-circle
+        </v-icon>
+        <v-icon color="red" v-else>
+          mdi-alert
+        </v-icon>
+      </div>
+      <div class="flex-grow-0 flex-shrink-0">
+        <v-btn icon :disabled="testRunning" @click="runCurrentTest">
+          <v-icon>
+            mdi-play
+          </v-icon>
+        </v-btn>
+        <v-btn icon :disabled="testRunning" @click="approveCurrentTest">
+          <v-icon>
+            mdi-check-circle
+          </v-icon>
+        </v-btn>
+        <v-btn icon :disabled="testRunning" @click="duplicateTest">
+          <v-icon>
+            mdi-content-copy
+          </v-icon>
+        </v-btn>
+        <v-btn icon :disabled="testRunning" @click="deleteTest">
+          <v-icon>
+            mdi-delete
+          </v-icon>
+        </v-btn>
+      </div>
+    </v-card-title>
+    <v-card-text class="content flex-grow-1 flex-shrink-1">
       <v-tabs>
         <v-tab>
           Configuration
@@ -113,6 +146,19 @@
 </template>
 
 <style scoped >
+  .card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header {
+    border-bottom: 1px solid rgba(0,0,0,0.18);
+  }
+
+  .content {
+    overflow:auto;
+  }
+
   .image-container {
     flex-basis: 0;
   } 
@@ -216,6 +262,16 @@ export default class TestViewComponent extends Vue {
     return this.getTestByLabel(this.testContent.label);
   }
 
+  private get testStatus() {
+    let status = 'pass';
+    this.testResult.forEach((result) => {
+      if (result.status !== "pass") {
+        status = 'failed';
+      }
+    });
+    return status;
+  }
+
   @Watch('resultExpired')
   private updateTestResult() {
     this.resultLoading = true;
@@ -239,6 +295,14 @@ export default class TestViewComponent extends Vue {
       }).catch((err) => {
         this.displaySnackbar({text: "Fail to approve test, error: " + err, success: false});
       });
+  }
+
+  private deleteTest() {
+    this.$emit("delete-test", this.testIndex);
+  }
+
+  private duplicateTest() {
+    this.$emit("duplicate-test", this.testIndex);
   }
 
   private getDiffImagePath(testResult: BackstopTestResult) {
