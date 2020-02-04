@@ -11,8 +11,7 @@ export default {
     currentConfiguration: null as BackstopConfiguration | null,
     configurationPath: "",
     testsModified: [] as boolean[],
-    configurationModified: false,
-    testRunning: false
+    configurationModified: false
   },
   mutations: {
     addViewport(state: any) {
@@ -164,15 +163,15 @@ export default {
     }
   },
   actions: {
-    approveTests({state}: any) {
-      if (state.testRunning) {
+    approveTests({state, rootState}: any) {
+      if (rootState.testRunnerStore.testRunning) {
         return Promise.reject("Tests are running");
       }
       return BackstopService.approveTests(state.currentConfiguration);
     },
 
-    approveTest({state}: any, testLabel: string) {
-      if (state.testRunning) {
+    approveTest({state, rootState}: any, testLabel: string) {
+      if (rootState.testRunnerStore.testRunning) {
         return Promise.reject("Tests are running");
       }
       return BackstopService.approveTest(state.currentConfiguration, testLabel);

@@ -212,7 +212,7 @@ export default class TestViewComponent extends Vue {
   private readonly approveTest!: (testLabel: string) => Promise<void>;
   @Action("testRunnerStore/runTest")
   private readonly runTest!: (testLabel: string) => Promise<any>;
-  @State((state) => state.configurationStore.testRunning)
+  @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
