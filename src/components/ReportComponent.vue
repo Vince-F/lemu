@@ -47,7 +47,7 @@ export default class ReportComponent extends Vue {
   private readonly configuration!: BackstopConfiguration;
   @State((state) => state.configurationStore.configurationPath)
   private readonly path!: string;
-  @State((state) => state.configurationStore.testRunning)
+  @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
   @Action("configurationStore/approveTests")
   private readonly approveTests!: () => Promise<any>;

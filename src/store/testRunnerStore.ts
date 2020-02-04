@@ -1,7 +1,7 @@
 import { BackstopService } from "../services/backstopService";
 
 export default {
-  namespace: true,
+  namespaced: true,
   state: {
     testRunning: false
   },
@@ -15,9 +15,9 @@ export default {
     }
   },
   actions: {
-    runTests({commit, state}: any) {
+    runTests({commit, state, rootState}: any) {
       commit("runTest");
-      return BackstopService.runTests(state.currentConfiguration)
+      return BackstopService.runTests(rootState.configurationStore.currentConfiguration)
         .then((result) => {
           return result;
         }).catch((error) => {
@@ -28,9 +28,9 @@ export default {
         });
     },
 
-    runTest({commit, state}: any, testLabel: string) {
+    runTest({commit, state, rootState}: any, testLabel: string) {
       commit("runTest");
-      return BackstopService.runTest(state.currentConfiguration, testLabel)
+      return BackstopService.runTest(rootState.configurationStore.currentConfiguration, testLabel)
         .then((result) => {
           return result;
         }).catch((error) => {

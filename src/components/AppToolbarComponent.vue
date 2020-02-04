@@ -62,7 +62,7 @@ export default class AppToolbarComponent extends Vue {
   private hasConfiguration!: boolean;
   @Getter("configurationStore/hasConfigurationBeenModified")
   private hasConfigurationBeenModified!: boolean;
-  @State((state) => state.configurationStore.testRunning)
+  @State((state) => state.testRunnerStore.testRunning)
   private testRunning!: boolean;
   @Action("testRunnerStore/runTests")
   private runBackstopTests!: () => Promise<any>;
