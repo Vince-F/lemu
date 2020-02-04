@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.7.1
+### Fixes
+- Fix issues related to test runner
+
 ## V1.7.0
 ### New features
 - Expand window by default
