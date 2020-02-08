@@ -104,6 +104,9 @@
               Loading tests results...
             </div>
           </div>
+          <div v-if="testResult.length === 0">
+            No test result found.
+          </div>
           <v-expansion-panels multiple v-else>
             <v-expansion-panel v-for="result in testResult" :key="result.pair.viewportLabel">
               <v-expansion-panel-header>
