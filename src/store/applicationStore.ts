@@ -1,40 +1,41 @@
 import { ApplicationService } from '@/services/applicationService';
+import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 
+@Module({
+  namespaced: true
+})
+export default class ApplicationStore extends VuexModule {
+  public snackbarText: string = "";
+  public snackbarDisplayed: boolean = false;
+  public snackbarSuccess: boolean = false;
+  public appInfos: {
+    appVersion: string,
+    backstopVersion: string
+  } | null = null;
 
-export default {
-  namespaced: true,
-  state: {
-    snackbarText: "",
-    snackbarDisplayed: false,
-    snackbarSuccess: false,
-    appInfos: null as {
-      appVersion: string,
-      backstopVersion: string
-    } | null
-  },
-  mutations: {
-    displaySnackbar(state: any, {text, success}: {text: string, success:boolean}) {
-      state.snackbarDisplayed = false;
-      state.snackbarText = text;
-      state.snackbarSuccess = success;
-      state.snackbarDisplayed = true;
-    },
-
-    hideSnackbar(state: any) {
-      state.snackbarDisplayed = false;
-    },
-
-    fillAppInfos(state: any, appInfos: any) {
-      state.appInfos = appInfos;
-    }
-  },
-  actions: {
-    retrieveAppInfos({commit}: any) {
-      return ApplicationService.getVersionsInfo()
-        .then((result) => {
-          commit("fillAppInfos", result);
-        });
-    }
+  @Mutation
+  public displaySnackbar({text, success}: {text: string, success: boolean}) {
+    this.snackbarDisplayed = false;
+    this.snackbarText = text;
+    this.snackbarSuccess = success;
+    this.snackbarDisplayed = true;
   }
-};
 
+  @Mutation
+  public hideSnackbar() {
+    this.snackbarDisplayed = false;
+  }
+
+  @Mutation
+  public fillAppInfos(appInfos: any) {
+    this.appInfos = appInfos;
+  }
+
+  @Action
+  public retrieveAppInfos() {
+    return ApplicationService.getVersionsInfo()
+        .then((result) => {
+          this.context.commit("fillAppInfos", result);
+        });
+  }
+}
