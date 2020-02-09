@@ -6,6 +6,9 @@
         <v-icon color="green" v-if="testStatus === 'pass'">
           mdi-check-circle
         </v-icon>
+        <v-icon color="grey" v-else-if="testStatus === 'unknown'">
+          mdi-help-circle 
+        </v-icon>
         <v-icon color="red" v-else>
           mdi-alert
         </v-icon>
@@ -263,9 +266,11 @@ export default class TestViewComponent extends Vue {
   }
 
   private get testStatus() {
-    let status = 'pass';
+    let status = 'unknown';
     this.testResult.forEach((result) => {
-      if (result.status !== "pass") {
+      if (result.status === "pass" && status === "unknown") {
+        status = "pass";
+      } else if (result.status !== "pass") {
         status = 'failed';
       }
     });
