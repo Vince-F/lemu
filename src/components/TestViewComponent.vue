@@ -220,9 +220,6 @@ export default class TestViewComponent extends Vue {
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
-  // private additionnalFieldsReference: Array<{text: string; value: { name: string; type: string }}>;
-  // private additionnalFields: Array<{name: string, value: string | number, type: string}>;
-
   @Prop()
   private testContent!: BackstopTest;
   @Prop()
@@ -324,7 +321,7 @@ export default class TestViewComponent extends Vue {
     ModalService.launchConfirmationModal()
       .then(() => {
         this.removeScenarioField({index: this.testIndex, fieldName});
-      })
+      });
   }
 
   private updateField(field: string, value: any) {
