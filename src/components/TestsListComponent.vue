@@ -116,11 +116,11 @@ import { ModalService } from "../services/modalService";
 })
 export default class TestsListComponent extends Vue {
   @Mutation("configurationStore/addScenario")
-  private addScenario!: Function;
+  private addScenario!: () => void;
   @Mutation("configurationStore/duplicateScenario")
-  private duplicateScenario!: Function;
+  private duplicateScenario!: (scenarioIndex: number) => void;
   @Mutation("configurationStore/removeScenario")
-  private removeScenario!: Function;
+  private removeScenario!: (scenarioIndex: number) => void;
   @Getter("configurationStore/tests")
   private tests!: BackstopTest[];
   @Getter("configurationStore/hasTestBeenModified")

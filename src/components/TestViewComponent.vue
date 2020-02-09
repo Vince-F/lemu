@@ -104,6 +104,9 @@
               Loading tests results...
             </div>
           </div>
+          <div v-if="testResult.length === 0">
+            No test result found.
+          </div>
           <v-expansion-panels multiple v-else>
             <v-expansion-panel v-for="result in testResult" :key="result.pair.viewportLabel">
               <v-expansion-panel-header>
@@ -217,9 +220,6 @@ export default class TestViewComponent extends Vue {
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
-  // private additionnalFieldsReference: Array<{text: string; value: { name: string; type: string }}>;
-  // private additionnalFields: Array<{name: string, value: string | number, type: string}>;
-
   @Prop()
   private testContent!: BackstopTest;
   @Prop()
@@ -321,7 +321,7 @@ export default class TestViewComponent extends Vue {
     ModalService.launchConfirmationModal()
       .then(() => {
         this.removeScenarioField({index: this.testIndex, fieldName});
-      })
+      });
   }
 
   private updateField(field: string, value: any) {
