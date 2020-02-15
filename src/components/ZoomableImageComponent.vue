@@ -11,24 +11,41 @@
         :width="3"
       ></v-progress-circular>
     <v-overlay :value="zoomed" class="image-overlay">
-      <img :src="imgSrc" v-on:load="stopLoading" />
-      <v-btn
-        icon @click="zoomed = false"
-      >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
+      <div class="d-flex fill-height">
+        <div class="overlay-image-container flex-grow-1 flex-shrink-1">
+          <img :src="imgSrc" v-on:load="stopLoading" />
+        </div>
+        <v-btn class="flex-grow-0 flex-shrink-0"
+          icon @click="zoomed = false"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </div>     
     </v-overlay>
   </div>
 </template>
 
-<style scoped>
+<style>
   img.standard-image {
     max-width: 90%;
+    cursor: pointer;
   }
 
   .image-overlay {
     height: 100%;
-    margin-top: 64px;
+    padding-top: 64px;
+  }
+
+  .image-overlay>.v-overlay__content {
+    height: 100%;
+    padding: 24px;
+  }
+
+  .overlay-image-container {
+    overflow: auto;
+  }
+  .overlay-image-container img {
+    max-width: 100%;
   }
 </style>
 
