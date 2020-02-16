@@ -1,6 +1,6 @@
 {
   "name": "lemu",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "private": true,
   "author": "Vincent Francolin",
   "scripts": {
@@ -17,6 +17,7 @@
   "main": "dist-app/electron-main/main.js",
   "dependencies": {
     "backstopjs": "^4.4.2",
+    "electron-updater": "^4.2.0",
     "v8-compile-cache": "^2.1.0"
   },
   "devDependencies": {
@@ -47,7 +48,11 @@
   },
   "build": {
     "appId": "lemu",
-    "productName": "lemu"
+    "productName": "lemu",
+    "publish": [
+      "github"
+    ],
+    "files": ["dist-app/**/*"]
   },
   "license": "AGPL-3.0"
 }
