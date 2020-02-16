@@ -1,5 +1,17 @@
 # Changelog
 
+## V1.8.0
+### New features
+- Add ability to approve only one viewport of a test
+- Add ability to display test images in fullscreen
+- Re-design test menu and add possibility to run and approve a test from the menu
+- Add auto-update mechanism
+
+### Fixes
+- display correctly when not test results are available
+- display unkown status on test when neither success or failure can be determined
+- make various check on data level to prevent some bugs
+
 ## V1.7.1
 ### Fixes
 - Fix issues related to test runner
