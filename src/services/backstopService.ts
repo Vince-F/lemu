@@ -49,7 +49,7 @@ export class BackstopService {
     });
   }
 
-  public static approveTest(config: BackstopConfiguration, testLabel: string) {
+  public static approveTest(config: BackstopConfiguration, testLabel: string, viewportLabel?: string) {
     return new Promise((resolve, reject) => {
       electron.ipcRenderer.once("approvalFinished", (event: any, success: boolean, payload: any) => {
         if (success) {
@@ -58,7 +58,7 @@ export class BackstopService {
           reject(payload);
         }
       });
-      electron.ipcRenderer.send("approveTest", config, testLabel);
+      electron.ipcRenderer.send("approveTest", config, testLabel, viewportLabel);
     });
   }
 

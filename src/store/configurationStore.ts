@@ -232,6 +232,18 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Action
+  public approveTestViewport(payload: {testLabel: string, viewportLabel: string}) {
+    if (this.context.rootState.testRunnerStore.testRunning) {
+      return Promise.reject("Tests are running");
+    }
+    if (this.currentConfiguration) {
+      return BackstopService.approveTest(this.currentConfiguration, payload.testLabel, payload.viewportLabel);
+    } else {
+      return Promise.reject("No configuration loaded");
+    }
+  }
+
+  @Action
   public initConfig() {
     return DialogFileService.selectDirectory()
       .then((path) => {

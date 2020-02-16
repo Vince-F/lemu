@@ -123,6 +123,13 @@
                     mdi-alert
                   </v-icon>
                 </div>
+                <v-spacer></v-spacer>
+                <v-btn icon :disabled="testRunning" class="flex-grow-0 flex-shrink-0"
+                  @click.stop.prevent="approveCurrentTestWithViewport(result.pair.viewportLabel)" >
+                  <v-icon>
+                    mdi-checkbox-marked-circle
+                  </v-icon>
+                </v-btn>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <hr class="panel-separator">
@@ -220,6 +227,8 @@ export default class TestViewComponent extends Vue {
   private readonly htmlReportDirectory!: string;
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
+  @Action("configurationStore/approveTestViewport")
+  private readonly approveTestViewport!: (payload: {testLabel: string, viewportLabel: string}) => Promise<void>;
   @Action("testRunnerStore/runTest")
   private readonly runTest!: (testLabel: string) => Promise<any>;
   @State((state) => state.testRunnerStore.testRunning)
@@ -299,6 +308,15 @@ export default class TestViewComponent extends Vue {
 
   private approveCurrentTest() {
     this.approveTest(this.testContent.label)
+      .then(() => {
+        this.displaySnackbar({text: "Test successfully approved", success: true});
+      }).catch((err) => {
+        this.displaySnackbar({text: "Fail to approve test, error: " + err, success: false});
+      });
+  }
+
+  private approveCurrentTestWithViewport(viewportLabel: string) {
+    this.approveTestViewport({testLabel: this.testContent.label, viewportLabel})
       .then(() => {
         this.displaySnackbar({text: "Test successfully approved", success: true});
       }).catch((err) => {

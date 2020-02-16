@@ -16,8 +16,8 @@ electron.ipcMain.on("runTest", (event, config, scenarioLabel) => {
     });
 });
 
-electron.ipcMain.on("approveTest", (event, config, scenarioLabel) => {
-  BackstopTestRunner.approveTests(config, scenarioLabel)
+electron.ipcMain.on("approveTest", (event, config, scenarioLabel, viewportLabel) => {
+  BackstopTestRunner.approveTests(config, scenarioLabel, viewportLabel)
     .then(() => {
       event.reply("approvalFinished", true);
     }).catch((error) => {
