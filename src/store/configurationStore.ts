@@ -4,249 +4,288 @@ import { FileService } from "../services/fileService";
 import { BackstopConfiguration } from '@/models/backstopConfiguration';
 import { BackstopTest } from '@/models/backstopTest';
 import { BackstopService } from '@/services/backstopService';
+import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 
-export default {
-  namespaced: true,
-  state: {
-    currentConfiguration: null as BackstopConfiguration | null,
-    configurationPath: "",
-    testsModified: [] as boolean[],
-    configurationModified: false
-  },
-  mutations: {
-    addViewport(state: any) {
-      if (state.currentConfiguration) {
-        state.currentConfiguration.viewports.push({label: "", width: 0, height: 0});
-        state.configurationModified = true;
-      }
-    },
+@Module({
+  namespaced: true
+})
+export default class ConfigurationStore extends VuexModule {
+  public currentConfiguration: BackstopConfiguration | null = null;
+  public configurationPath: string = "";
+  public testsModified: boolean[] = [];
+  public configurationModified: boolean = false;
 
-    addScenario(state: any) {
-      if (state.currentConfiguration.scenarios) {
-        const label = "New test " + (state.currentConfiguration.scenarios.length + 1);
-        state.currentConfiguration.scenarios.push(new BackstopTest({ label }));
-        state.configurationModified = true;
-      }
-    },
-
-    dismissCurrentConfiguration(state: any) {
-      state.currentConfiguration = null;
-      state.configurationPath = "";
-      state.configurationModified = false;
-    },
-
-    duplicateScenario(state: any, scenarioIndex: number) {
-      if (state.currentConfiguration.scenarios) {
-        const currentTest = state.currentConfiguration.scenarios[scenarioIndex];
-        const testLabelPrefix = currentTest.label + "Copy";
-        const nbOfCopies = state.currentConfiguration.scenarios.filter((entry: BackstopTest) => {
-          return entry.label.indexOf(testLabelPrefix) === 0;
-        }).length;
-        let testLabelName = currentTest.label + "Copy";
-        if (nbOfCopies > 0) {
-          testLabelName += nbOfCopies;
-        }
-        const newTest = new BackstopTest(currentTest);
-        newTest.label = testLabelName;
-        state.currentConfiguration.scenarios.push(newTest);
-        state.configurationModified = true;
-      }
-    },
-
-    setFullConfiguration(state: any, { newConfiguration }: any) {
-      state.currentConfiguration = newConfiguration;
-      state.testsModified = [];
-      for (const scenario of state.currentConfiguration.scenarios) {
-        state.testsModified.push(false);
-      }
-      state.configurationModified = false;
-    },
-
-    setPath(state: any, path: string) {
-      state.configurationPath = path;
-    },
-
-    setConfigurationEngineOptionsField(state: any, { field, value }: { field: string, value: any }) {
-      if (state.currentConfiguration.paths) {
-        Vue.set(state.currentConfiguration.engineOptions, field, value);
-        state.configurationModified = true;
-      }
-    },
-
-    setConfigurationField(state: any, { field, value }: { field: string, value: any }) {
-      if (state.currentConfiguration) {
-        const obj = {} as any;
-        obj[field] = value;
-        Object.assign(state.currentConfiguration, obj);
-        state.configurationModified = true;
-      }
-    },
-
-    setConfigurationPathField(state: any, { field, value }: { field: string, value: any }) {
-      if (state.currentConfiguration.paths) {
-        const obj = {} as any;
-        obj[field] = value;
-        Object.assign(state.currentConfiguration.paths, obj);
-        state.configurationModified = true;
-      }
-    },
-
-    setConfigurationReport(state: any, {reportType, kept}: {reportType: string, kept: boolean}) {
-      const idx = state.currentConfiguration.report.indexOf(reportType);
-      if (kept && idx === -1) {
-        state.currentConfiguration.report.push(reportType);
-      } else if (!kept && idx !== -1) {
-        state.currentConfiguration.report.splice(idx, 1);
-      }
-      state.configurationModified = true;
-    },
-
-    setConfigurationViewportField(
-      state: any,
-      { viewportIndex, field, value }: { viewportIndex: number, field: string, value: any }
-    ) {
-      if (state.currentConfiguration.viewports) {
-        Vue.set(state.currentConfiguration.viewports[viewportIndex], field, value);
-        state.configurationModified = true;
-      }
-    },
-
-    setScenarioField(
-      state: any,
-      {scenarioIndex, field, value}: {scenarioIndex: number, field: string, value: any}
-    ) {
-      if (state.currentConfiguration.scenarios) {
-        Vue.set(state.currentConfiguration.scenarios[scenarioIndex], field, value);
-        Vue.set(state.testsModified, scenarioIndex, true);
-        state.configurationModified = true;
-      }
-    },
-
-    removeEngineOption(state: any, fieldName: string) {
-      if (state.currentConfiguration.engineOptions) {
-        Vue.delete(state.currentConfiguration.engineOptions, fieldName);
-        state.configurationModified = true;
-      }
-    },
-
-    removeScenario(state: any, index: number) {
-      if (state.currentConfiguration.scenarios) {
-        state.currentConfiguration.scenarios.splice(index, 1);
-        state.testsModified.splice(index, 1);
-        state.configurationModified = true;
-      }
-    },
-
-    removeScenarioField(state: any, {index, fieldName}: { index: number, fieldName: string}) {
-      if (state.currentConfiguration.scenarios) {
-        Vue.delete(state.currentConfiguration.scenarios[index], fieldName);
-        Vue.set(state.testsModified, index, true);
-        state.configurationModified = true;
-      }
-    },
-
-    removeViewport(state: any, index: number) {
-      if (state.currentConfiguration) {
-        state.currentConfiguration.viewports.splice(index, 1);
-        state.configurationModified = true;
-      }
-    },
-
-    resetModification(state: any) {
-      for (let i = 0; i < state.testsModified.length; i++) {
-        Vue.set(state.testsModified, i, false);
-      }
-    },
-
-    setConfigurationModified(state: any, modified: boolean) {
-      state.configurationModified = false;
-    }
-  },
-  actions: {
-    approveTests({state, rootState}: any) {
-      if (rootState.testRunnerStore.testRunning) {
-        return Promise.reject("Tests are running");
-      }
-      return BackstopService.approveTests(state.currentConfiguration);
-    },
-
-    approveTest({state, rootState}: any, testLabel: string) {
-      if (rootState.testRunnerStore.testRunning) {
-        return Promise.reject("Tests are running");
-      }
-      return BackstopService.approveTest(state.currentConfiguration, testLabel);
-    },
-
-    initConfig({state, commit}: any) {
-      return DialogFileService.selectDirectory()
-        .then((path) => {
-          return BackstopService.initTests(path)
-            .then(() => {
-              return DialogFileService.openAndParseFile(path + "/backstop.json")
-                .then((content) => {
-                  commit("setFullConfiguration", {
-                    newConfiguration: content
-                  });
-                  commit("setPath", path + "/backstop.json");
-                });
-            });
-        });
-    },
-
-    openConfiguration(store: any) {
-      return DialogFileService.openFileDialog()
-        .then(({ path, content }) => {
-          if (typeof content.id !== "string" ||
-              !Array.isArray(content.viewports) ||
-              !Array.isArray(content.scenarios)) {
-            return Promise.reject("File doesn't look like a BackstopJS configuration");
-          }
-          store.commit("setFullConfiguration", {
-            newConfiguration: content
-          });
-          store.commit("setPath", path);
-          BackstopService.setWorkingDir(store.getters.backstopConfigurationDirectory);
-          return Promise.resolve();
-        });
-    },
-
-    saveConfiguration(store: any) {
-      const content = JSON.stringify(store.state.currentConfiguration, null, 4);
-
-      return FileService.writeFile(store.state.configurationPath, content)
-              .then(() => {
-                store.commit("resetModification");
-                store.commit("setConfigurationModified", false);
-              });
-    }
-  },
-  getters: {
-    tests({ currentConfiguration }: any) {
-      return currentConfiguration ? currentConfiguration.scenarios : [];
-    },
-
-    hasConfiguration({ currentConfiguration }: any) {
-      return !!currentConfiguration;
-    },
-
-    hasTestBeenModified({testsModified}: any) {
-      return (idx: number) => !!testsModified[idx];
-    },
-
-    hasConfigurationBeenModified({configurationModified}: any) {
-      return configurationModified;
-    },
-
-    backstopConfigurationDirectory({configurationPath}: any) {
-      return configurationPath.substr(0, configurationPath.length - "backstop.json".length);
-    },
-
-    htmlReportDirectory({ currentConfiguration, configurationPath }: any) {
-      const reportPath = currentConfiguration && currentConfiguration.paths &&
-        currentConfiguration.paths.html_report || "";
-      const prefixPath = configurationPath.substr(0, configurationPath.length - "backstop.json".length);
-      return reportPath &&
-            FileService.resolvePath([prefixPath, reportPath]) || "";
-    },
+  public get tests() {
+    return this.currentConfiguration ? this.currentConfiguration.scenarios : [];
   }
-};
+
+  public get hasConfiguration() {
+    return !!this.currentConfiguration;
+  }
+
+  public get hasTestBeenModified() {
+    return (idx: number) => !!this.testsModified[idx];
+  }
+
+  public get hasConfigurationBeenModified() {
+    return this.configurationModified;
+  }
+
+  public get backstopConfigurationDirectory() {
+    return this.configurationPath.substr(0, this.configurationPath.length - "backstop.json".length);
+  }
+
+  public get htmlReportDirectory() {
+    const reportPath = this.currentConfiguration?.paths?.html_report ?? "";
+    const prefixPath = this.configurationPath.substr(0, this.configurationPath.length - "backstop.json".length);
+    return reportPath &&
+          FileService.resolvePath([prefixPath, reportPath]) || "";
+  }
+
+  @Mutation
+  public addViewport() {
+    if (this.currentConfiguration) {
+      this.currentConfiguration.viewports.push({label: "", width: 0, height: 0});
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public addScenario() {
+    if (this.currentConfiguration?.scenarios) {
+      const label = "New test " + (this.currentConfiguration.scenarios.length + 1);
+      this.currentConfiguration.scenarios.push(new BackstopTest({ label }));
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public dismissCurrentConfiguration() {
+    this.currentConfiguration = null;
+    this.configurationPath = "";
+    this.configurationModified = false;
+  }
+
+  @Mutation
+  public duplicateScenario(scenarioIndex: number) {
+    if (this.currentConfiguration?.scenarios) {
+      const currentTest = this.currentConfiguration.scenarios[scenarioIndex];
+      const testLabelPrefix = currentTest.label + "Copy";
+      const nbOfCopies = this.currentConfiguration.scenarios.filter((entry: BackstopTest) => {
+        return entry.label.indexOf(testLabelPrefix) === 0;
+      }).length;
+      let testLabelName = currentTest.label + "Copy";
+      if (nbOfCopies > 0) {
+        testLabelName += nbOfCopies;
+      }
+      const newTest = new BackstopTest(currentTest);
+      newTest.label = testLabelName;
+      this.currentConfiguration.scenarios.push(newTest);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public setFullConfiguration({ newConfiguration }: any) {
+    this.currentConfiguration = newConfiguration;
+    this.testsModified = [];
+    if (this .currentConfiguration && Array.isArray(this.currentConfiguration.scenarios)) {
+      this.currentConfiguration.scenarios.forEach(() => {
+        this.testsModified.push(false);
+      });
+    }
+    this.configurationModified = false;
+  }
+
+  @Mutation
+  public setPath(path: string) {
+    this.configurationPath = path;
+  }
+
+  @Mutation
+  public setConfigurationEngineOptionsField({ field, value }: { field: string, value: any }) {
+    if (this.currentConfiguration?.paths) {
+      Vue.set(this.currentConfiguration.engineOptions, field, value);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public setConfigurationField({ field, value }: { field: string, value: any }) {
+    if (this.currentConfiguration) {
+      Vue.set(this.currentConfiguration, field, value);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public setConfigurationPathField({ field, value }: { field: string, value: any }) {
+    if (this.currentConfiguration?.paths) {
+      Vue.set(this.currentConfiguration.paths, field, value);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public setConfigurationReport({reportType, kept}: {reportType: "browser" | "CI" | "json", kept: boolean}) {
+    if (this.currentConfiguration) {
+      const idx = this.currentConfiguration.report.indexOf(reportType);
+      if (kept && idx === -1) {
+        this.currentConfiguration.report.push(reportType);
+        this.configurationModified = true;
+      } else if (!kept && idx !== -1) {
+        this.currentConfiguration.report.splice(idx, 1);
+        this.configurationModified = true;
+      }
+    }
+  }
+
+  @Mutation
+  public setConfigurationViewportField(
+    { viewportIndex, field, value }: { viewportIndex: number, field: string, value: any }
+  ) {
+    if (this.currentConfiguration?.viewports) {
+      Vue.set(this.currentConfiguration.viewports[viewportIndex], field, value);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public setScenarioField(
+    {scenarioIndex, field, value}: {scenarioIndex: number, field: string, value: any}
+  ) {
+    if (this.currentConfiguration?.scenarios) {
+      Vue.set(this.currentConfiguration.scenarios[scenarioIndex], field, value);
+      Vue.set(this.testsModified, scenarioIndex, true);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public removeEngineOption(fieldName: string) {
+    if (this.currentConfiguration?.engineOptions) {
+      Vue.delete(this.currentConfiguration.engineOptions, fieldName);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public removeScenario(index: number) {
+    if (this.currentConfiguration?.scenarios) {
+      this.currentConfiguration.scenarios.splice(index, 1);
+      this.testsModified.splice(index, 1);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public removeScenarioField({index, fieldName}: { index: number, fieldName: string}) {
+    if (this.currentConfiguration?.scenarios) {
+      Vue.delete(this.currentConfiguration.scenarios[index], fieldName);
+      Vue.set(this.testsModified, index, true);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public removeViewport(index: number) {
+    if (this.currentConfiguration) {
+      this.currentConfiguration.viewports.splice(index, 1);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public resetModification() {
+    for (let i = 0; i < this.testsModified.length; i++) {
+      Vue.set(this.testsModified, i, false);
+    }
+  }
+
+  @Mutation
+  public setConfigurationModified() {
+    this.configurationModified = false;
+  }
+
+  @Action
+  public approveTests() {
+    if (this.context.rootState.testRunnerStore.testRunning) {
+      return Promise.reject("Tests are running");
+    }
+    if (this.currentConfiguration) {
+      return BackstopService.approveTests(this.currentConfiguration);
+    } else {
+      return Promise.reject("No configuration loaded");
+    }
+  }
+
+  @Action
+  public approveTest(testLabel: string) {
+    if (this.context.rootState.testRunnerStore.testRunning) {
+      return Promise.reject("Tests are running");
+    }
+    if (this.currentConfiguration) {
+      return BackstopService.approveTest(this.currentConfiguration, testLabel);
+    } else {
+      return Promise.reject("No configuration loaded");
+    }
+  }
+
+  @Action
+  public approveTestViewport(payload: {testLabel: string, viewportLabel: string}) {
+    if (this.context.rootState.testRunnerStore.testRunning) {
+      return Promise.reject("Tests are running");
+    }
+    if (this.currentConfiguration) {
+      return BackstopService.approveTest(this.currentConfiguration, payload.testLabel, payload.viewportLabel);
+    } else {
+      return Promise.reject("No configuration loaded");
+    }
+  }
+
+  @Action
+  public initConfig() {
+    return DialogFileService.selectDirectory()
+      .then((path) => {
+        return BackstopService.initTests(path)
+          .then(() => {
+            return DialogFileService.openAndParseFile(path + "/backstop.json")
+              .then((content) => {
+                this.context.commit("setFullConfiguration", {
+                  newConfiguration: content
+                });
+                this.context.commit("setPath", path + "/backstop.json");
+              });
+          });
+      });
+  }
+
+  @Action
+  public openConfiguration() {
+    return DialogFileService.openFileDialog()
+      .then(({ path, content }) => {
+        if (typeof content.id !== "string" ||
+            !Array.isArray(content.viewports) ||
+            !Array.isArray(content.scenarios)) {
+          return Promise.reject("File doesn't look like a BackstopJS configuration");
+        }
+        this.context.commit("setFullConfiguration", {
+          newConfiguration: content
+        });
+        this.context.commit("setPath", path);
+        BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
+        return Promise.resolve();
+      });
+  }
+
+  @Action
+  public saveConfiguration() {
+    const content = JSON.stringify(this.currentConfiguration, null, 4);
+
+    return FileService.writeFile(this.configurationPath, content)
+            .then(() => {
+              this.context.commit("resetModification");
+              this.context.commit("setConfigurationModified", false);
+            });
+  }
+}

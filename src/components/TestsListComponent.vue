@@ -2,13 +2,23 @@
   <v-container fluid class="container pa-0">
     <div class="menu">
       <v-navigation-drawer permanent>
-        <v-subheader>TESTS</v-subheader>
-        <div class="action text-right">
-          <v-btn color="primary" v-on:click="addTest">
-            <v-icon>mdi-plus</v-icon>Add
-          </v-btn>
-        </div>
-
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>
+              TESTS
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              <span v-if="tests.length === 0 || tests.length === 1">{{tests.length}} test</span>
+              <span v-else>{{tests.length}} tests</span>
+            </v-list-item-subtitle>
+            <div class="action text-right">
+              <v-btn color="primary" v-on:click="addTest">
+                <v-icon>mdi-plus</v-icon>Add
+              </v-btn>
+            </div>    
+          </v-list-item-content>
+        </v-list-item>
+        
         <v-divider></v-divider>
 
         <v-list dense>
@@ -33,22 +43,39 @@
                 </v-list-item-title>
               </v-list-item-content>
               <v-list-item-action class="my-0 flex-row">
-                <v-tooltip top>
-                  <template v-slot:activator="{on}">
-                    <v-btn icon v-on="on" @click="duplicateTest(index)">
-                      <v-icon color="grey lighten-1">mdi-content-copy</v-icon>
+                 <v-menu offset-y>
+                  <template v-slot:activator="{ on }">
+                    <v-btn icon v-on.stop.prevent="on">
+                      <v-icon color="grey lighten-1">mdi-dots-vertical</v-icon>
                     </v-btn>
                   </template>
-                  <span>Duplicate test</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <template v-slot:activator="{on}">
-                    <v-btn icon v-on="on" @click="deleteTest(index)">
-                      <v-icon color="grey lighten-1">mdi-delete</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Remove test</span>
-                </v-tooltip>
+                  <v-list dense>
+                    <v-list-item>
+                      <v-list-item-title @click="runTest(test.label)">
+                        <v-icon color="grey lighten-1">mdi-play</v-icon>
+                        Run
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item>
+                      <v-list-item-title @click="approveTest(test.label)">
+                        <v-icon color="grey lighten-1">mdi-check-circle</v-icon>
+                        Approve
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item>
+                      <v-list-item-title @click="duplicateTest(index)">
+                        <v-icon color="grey lighten-1">mdi-content-copy</v-icon>
+                        Duplicate
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item>
+                      <v-list-item-title @click="deleteTest(index)">
+                        <v-icon color="grey lighten-1">mdi-delete</v-icon>
+                        Delete
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
               </v-list-item-action>
             </v-list-item>
           </v-list-item-group>
@@ -103,7 +130,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Getter, Mutation } from "vuex-class";
+import { Getter, Mutation, Action } from "vuex-class";
 import { BackstopTest } from "../models/backstopTest";
 import TestViewComponent from "./TestViewComponent.vue";
 import { ModalService } from "../services/modalService";
@@ -116,15 +143,20 @@ import { ModalService } from "../services/modalService";
 })
 export default class TestsListComponent extends Vue {
   @Mutation("configurationStore/addScenario")
-  private addScenario!: Function;
+  private addScenario!: () => void;
   @Mutation("configurationStore/duplicateScenario")
-  private duplicateScenario!: Function;
+  private duplicateScenario!: (scenarioIndex: number) => void;
   @Mutation("configurationStore/removeScenario")
-  private removeScenario!: Function;
+  private removeScenario!: (scenarioIndex: number) => void;
   @Getter("configurationStore/tests")
   private tests!: BackstopTest[];
   @Getter("configurationStore/hasTestBeenModified")
   private hasTestBeenModified!: (idx: number) => boolean;
+  @Action("configurationStore/approveTest")
+  private readonly approveTest!: (testLabel: string) => Promise<void>;
+  @Action("testRunnerStore/runTest")
+  private readonly runTest!: (testLabel: string) => Promise<any>;
+
   private selectedTest: BackstopTest | null;
   private selectedIndex: number | null;
 

@@ -44,13 +44,3 @@ export class BackstopConfiguration {
         this.debugWindow = data && data.debugWindow !== undefined ? data.debugWindow : null;
     }
 }
-
-/*{
-  "scenarios": [
-    
-  ],
-  "asyncCaptureLimit": 5,
-  "asyncCompareLimit": 50,
-  "debug": false,
-  "debugWindow": false
-}*/

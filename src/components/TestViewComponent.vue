@@ -6,6 +6,9 @@
         <v-icon color="green" v-if="testStatus === 'pass'">
           mdi-check-circle
         </v-icon>
+        <v-icon color="grey" v-else-if="testStatus === 'unknown'">
+          mdi-help-circle 
+        </v-icon>
         <v-icon color="red" v-else>
           mdi-alert
         </v-icon>
@@ -104,6 +107,9 @@
               Loading tests results...
             </div>
           </div>
+          <div v-if="testResult.length === 0">
+            No test result found.
+          </div>
           <v-expansion-panels multiple v-else>
             <v-expansion-panel v-for="result in testResult" :key="result.pair.viewportLabel">
               <v-expansion-panel-header>
@@ -117,13 +123,20 @@
                     mdi-alert
                   </v-icon>
                 </div>
+                <v-spacer></v-spacer>
+                <v-btn icon :disabled="testRunning" class="flex-grow-0 flex-shrink-0"
+                  @click.stop.prevent="approveCurrentTestWithViewport(result.pair.viewportLabel)" >
+                  <v-icon>
+                    mdi-checkbox-marked-circle
+                  </v-icon>
+                </v-btn>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <hr class="panel-separator">
                 <div class="d-flex">
                   <div class="flex-grow-1 flex-shrink-1 image-container">
                     <p><strong>Test</strong></p>
-                    <img :src="getTestImagePath(result)" />
+                    <ZoomableImageComponent :imgSrc="getTestImagePath(result)" />
                   </div>
                   <div class="flex-grow-1 flex-shrink-1 image-container">
                     <p><strong>Reference</strong></p>
@@ -187,9 +200,13 @@ import { FileService } from '../services/fileService';
 import { BackstopTestResult } from '../models/backstopTestResult';
 import { ModalService } from "../services/modalService";
 import AddTestFieldModalComponent from "./AddTestFieldModalComponent.vue";
+import ZoomableImageComponent from "./ZoomableImageComponent.vue";
 
 @Component({
-  name: "test-view-component"
+  name: "test-view-component",
+  components: {
+    ZoomableImageComponent
+  }
 })
 export default class TestViewComponent extends Vue {
   @Mutation("configurationStore/setScenarioField")
@@ -210,15 +227,14 @@ export default class TestViewComponent extends Vue {
   private readonly htmlReportDirectory!: string;
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
+  @Action("configurationStore/approveTestViewport")
+  private readonly approveTestViewport!: (payload: {testLabel: string, viewportLabel: string}) => Promise<void>;
   @Action("testRunnerStore/runTest")
   private readonly runTest!: (testLabel: string) => Promise<any>;
   @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
-
-  // private additionnalFieldsReference: Array<{text: string; value: { name: string; type: string }}>;
-  // private additionnalFields: Array<{name: string, value: string | number, type: string}>;
 
   @Prop()
   private testContent!: BackstopTest;
@@ -263,9 +279,11 @@ export default class TestViewComponent extends Vue {
   }
 
   private get testStatus() {
-    let status = 'pass';
+    let status = 'unknown';
     this.testResult.forEach((result) => {
-      if (result.status !== "pass") {
+      if (result.status === "pass" && status === "unknown") {
+        status = "pass";
+      } else if (result.status !== "pass") {
         status = 'failed';
       }
     });
@@ -297,6 +315,15 @@ export default class TestViewComponent extends Vue {
       });
   }
 
+  private approveCurrentTestWithViewport(viewportLabel: string) {
+    this.approveTestViewport({testLabel: this.testContent.label, viewportLabel})
+      .then(() => {
+        this.displaySnackbar({text: "Test successfully approved", success: true});
+      }).catch((err) => {
+        this.displaySnackbar({text: "Fail to approve test, error: " + err, success: false});
+      });
+  }
+
   private deleteTest() {
     this.$emit("delete-test", this.testIndex);
   }
@@ -321,7 +348,7 @@ export default class TestViewComponent extends Vue {
     ModalService.launchConfirmationModal()
       .then(() => {
         this.removeScenarioField({index: this.testIndex, fieldName});
-      })
+      });
   }
 
   private updateField(field: string, value: any) {

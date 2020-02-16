@@ -10,7 +10,7 @@ export class FileService {
 
   public static readFile(filePath: string) {
     return new Promise((resolve, reject) => {
-      fs.readFile(filePath, {encoding: "utf-8"}, (err:any, content: string) => {
+      fs.readFile(filePath, {encoding: "utf-8"}, (err: any, content: string) => {
         if (err) {
           reject(err);
         } else {
@@ -19,10 +19,10 @@ export class FileService {
       });
     });
   }
-  
-  public static writeFile(path: string, content: string): Promise<void> {
+
+  public static writeFile(filePath: string, content: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      fs.writeFile(path, content, {encoding: "utf-8"}, (err: any) => {
+      fs.writeFile(filePath, content, {encoding: "utf-8"}, (err: any) => {
         if (err) {
           reject("There was en error while saving file: " + err.message);
         } else {

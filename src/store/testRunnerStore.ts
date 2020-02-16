@@ -1,44 +1,47 @@
+import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators";
 import { BackstopService } from "../services/backstopService";
 
-export default {
-  namespaced: true,
-  state: {
-    testRunning: false
-  },
-  mutations: {
-    runTest(state: any) {
-      state.testRunning = true;
-    },
+@Module({
+  namespaced: true
+})
+export default class TestRunnerStore extends VuexModule {
+  public testRunning: boolean = false;
 
-    stopTest(state: any) {
-      state.testRunning = false;
-    }
-  },
-  actions: {
-    runTests({commit, state, rootState}: any) {
-      commit("runTest");
-      return BackstopService.runTests(rootState.configurationStore.currentConfiguration)
+  @Mutation
+  public setTestRunning() {
+    this.testRunning = true;
+  }
+
+  @Mutation
+  public setTestNotRunning() {
+    this.testRunning = false;
+  }
+
+  @Action({rawError: true})
+  public runTests() {
+    this.context.commit("setTestRunning");
+    return BackstopService.runTests(this.context.rootState.configurationStore.currentConfiguration)
         .then((result) => {
           return result;
         }).catch((error) => {
           return Promise.reject(error);
         }).finally(() => {
-          commit("stopTest");
-          commit("testResultStore/expireTestsResult", undefined, {root: true});
+          this.context.commit("setTestNotRunning");
+          this.context.commit("testResultStore/expireTestsResult", undefined, {root: true});
         });
-    },
+  }
 
-    runTest({commit, state, rootState}: any, testLabel: string) {
-      commit("runTest");
-      return BackstopService.runTest(rootState.configurationStore.currentConfiguration, testLabel)
-        .then((result) => {
-          return result;
-        }).catch((error) => {
-          return Promise.reject(error);
-        }).finally(() => {
-          commit("stopTest");
-          commit("testResultStore/expireTestsResult", undefined, {root: true});
-        });
-    },
+  @Action({rawError: true})
+  public runTest(testLabel: string) {
+    this.context.commit("setTestRunning");
+    return BackstopService.runTest(this.context.rootState.configurationStore.currentConfiguration, testLabel)
+      .then((result) => {
+        return result;
+      }).catch((error) => {
+        return Promise.reject(error);
+      }).finally(() => {
+        this.context.commit("setTestNotRunning");
+        this.context.commit("testResultStore/expireTestsResult", undefined, {root: true});
+      });
   }
 }
