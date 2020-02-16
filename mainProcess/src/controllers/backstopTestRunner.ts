@@ -30,12 +30,16 @@ export class BackstopTestRunner {
     });
   }
 
-  public static approveTests(config: any, scenarioLabel?: string): Promise<any> {
+  public static approveTests(config: any, scenarioLabel?: string, viewportLabel?: string): Promise<any> {
     let filterRegex;
     if (scenarioLabel && scenarioLabel.length) {
       filterRegex = "^" + config.id + "_" + this.cleanFilename(scenarioLabel) +
-                    "_\\d";
+                    "_\\d+";
+      if (viewportLabel && viewportLabel.length) {
+        filterRegex += "_.+_" + this.cleanFilename(viewportLabel);
+      }
     }
+    console.log("regex is ", filterRegex);
     return backstop('approve', {
       config,
       filter: filterRegex
