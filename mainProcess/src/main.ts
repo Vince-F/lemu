@@ -1,9 +1,16 @@
-const {app, BrowserWindow, Menu} = require('electron');
+import {app, BrowserWindow, Menu} from 'electron';
+import { autoUpdater } from "electron-updater";
+
 import path = require("path");
 import "v8-compile-cache";
 
 import "./eventBus";
 
+try {
+  autoUpdater.checkForUpdatesAndNotify();
+} catch (e) {
+  console.log("Fail to check for updates");
+}
 
 let mainWindow: Electron.BrowserWindow = null;
 
