@@ -39,7 +39,6 @@ export class BackstopTestRunner {
         filterRegex += "_.+_" + this.cleanFilename(viewportLabel);
       }
     }
-    console.log("regex is ", filterRegex);
     return backstop('approve', {
       config,
       filter: filterRegex
