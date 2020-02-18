@@ -1,5 +1,10 @@
 # Changelog
 
+## V1.8.1
+### Fixes
+- Correctly display error when a test fail
+- Fix an error wrongly appearing when clicking on "cancel" when opening a configuration file
+
 ## V1.8.0
 ### New features
 - Add ability to approve only one viewport of a test
