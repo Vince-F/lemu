@@ -12,7 +12,7 @@ electron.ipcMain.on("runTest", (event, config, scenarioLabel) => {
     .then((result) => {
       event.reply("testFinished", true, result);
     }).catch((error) => {
-      event.reply("testFinished", false, error);
+      event.reply("testFinished", false, error.message);
     });
 });
 
