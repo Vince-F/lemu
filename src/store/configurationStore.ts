@@ -260,7 +260,7 @@ export default class ConfigurationStore extends VuexModule {
       });
   }
 
-  @Action
+  @Action({rawError: true})
   public openConfiguration() {
     return DialogFileService.openFileDialog()
       .then(({ path, content }) => {
