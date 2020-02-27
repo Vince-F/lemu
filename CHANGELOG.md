@@ -1,5 +1,12 @@
 # Changelog
 
+## V1.9.0
+### New features
+- On start screen, display recently opened configuration to re-open them quickly
+- Display modal with changelog on first launch after an update
+- Add abilit to reduce main menu
+- Add ability to resize test menu
+
 ## V1.8.1
 ### Fixes
 - Correctly display error when a test fail

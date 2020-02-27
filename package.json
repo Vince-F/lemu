@@ -1,6 +1,6 @@
 {
   "name": "lemu",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "private": true,
   "author": "Vincent Francolin",
   "scripts": {
