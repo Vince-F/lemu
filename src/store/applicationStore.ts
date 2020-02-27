@@ -1,5 +1,6 @@
 import { ApplicationService } from '@/services/applicationService';
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+import axios from "axios";
 
 @Module({
   namespaced: true
@@ -37,5 +38,13 @@ export default class ApplicationStore extends VuexModule {
         .then((result) => {
           this.context.commit("fillAppInfos", result);
         });
+  }
+
+  @Action
+  public retrieveChangelog(version: string) {
+    return axios.get(`https://api.github.com/repos/vince-f/lemu/releases/tags/v${version}`)
+      .then((response) => {
+        return response.data.body;
+      });
   }
 }

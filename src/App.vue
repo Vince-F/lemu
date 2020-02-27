@@ -34,6 +34,8 @@
 import { Vue, Component } from "vue-property-decorator";
 import {Action, Mutation, State} from "vuex-class";
 import AppToolbarComponent from "./components/AppToolbarComponent.vue";
+import { ModalService } from "./services/modalService";
+import ReleaseInfoModalComponent from "./components/app/ReleaseInfoModalComponent.vue";
 
 @Component({
   components: {
@@ -47,7 +49,23 @@ export default class App extends Vue {
   private readonly snackbarText!: string;
   @State((state) => state.applicationStore.snackbarSuccess)
   private readonly snackbarSuccess!: boolean;
+  @State((state) => state.applicationStore.appInfos)
+  private readonly appInfos!: {appVersion: string, backstopVersion: string} | null;
   @Mutation("applicationStore/hideSnackbar")
   private readonly hideSnackbar!: () => void;
+  @Action("applicationStore/retrieveAppInfos")
+  private readonly retrieveAppInfos!: () => Promise<void>;
+
+  private mounted() {
+    this.retrieveAppInfos()
+      .then(() => {
+        if (this.appInfos) {
+          if (!localStorage[`changelog_${this.appInfos.appVersion}_displayed`]) {
+            ModalService.launchModal(ReleaseInfoModalComponent);
+            localStorage.setItem(`changelog_${this.appInfos.appVersion}_displayed`, "true");
+          }
+        }
+      });
+  }
 }
 </script>

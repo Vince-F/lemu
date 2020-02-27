@@ -1,6 +1,6 @@
 {
   "name": "lemu",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "private": true,
   "author": "Vincent Francolin",
   "scripts": {
@@ -22,15 +22,19 @@
   },
   "devDependencies": {
     "@mdi/font": "^4.7.95",
+    "@types/axios": "^0.14.0",
     "@types/jest": "^24.0.25",
+    "@types/marked": "^0.7.2",
     "@vue/cli-plugin-babel": "~4.2.2",
     "@vue/cli-plugin-typescript": "~4.2.2",
     "@vue/cli-plugin-unit-jest": "~4.2.2",
     "@vue/cli-service": "~4.2.2",
     "@vue/test-utils": "^1.0.0-beta.29",
+    "axios": "^0.19.2",
     "core-js": "^3.6.1",
     "electron": "^7.1.7",
     "electron-builder": "^21.2.0",
+    "marked": "^0.8.0",
     "sass": "^1.24.2",
     "sass-loader": "^8.0.0",
     "typescript": "~3.7.5",
@@ -52,7 +56,9 @@
     "publish": [
       "github"
     ],
-    "files": ["dist-app/**/*"]
+    "files": [
+      "dist-app/**/*"
+    ]
   },
   "license": "AGPL-3.0"
 }

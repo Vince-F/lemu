@@ -1,6 +1,11 @@
 <template>
-    <div class="menu">
-      <v-navigation-drawer permanent>
+  <div class="menu">
+    <v-navigation-drawer permanent :mini-variant="retracted">
+      <v-btn text @click="toggleRetracted">
+        <v-icon v-if="retracted">mdi-chevron-right</v-icon>
+        <v-icon v-else>mdi-chevron-left</v-icon>
+        <span v-if="!retracted">Hide menu</span>
+      </v-btn>
       <v-list
         nav
       >
@@ -33,15 +38,20 @@ import { Vue, Component } from "vue-property-decorator";
 })
 export default class TestConfigurationMenuComponent extends Vue {
   private menus: Array<{title: string, icon: string, path: string}>;
+  private retracted: boolean;
 
   constructor() {
     super(arguments);
-
+    this.retracted = false;
     this.menus = [
       {title: "General configuration", icon: "mdi-settings", path: "/tests/generalConfig"},
       {title: "Tests", icon: "mdi-bug", path: "/tests/list"},
       {title: "Reports", icon: "mdi-clipboard-text", path: "/tests/report"},
     ];
+  }
+
+  private toggleRetracted() {
+    this.retracted = !this.retracted;
   }
 }
 </script>

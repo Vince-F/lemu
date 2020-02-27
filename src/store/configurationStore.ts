@@ -207,6 +207,22 @@ export default class ConfigurationStore extends VuexModule {
     this.configurationModified = false;
   }
 
+  @Mutation
+  public updateRecently(path: string) {
+    let recentPaths: string[] = [];
+    try {
+      recentPaths = JSON.parse(localStorage.getItem("recentlyOpened") || "");
+    } catch (e) {
+      console.log("fail to open recent path");
+    }
+    const idx = recentPaths.indexOf(path);
+    if (idx > -1) {
+      recentPaths.splice(idx, 1);
+    }
+    recentPaths.unshift(path);
+    localStorage.setItem("recentlyOpened", JSON.stringify(recentPaths.slice(0, 5)));
+  }
+
   @Action
   public approveTests() {
     if (this.context.rootState.testRunnerStore.testRunning) {
@@ -273,6 +289,26 @@ export default class ConfigurationStore extends VuexModule {
           newConfiguration: content
         });
         this.context.commit("setPath", path);
+        this.context.commit("updateRecently", path);
+        BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
+        return Promise.resolve();
+      });
+  }
+
+  @Action({rawError: true})
+  public openConfigurationFromPath(path: string) {
+    return DialogFileService.openAndParseFile(path)
+      .then((content) => {
+        if (typeof content.id !== "string" ||
+            !Array.isArray(content.viewports) ||
+            !Array.isArray(content.scenarios)) {
+          return Promise.reject("File doesn't look like a BackstopJS configuration");
+        }
+        this.context.commit("setFullConfiguration", {
+          newConfiguration: content
+        });
+        this.context.commit("setPath", path);
+        this.context.commit("updateRecently", path);
         BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
         return Promise.resolve();
       });
