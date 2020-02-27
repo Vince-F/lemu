@@ -36,7 +36,7 @@ export class DialogFileService {
     });
   }
 
-  public static openAndParseFile(filePath: string) {
+  public static openAndParseFile(filePath: string): Promise<any> {
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, {encoding: "utf-8"}, (err: any, content: string) => {
         if (err) {
