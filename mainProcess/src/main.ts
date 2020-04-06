@@ -27,9 +27,9 @@ function createWindow() {
   });
   mainWindow.maximize();
 
-  mainWindow.loadFile('./dist-app/index.html');
-  // mainWindow.loadURL("http://localhost:8080");
-  Menu.setApplicationMenu(null);
+  // mainWindow.loadFile('./dist-app/index.html');
+  mainWindow.loadURL("http://localhost:8080");
+  // Menu.setApplicationMenu(null);
 
   mainWindow.on('closed', () => {
     mainWindow = null;

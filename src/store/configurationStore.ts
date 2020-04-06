@@ -5,6 +5,7 @@ import { BackstopConfiguration } from '@/models/backstopConfiguration';
 import { BackstopTest } from '@/models/backstopTest';
 import { BackstopService } from '@/services/backstopService';
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+import { SearchService } from '@/services/searchService';
 
 @Module({
   namespaced: true
@@ -95,6 +96,7 @@ export default class ConfigurationStore extends VuexModule {
       });
     }
     this.configurationModified = false;
+    SearchService.addDocumentsToIndex(this.currentConfiguration?.scenarios || []);
   }
 
   @Mutation
