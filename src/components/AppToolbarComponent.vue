@@ -14,13 +14,15 @@
     </div>
 
     <v-spacer></v-spacer>
-    <v-autocomplete
-      v-model="selectedTest"
-      :items="foundTests"
-      @update:search-input="updateTestSearchInput"
-      @change="goToTest"
-      label="Search in tests"
-    ></v-autocomplete>    
+    <div class="search-container" v-if="hasConfiguration">
+      <v-autocomplete
+        v-model="selectedTest"
+        :items="foundTests"
+        @update:search-input="updateTestSearchInput"
+        @change="goToTest"
+        label="Search in tests"
+      ></v-autocomplete>   
+    </div> 
     <v-spacer></v-spacer>
 
     <v-btn text v-on:click="runTests" v-if="hasConfiguration" :disabled="testRunning">
@@ -52,6 +54,12 @@
   </v-app-bar>
 </template>
 
+<style scoped>
+  .search-container {
+    margin-top: 24px;
+  }
+</style>
+
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
@@ -78,7 +86,7 @@ export default class AppToolbarComponent extends Vue {
   private runBackstopTests!: () => Promise<any>;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
-  private selectedTest: BackstopTest | null;
+  private selectedTest: string | null;
   private foundTests: any[];
 
   constructor() {
@@ -116,7 +124,7 @@ export default class AppToolbarComponent extends Vue {
   }
 
   private goToTest() {
-    console.log("go to", this.selectedTest);
+    this.$router.push({ path: "/tests/list", query: {selectedTest: this.selectedTest} });
   }
 
   private runTests() {

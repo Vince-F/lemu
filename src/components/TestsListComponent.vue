@@ -168,6 +168,7 @@ export default class TestsListComponent extends Vue {
 
   private mounted() {
     this.setMenuResizable();
+    this.preSelectTestIfAny();
   }
 
   private addTest() {
@@ -188,9 +189,20 @@ export default class TestsListComponent extends Vue {
   }
 
   private openTestDetails(testIndex: number) {
-    this.$emit("testIndexSelected", testIndex);
     this.selectedTest = this.tests[testIndex];
     this.selectedIndex = testIndex;
+  }
+
+  private preSelectTestIfAny() {
+    const preselectedLabel = this.$route.query.selectedTest;
+    if (typeof preselectedLabel === "string") {
+      const index = this.tests.map((test) => {
+        return test.label;
+      }).indexOf(preselectedLabel);
+      if (index > -1) {
+        this.openTestDetails(index);
+      }
+    }
   }
 
   private setMenuResizable() {
