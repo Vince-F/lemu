@@ -152,6 +152,7 @@ export default class TestsListComponent extends Vue {
     ModalService.launchConfirmationModal()
       .then(() => {
         this.removeScenario(testIndex);
+        this.$router.push("/tests/list");
       });
   }
 

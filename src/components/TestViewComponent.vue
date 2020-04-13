@@ -348,8 +348,11 @@ export default class TestViewComponent extends Vue {
   }
 
   private deleteTest() {
-    this.removeScenario(this.testIndex);
-    this.$router.push("/tests/list");
+    ModalService.launchConfirmationModal()
+      .then(() => {
+        this.removeScenario(this.testIndex);
+        this.$router.push("/tests/list");
+      });
   }
 
   private duplicateTest() {
