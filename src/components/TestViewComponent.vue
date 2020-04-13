@@ -224,8 +224,6 @@ export default class TestViewComponent extends Vue {
   private readonly path!: string;
   @State((state) => state.testResultStore.resultExpired)
   private readonly resultExpired!: boolean;
-  @Getter("configurationStore/tests")
-  private readonly tests!: BackstopTest[];
   @Getter("testResultStore/getTestByLabel")
   private readonly getTestByLabel!: (labelName: string) => BackstopTestResult[];
   @Action("testResultStore/retrieveTestsResult")
@@ -242,6 +240,10 @@ export default class TestViewComponent extends Vue {
   private readonly testRunning!: boolean;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+  @Mutation("configurationStore/removeScenario")
+  private readonly removeScenario!: (index: number) => void;
+  @Mutation("configurationStore/duplicateScenario")
+  private readonly duplicateScenario!: (index: number) => void;
 
   private testContent: BackstopTest | null;
   private testIndex: number;
@@ -346,11 +348,12 @@ export default class TestViewComponent extends Vue {
   }
 
   private deleteTest() {
-    this.$emit("delete-test", this.testIndex);
+    this.removeScenario(this.testIndex);
+    this.$router.push("/tests/list");
   }
 
   private duplicateTest() {
-    this.$emit("duplicate-test", this.testIndex);
+    this.duplicateScenario(this.testIndex);
   }
 
   private getDiffImagePath(testResult: BackstopTestResult) {
