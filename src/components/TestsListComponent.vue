@@ -12,7 +12,7 @@
               <span v-else>{{tests.length}} tests</span>
             </v-list-item-subtitle>
             <div class="action text-right">
-              <v-btn color="primary" v-on:click="addTest">
+              <v-btn color="primary" v-on:click="addScenario">
                 <v-icon>mdi-plus</v-icon>Add
               </v-btn>
             </div>    
@@ -82,24 +82,7 @@
         </v-list>
       </v-navigation-drawer>
     </div>
-    <template v-if="selectedTest">
-      <test-view-component :testContent="selectedTest" :testIndex="selectedIndex" 
-        class="content" @duplicate-test="duplicateTest" @delete-test="deleteTest"></test-view-component>
-    </template>
-    <v-row v-else align="center" justify="center" class="ma-0">
-      <v-card>
-        <v-card-title>Tests</v-card-title>
-        <v-card-text>
-          <p>Select a test to edit it.</p>
-          <p>Or
-            <v-btn color="primary" text v-on:click="addTest">
-              <v-icon>mdi-plus</v-icon>Add
-            </v-btn>
-            a new one.
-          </p>
-        </v-card-text>
-      </v-card>
-    </v-row>
+    <router-view class="content" />
   </v-container>
 </template>
 
@@ -157,30 +140,18 @@ export default class TestsListComponent extends Vue {
   @Action("testRunnerStore/runTest")
   private readonly runTest!: (testLabel: string) => Promise<any>;
 
-  private selectedTest: BackstopTest | null;
-  private selectedIndex: number | null;
-
   constructor() {
     super(arguments);
-    this.selectedTest = null;
-    this.selectedIndex = null;
   }
 
   private mounted() {
     this.setMenuResizable();
-    this.preSelectTestIfAny();
-  }
-
-  private addTest() {
-    this.addScenario();
   }
 
   private deleteTest(testIndex: number) {
     ModalService.launchConfirmationModal()
       .then(() => {
         this.removeScenario(testIndex);
-        this.selectedTest = null;
-        this.selectedIndex = null;
       });
   }
 
@@ -189,20 +160,7 @@ export default class TestsListComponent extends Vue {
   }
 
   private openTestDetails(testIndex: number) {
-    this.selectedTest = this.tests[testIndex];
-    this.selectedIndex = testIndex;
-  }
-
-  private preSelectTestIfAny() {
-    const preselectedLabel = this.$route.query.selectedTest;
-    if (typeof preselectedLabel === "string") {
-      const index = this.tests.map((test) => {
-        return test.label;
-      }).indexOf(preselectedLabel);
-      if (index > -1) {
-        this.openTestDetails(index);
-      }
-    }
+    this.$router.push(`/tests/list/test/${testIndex}`);
   }
 
   private setMenuResizable() {
@@ -230,7 +188,6 @@ export default class TestsListComponent extends Vue {
 
           document.addEventListener("mouseup", () => {
             menuElem.style.transition = "";
-            // this.navigation.width = el.style.width;
             document.body.style.cursor = "";
             document.removeEventListener("mousemove", resize, false);
           }, false);

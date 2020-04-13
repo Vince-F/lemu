@@ -86,7 +86,7 @@ export default class AppToolbarComponent extends Vue {
   private runBackstopTests!: () => Promise<any>;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
-  private selectedTest: string | null;
+  private selectedTest: number | null;
   private foundTests: any[];
 
   constructor() {
@@ -124,7 +124,7 @@ export default class AppToolbarComponent extends Vue {
   }
 
   private goToTest() {
-    this.$router.push({ path: "/tests/list", query: {selectedTest: this.selectedTest} });
+    this.$router.push(`/tests/list/test/${this.selectedTest}`);
   }
 
   private runTests() {
@@ -146,7 +146,6 @@ export default class AppToolbarComponent extends Vue {
   }
 
   private updateTestSearchInput(searchTerm: string) {
-    console.log(searchTerm);
     if (searchTerm) {
       this.foundTests = SearchService.search(searchTerm);
     }

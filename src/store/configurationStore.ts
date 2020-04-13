@@ -57,6 +57,7 @@ export default class ConfigurationStore extends VuexModule {
       const label = "New test " + (this.currentConfiguration.scenarios.length + 1);
       this.currentConfiguration.scenarios.push(new BackstopTest({ label }));
       this.configurationModified = true;
+      SearchService.addDocumentsToIndex(this.currentConfiguration?.scenarios || []);
     }
   }
 
@@ -194,6 +195,7 @@ export default class ConfigurationStore extends VuexModule {
     if (this.currentConfiguration) {
       this.currentConfiguration.viewports.splice(index, 1);
       this.configurationModified = true;
+      SearchService.addDocumentsToIndex(this.currentConfiguration?.scenarios || []);
     }
   }
 
