@@ -1,5 +1,5 @@
 <template>
-  <v-card class="card">
+  <v-card class="card" v-if="testContent">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
       <div class="flex-grow-1 flex-shrink-1">
         {{testContent.label}} 
@@ -156,6 +156,11 @@
       </v-tabs>
     </v-card-text>
   </v-card>
+  <v-card class="card" v-else>
+    <v-card-text>
+      This test doesn't exist
+    </v-card-text>
+  </v-card>
 </template>
 
 <style scoped >
@@ -235,25 +240,24 @@ export default class TestViewComponent extends Vue {
   private readonly testRunning!: boolean;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+  @Mutation("configurationStore/removeScenario")
+  private readonly removeScenario!: (index: number) => void;
+  @Mutation("configurationStore/duplicateScenario")
+  private readonly duplicateScenario!: (index: number) => void;
 
-  @Prop()
-  private testContent!: BackstopTest;
-  @Prop()
-  private testIndex!: number;
-
+  private testContent: BackstopTest | null;
+  private testIndex: number;
   private resultLoading: boolean;
 
   constructor() {
     super(arguments);
     this.resultLoading = false;
+    this.testContent = null;
+    this.testIndex = -1;
   }
 
   public created() {
-    this.resultLoading = true;
-    this.retrieveTestsResult()
-      .finally(() => {
-        this.resultLoading = false;
-      });
+    this.loadTest();
   }
 
   private get additionnalFields(): Array<{name: string, value: string | number | boolean, type: string}> {
@@ -275,7 +279,7 @@ export default class TestViewComponent extends Vue {
   }
 
   private get testResult() {
-    return this.getTestByLabel(this.testContent.label);
+    return this.getTestByLabel(this.testContent?.label || "");
   }
 
   private get testStatus() {
@@ -288,6 +292,21 @@ export default class TestViewComponent extends Vue {
       }
     });
     return status;
+  }
+
+  private loadTest() {
+    this.testIndex = Number.parseInt(this.$route.params.index, 10);
+    this.testContent = this.configuration.scenarios[this.testIndex];
+    this.resultLoading = true;
+    this.retrieveTestsResult()
+      .finally(() => {
+        this.resultLoading = false;
+      });
+  }
+
+  @Watch("$route")
+  private updateTest() {
+    this.loadTest();
   }
 
   @Watch('resultExpired')
@@ -307,29 +326,37 @@ export default class TestViewComponent extends Vue {
   }
 
   private approveCurrentTest() {
-    this.approveTest(this.testContent.label)
-      .then(() => {
-        this.displaySnackbar({text: "Test successfully approved", success: true});
-      }).catch((err) => {
-        this.displaySnackbar({text: "Fail to approve test, error: " + err, success: false});
-      });
+    if (this.testContent) {
+      this.approveTest(this.testContent.label)
+        .then(() => {
+          this.displaySnackbar({text: "Test successfully approved", success: true});
+        }).catch((err) => {
+          this.displaySnackbar({text: "Fail to approve test, error: " + err, success: false});
+        });
+    }
   }
 
   private approveCurrentTestWithViewport(viewportLabel: string) {
-    this.approveTestViewport({testLabel: this.testContent.label, viewportLabel})
-      .then(() => {
-        this.displaySnackbar({text: "Test successfully approved", success: true});
-      }).catch((err) => {
-        this.displaySnackbar({text: "Fail to approve test, error: " + err, success: false});
-      });
+    if (this.testContent) {
+      this.approveTestViewport({testLabel: this.testContent.label, viewportLabel})
+        .then(() => {
+          this.displaySnackbar({text: "Test successfully approved", success: true});
+        }).catch((err) => {
+          this.displaySnackbar({text: "Fail to approve test, error: " + err, success: false});
+        });
+    }
   }
 
   private deleteTest() {
-    this.$emit("delete-test", this.testIndex);
+    ModalService.launchConfirmationModal()
+      .then(() => {
+        this.removeScenario(this.testIndex);
+        this.$router.push("/tests/list");
+      });
   }
 
   private duplicateTest() {
-    this.$emit("duplicate-test", this.testIndex);
+    this.duplicateScenario(this.testIndex);
   }
 
   private getDiffImagePath(testResult: BackstopTestResult) {
@@ -356,12 +383,14 @@ export default class TestViewComponent extends Vue {
   }
 
   private runCurrentTest() {
-    this.runTest(this.testContent.label)
-      .then(() => {
-        this.displaySnackbar({text: "Test successfully run", success: true});
-      }).catch((err) => {
-        this.displaySnackbar({text: "Test failed, error: " + err, success: false});
-      });
+    if (this.testContent) {
+      this.runTest(this.testContent.label)
+        .then(() => {
+          this.displaySnackbar({text: "Test successfully run", success: true});
+        }).catch((err) => {
+          this.displaySnackbar({text: "Test failed, error: " + err, success: false});
+        });
+    }
   }
 
   private validateField(newField: {name: string, value: any, type: string}) {

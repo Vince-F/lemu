@@ -5,6 +5,7 @@ import { BackstopConfiguration } from '@/models/backstopConfiguration';
 import { BackstopTest } from '@/models/backstopTest';
 import { BackstopService } from '@/services/backstopService';
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+import { SearchService } from '@/services/searchService';
 
 @Module({
   namespaced: true
@@ -56,6 +57,7 @@ export default class ConfigurationStore extends VuexModule {
       const label = "New test " + (this.currentConfiguration.scenarios.length + 1);
       this.currentConfiguration.scenarios.push(new BackstopTest({ label }));
       this.configurationModified = true;
+      SearchService.addDocumentsToIndex(this.currentConfiguration?.scenarios || []);
     }
   }
 
@@ -95,6 +97,7 @@ export default class ConfigurationStore extends VuexModule {
       });
     }
     this.configurationModified = false;
+    SearchService.addDocumentsToIndex(this.currentConfiguration?.scenarios || []);
   }
 
   @Mutation
@@ -192,6 +195,7 @@ export default class ConfigurationStore extends VuexModule {
     if (this.currentConfiguration) {
       this.currentConfiguration.viewports.splice(index, 1);
       this.configurationModified = true;
+      SearchService.addDocumentsToIndex(this.currentConfiguration?.scenarios || []);
     }
   }
 
