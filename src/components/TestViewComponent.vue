@@ -72,6 +72,14 @@
                 v-else :label="additionnalField.name" 
                 :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, $event)"
                 class="flex-grow-1 flex-shrink-1"></v-text-field>
+              <v-tooltip top >
+                <template v-slot:activator="{on}">
+                  <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" v-on="on" v-if="getHelpMessage(additionnalField.name)">
+                    <v-icon color="grey">mdi-help-circle-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{getHelpMessage(additionnalField.name)}}</span>
+              </v-tooltip>
               <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" @click="removeField(additionnalField.name)">
                 <v-icon color="grey">mdi-delete</v-icon>
               </v-btn>
@@ -147,7 +155,6 @@
                     <p><strong>Diff</strong></p>
                     <img :src="getDiffImagePath(result)" />
                   </div>
-                  
                 </div>
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -206,6 +213,7 @@ import { BackstopTestResult } from '../models/backstopTestResult';
 import { ModalService } from "../services/modalService";
 import AddTestFieldModalComponent from "./AddTestFieldModalComponent.vue";
 import ZoomableImageComponent from "./ZoomableImageComponent.vue";
+import { backstopFieldHelp } from "../constants/backstopFieldHelp";
 
 @Component({
   name: "test-view-component",
@@ -292,6 +300,13 @@ export default class TestViewComponent extends Vue {
       }
     });
     return status;
+  }
+
+  private getHelpMessage(fieldName: string) {
+    if (backstopFieldHelp.has(fieldName)) {
+      return backstopFieldHelp.get(fieldName);
+    }
+    return "";
   }
 
   private loadTest() {
