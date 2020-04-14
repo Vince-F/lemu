@@ -1,5 +1,13 @@
 # Changelog
 
+## V1.10.0
+### New features
+- Add search to search in tests
+
+### Fixes
+- Display test placeholder when deleting a test
+- Fix a bug on test status where they were not correctly refresh after a test run
+
 ## V1.9.0
 ### New features
 - On start screen, display recently opened configuration to re-open them quickly
