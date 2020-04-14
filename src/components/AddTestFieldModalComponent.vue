@@ -29,6 +29,7 @@
             label="Predefined field"
             v-model="selectedField"
             item-text="name"
+            :messages="helpMessage"
             return-object
             @change="updateNewValueTypeWithPredefinedField"
           ></v-select>                
@@ -73,6 +74,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { backstopScenarioProperties } from '../constants/backstopScenarioProperties';
+import { backstopFieldHelp } from "../constants/backstopFieldHelp";
 
 @Component({})
 export default class AddTestFieldModalComponent extends Vue {
@@ -97,6 +99,13 @@ export default class AddTestFieldModalComponent extends Vue {
     this.fieldType = "";
     this.fieldValue = "";
     this.selectedField = null;
+  }
+
+  private get helpMessage() {
+    if (backstopFieldHelp.has(this.selectedField?.name || "")) {
+      return backstopFieldHelp.get(this.selectedField?.name || "");
+    }
+    return "";
   }
 
   private addField() {

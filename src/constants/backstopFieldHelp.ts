@@ -1,0 +1,25 @@
+export const backstopFieldHelp: Map<string, string> = new Map();
+
+backstopFieldHelp.set("label", "Tag saved with your reference images");
+backstopFieldHelp.set("onBeforeScript", "Used to set up browser state e.g. cookies.");
+backstopFieldHelp.set("cookiePath", "import cookies in JSON format (available with default onBeforeScript see setting cookies below)");
+backstopFieldHelp.set("url", "The url of your app state");
+backstopFieldHelp.set("referenceUrl", "Specify a different state or environment when creating reference.");
+backstopFieldHelp.set("readyEvent", "Wait until this string has been logged to the console.");
+backstopFieldHelp.set("readySelector", "Wait until this selector exists before continuing.");
+backstopFieldHelp.set("delay", "Wait for x milliseconds");
+backstopFieldHelp.set("hideSelectors", "Array of selectors set to visibility: hidden");
+backstopFieldHelp.set("removeSelectors", "Array of selectors set to display: none");
+backstopFieldHelp.set("onReadyScript", "After the above conditions are met -- use this script to modify UI state prior to screen shots e.g. hovers, clicks etc.");
+backstopFieldHelp.set("keyPressSelectors", "Takes array of selector and string values -- simulates multiple sequential keypress interactions.");
+backstopFieldHelp.set("hoverSelector", "Move the pointer over the specified DOM element prior to screen shot.");
+backstopFieldHelp.set("hoverSelectors", "*Puppeteer only* takes array of selectors -- simulates multiple sequential hover interactions.");
+backstopFieldHelp.set("clickSelector", "Click the specified DOM element prior to screen shot.");
+backstopFieldHelp.set("clickSelectors", "*Puppeteer only* takes array of selectors -- simulates multiple sequential click interactions.");
+backstopFieldHelp.set("postInteractionWait", "Wait for a selector after interacting with hoverSelector or clickSelector (optionally accepts wait time in ms. Idea for use with a click or hover element transition. available with default onReadyScript)");
+backstopFieldHelp.set("scrollToSelector", "Scrolls the specified DOM element into view prior to screen shot (available with default onReadyScript)");
+backstopFieldHelp.set("selectors", "Array of selectors to capture. Defaults to document if omitted. Use \"viewport\" to capture the viewport size. See Targeting elements in the next section for more info...");
+backstopFieldHelp.set("selectorExpansion", "See Targeting elements in the next section for more info...");
+backstopFieldHelp.set("misMatchThreshold", "Percentage of different pixels allowed to pass test");
+backstopFieldHelp.set("requireSameDimensions", "If set to true -- any change in selector size will trigger a test failure.");
+backstopFieldHelp.set("viewports", "An array of screen size objects your DOM will be tested against. This configuration will override the viewports property assigned at the config root.");
