@@ -6,6 +6,8 @@ import ReportView from "../views/ReportView.vue";
 
 import GeneralConfigurationComponent from "../components/GeneralConfigurationComponent.vue";
 import TestsListComponent from "../components/TestsListComponent.vue";
+import TestViewComponent from "../components/TestViewComponent.vue";
+import TestWelcomeScreenComponent from "../components/TestWelcomeScreenComponent.vue";
 
 Vue.use(VueRouter);
 
@@ -28,7 +30,19 @@ const routes = [
       {
         path: "list",
         name: "testsList",
-        component: TestsListComponent
+        component: TestsListComponent,
+        children: [
+          {
+            path: "",
+            name: "testWelcome",
+            component: TestWelcomeScreenComponent
+          },
+          {
+            path: "test/:index",
+            name: "testView",
+            component: TestViewComponent
+          }
+        ]
       },
       {
         path: "report",

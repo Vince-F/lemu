@@ -14,6 +14,16 @@
     </div>
 
     <v-spacer></v-spacer>
+    <div class="search-container" v-if="hasConfiguration">
+      <v-autocomplete
+        v-model="selectedTest"
+        :items="foundTests"
+        @update:search-input="updateTestSearchInput"
+        @change="goToTest"
+        label="Search in tests"
+      ></v-autocomplete>   
+    </div> 
+    <v-spacer></v-spacer>
 
     <v-btn text v-on:click="runTests" v-if="hasConfiguration" :disabled="testRunning">
       <template v-if="!testRunning">
@@ -44,11 +54,19 @@
   </v-app-bar>
 </template>
 
+<style scoped>
+  .search-container {
+    margin-top: 24px;
+  }
+</style>
+
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
 import { ModalService } from '../services/modalService';
 import AboutModalComponent from "./modals/AboutModalComponent.vue";
+import { BackstopTest } from '../models/backstopTest';
+import { SearchService } from '../services/searchService';
 
 @Component({
 
@@ -68,6 +86,14 @@ export default class AppToolbarComponent extends Vue {
   private runBackstopTests!: () => Promise<any>;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+  private selectedTest: number | null;
+  private foundTests: any[];
+
+  constructor() {
+    super(arguments);
+    this.selectedTest = null;
+    this.foundTests = [];
+  }
 
   private close() {
     if (this.hasConfigurationBeenModified) {
@@ -97,6 +123,10 @@ export default class AppToolbarComponent extends Vue {
     ModalService.launchModal(AboutModalComponent);
   }
 
+  private goToTest() {
+    this.$router.push(`/tests/list/test/${this.selectedTest}`);
+  }
+
   private runTests() {
     this.runBackstopTests()
       .then((result) => {
@@ -113,6 +143,12 @@ export default class AppToolbarComponent extends Vue {
       }).catch((error) => {
         this.displaySnackbar({text: "Failed to save file: " + error, success: false});
       });
+  }
+
+  private updateTestSearchInput(searchTerm: string) {
+    if (searchTerm) {
+      this.foundTests = SearchService.search(searchTerm);
+    }
   }
 }
 </script>

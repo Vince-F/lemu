@@ -10,7 +10,7 @@ export default class TestResultStore extends VuexModule {
   public resultExpired: boolean = true;
 
   @Mutation
-  public expireTestResult() {
+  public expireTestsResult() {
     this.resultExpired = true;
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "lemu",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "private": true,
   "author": "Vincent Francolin",
   "scripts": {
@@ -35,6 +35,7 @@
     "electron": "^7.1.7",
     "electron-builder": "^21.2.0",
     "marked": "^0.8.0",
+    "minisearch": "^2.1.4",
     "sass": "^1.24.2",
     "sass-loader": "^8.0.0",
     "typescript": "~3.7.5",
