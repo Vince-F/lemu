@@ -54,3 +54,19 @@ electron.ipcMain.on("retrieveAppInfos", (event) => {
       event.reply("appInfos", data);
     });
 });
+
+const originalStdoutWrite = process.stdout.write.bind(process.stdout);
+
+process.stdout.write = function(chunk: string | Uint8Array): boolean {
+  if (typeof chunk === 'string') {
+    electron.ipcMain.emit("logMessage", chunk);
+  }
+
+  const args = Array.from(arguments);
+  return originalStdoutWrite(...args);
+};
+
+/*process.stdout.on("data", (chunk: Buffer) => {
+  console.error(chunk.toString());
+  electron.ipcMain.emit("logMessage", chunk.toString());
+});*/
