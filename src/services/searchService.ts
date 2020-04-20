@@ -2,21 +2,7 @@ import MiniSearch from "minisearch";
 
 export class SearchService {
   public static addDocumentsToIndex(elements: any[]) {
-    const indexableElements: any[] = elements.map((entry, idx) => {
-      const indexableData: any = {
-        _index: idx
-      };
-      for (const key of Object.keys(entry)) {
-        if (typeof entry[key] === "string") {
-          indexableData[key] = entry[key];
-        } else if (Array.isArray(entry[key])) {
-          indexableData[key] = entry[key].filter((value: any) => {
-            return typeof value === "string";
-          }).join(" ");
-        }
-      }
-      return indexableData;
-    });
+    const indexableElements: any[] = this.getIndexableElments(elements);
     const indexer = new MiniSearch({
       fields: this.extractKeys(indexableElements),
       idField: 'label',
@@ -75,5 +61,23 @@ export class SearchService {
       });
     });
     return Array.from(keys);
+  }
+
+  private static getIndexableElments(elements: any[]) {
+    return elements.map((entry, idx) => {
+      const indexableData: any = {
+        _index: idx
+      };
+      for (const key of Object.keys(entry)) {
+        if (typeof entry[key] === "string") {
+          indexableData[key] = entry[key];
+        } else if (Array.isArray(entry[key])) {
+          indexableData[key] = entry[key].filter((value: any) => {
+            return typeof value === "string";
+          }).join(" ");
+        }
+      }
+      return indexableData;
+    });
   }
 }

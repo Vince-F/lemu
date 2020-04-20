@@ -5,7 +5,7 @@
         alt="Lemu Logo"
         class="shrink mr-2"
         contain
-        src="../assets/icon.png"
+        src="../../assets/icon.png"
         transition="scale-transition"
         width="40"
       />
@@ -63,29 +63,30 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
-import { ModalService } from '../services/modalService';
+import { ModalService } from '../../services/modalService';
 import AboutModalComponent from "./modals/AboutModalComponent.vue";
-import { BackstopTest } from '../models/backstopTest';
-import { SearchService } from '../services/searchService';
+import { BackstopTest } from '../../models/backstopTest';
+import { SearchService } from '../../services/searchService';
 
 @Component({
 
 })
 export default class AppToolbarComponent extends Vue {
   @Action("configurationStore/saveConfiguration")
-  private saveConfiguration!: () => Promise<void>;
+  private readonly saveConfiguration!: () => Promise<void>;
   @Mutation("configurationStore/dismissCurrentConfiguration")
-  private dismissCurrentConfiguration!: () => void;
+  private readonly dismissCurrentConfiguration!: () => void;
   @Getter("configurationStore/hasConfiguration")
-  private hasConfiguration!: boolean;
+  private readonly hasConfiguration!: boolean;
   @Getter("configurationStore/hasConfigurationBeenModified")
-  private hasConfigurationBeenModified!: boolean;
+  private readonly hasConfigurationBeenModified!: boolean;
   @State((state) => state.testRunnerStore.testRunning)
-  private testRunning!: boolean;
+  private readonly testRunning!: boolean;
   @Action("testRunnerStore/runTests")
-  private runBackstopTests!: () => Promise<any>;
+  private readonly runBackstopTests!: () => Promise<any>;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+
   private selectedTest: number | null;
   private foundTests: any[];
 

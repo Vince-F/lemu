@@ -7,6 +7,20 @@ export class BackstopTest {
 
   /* non-mandatory fields */
   public referenceUrl!: string;
+  public cookiePath!: string;
+  public readyEvent!: string;
+  public readySelector!: string;
+  public delay!: number;
+  public hideSelectors!: string[];
+  public removeSelectors!: string[];
+  public hoverSelector!: string;
+  public clickSelector!: string;
+  public postInteractionWait!: number;
+  public selectors!: string[];
+  public selectorExpansion!: boolean;
+  public expect!: number;
+  public misMatchThreshold!: number;
+  public requireSameDimensions!: boolean;
 
   /* for custom fields */
   [key: string]: any;
@@ -22,22 +36,3 @@ export class BackstopTest {
     }
   }
 }
-
-/*
-{
-      "cookiePath": "backstop_data/engine_scripts/cookies.json",
-      "readyEvent": "",
-      "readySelector": "",
-      "delay": 100,
-      "hideSelectors": [],
-      "removeSelectors": [],
-      "hoverSelector": "",
-      "clickSelector": "",
-      "postInteractionWait": 0,
-      "selectors": [],
-      "selectorExpansion": true,
-      "expect": 0,
-      "misMatchThreshold" : 0.1,
-      "requireSameDimensions": true
-    }
-*/

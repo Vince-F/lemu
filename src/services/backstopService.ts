@@ -6,7 +6,6 @@ const electron = window.require("electron");
 
 export class BackstopService {
   public static setWorkingDir(path: string) {
-    console.log("set working directory to ", path);
     electron.ipcRenderer.send("setWorkingDir", path);
   }
 

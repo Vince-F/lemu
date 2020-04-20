@@ -34,9 +34,9 @@
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({
-    name: "test-configuration-menu-component"
+    name: "main-menu-component"
 })
-export default class TestConfigurationMenuComponent extends Vue {
+export default class MainMenuComponent extends Vue {
   private menus: Array<{title: string, icon: string, path: string}>;
   private retracted: boolean;
 
