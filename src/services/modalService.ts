@@ -1,5 +1,5 @@
-import ConfirmationModalComponent from "../components/modals/ConfirmationModalComponent.vue";
-import SaveConfirmationModalComponent from "../components/modals/SaveConfirmationModalComponent.vue";
+import ConfirmationModalComponent from "../components/app/ConfirmationModalComponent.vue";
+import SaveConfirmationModalComponent from "../components/app/SaveConfirmationModalComponent.vue";
 import { VueConstructor } from 'vue';
 
 export class ModalService {

@@ -64,7 +64,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
 import { ModalService } from '../../services/modalService';
-import AboutModalComponent from "./modals/AboutModalComponent.vue";
+import AboutModalComponent from "./AboutModalComponent.vue";
 import { BackstopTest } from '../../models/backstopTest';
 import { SearchService } from '../../services/searchService';
 

@@ -33,7 +33,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import {Action, Mutation, State} from "vuex-class";
-import AppToolbarComponent from "./components/AppToolbarComponent.vue";
+import AppToolbarComponent from "./components/app/AppToolbarComponent.vue";
 import { ModalService } from "./services/modalService";
 import ReleaseInfoModalComponent from "./components/app/ReleaseInfoModalComponent.vue";
 

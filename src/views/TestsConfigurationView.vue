@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="container pa-0">
     <div class="menu">
-      <tests-configuration-menu-component />
+      <main-menu-component />
     </div>
     <div class="content">
       <router-view />
@@ -29,12 +29,12 @@
 
 <script lang="ts">
 import {Vue, Component} from "vue-property-decorator";
-import TestsConfigurationMenuComponent from "../components/TestsConfigurationMenuComponent.vue";
+import MainMenuComponent from "../components/app/MainMenuComponent.vue";
 
 @Component({
   name: "test-configuration-view",
   components: {
-    TestsConfigurationMenuComponent
+    MainMenuComponent
   }
 })
 export default class TestConfigurationView extends Vue {

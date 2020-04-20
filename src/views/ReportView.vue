@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import ReportComponent from "../components/ReportComponent.vue";
+import ReportComponent from "../components/report/ReportComponent.vue";
 
 @Component({
   components: {

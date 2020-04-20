@@ -4,10 +4,10 @@ import StartScreenView from "../views/StartScreenView.vue";
 import TestsConfigurationView from "../views/TestsConfigurationView.vue";
 import ReportView from "../views/ReportView.vue";
 
-import GeneralConfigurationComponent from "../components/GeneralConfigurationComponent.vue";
-import TestsListComponent from "../components/TestsListComponent.vue";
-import TestViewComponent from "../components/TestViewComponent.vue";
-import TestWelcomeScreenComponent from "../components/TestWelcomeScreenComponent.vue";
+import GeneralConfigurationComponent from "../components/generalConfig/GeneralConfigurationComponent.vue";
+import TestsListComponent from "../components/tests/TestsListComponent.vue";
+import TestViewComponent from "../components/tests/TestViewComponent.vue";
+import TestWelcomeScreenComponent from "../components/tests/TestWelcomeScreenComponent.vue";
 
 Vue.use(VueRouter);
 
