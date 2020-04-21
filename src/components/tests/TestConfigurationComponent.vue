@@ -30,6 +30,14 @@
           v-else :label="additionnalField.name" 
           :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, $event)"
           class="flex-grow-1 flex-shrink-1"></v-text-field>
+        <v-tooltip top >
+          <template v-slot:activator="{on}">
+            <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" v-on="on" v-if="getHelpMessage(additionnalField.name)">
+              <v-icon color="grey">mdi-help-circle-outline</v-icon>
+            </v-btn>
+          </template>
+          <span>{{getHelpMessage(additionnalField.name)}}</span>
+        </v-tooltip>
         <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" @click="removeField(additionnalField.name)">
           <v-icon color="grey">mdi-delete</v-icon>
         </v-btn>
@@ -53,6 +61,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { Action, Mutation, State, Getter } from "vuex-class";
 import { ModalService } from "../../services/modalService";
 import { BackstopTest } from '../../models/backstopTest';
+import { backstopFieldHelp } from "../../constants/backstopFieldHelp";
 import AddTestFieldModalComponent from "./AddTestFieldModalComponent.vue";
 
 @Component({})
@@ -96,6 +105,13 @@ export default class TestConfigurationComponent extends Vue {
       .then((newField: {name: string, value: any, type: string}) => {
         this.validateField(newField);
       });
+  }
+
+  private getHelpMessage(fieldName: string) {
+    if (backstopFieldHelp.has(fieldName)) {
+      return backstopFieldHelp.get(fieldName);
+    }
+    return "";
   }
 
   private removeField(fieldName: string) {
