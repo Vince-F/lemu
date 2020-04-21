@@ -3,6 +3,7 @@
 ## V1.10.0
 ### New features
 - Add search to search in tests
+- Add help for Backstop field when editing a scenario
 
 ### Fixes
 - Display test placeholder when deleting a test
