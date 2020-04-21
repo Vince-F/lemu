@@ -53,11 +53,11 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { backstopScenarioProperties } from '../constants/backstopScenarioProperties';
+import { backstopScenarioProperties } from '../../constants/backstopScenarioProperties';
 
 @Component({})
 export default class AddEngineOptionModalComponent extends Vue {
-  private dialogDisplayed: boolean = true;
+  private dialogDisplayed: boolean;
   private readonly types: string[];
   private name: string;
   private type: string;
@@ -65,6 +65,7 @@ export default class AddEngineOptionModalComponent extends Vue {
 
   constructor() {
     super(arguments);
+    this.dialogDisplayed = true;
     this.types = ["number", "boolean", "array", "string"];
     this.name = "";
     this.type = "";

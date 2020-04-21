@@ -1,6 +1,5 @@
 import { BackstopTestResult } from './backstopTestResult';
 
-
 export class BackstopReport {
   public id: string;
   public testSuite: string;

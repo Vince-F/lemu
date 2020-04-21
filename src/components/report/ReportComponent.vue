@@ -38,8 +38,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Action, State, Mutation } from "vuex-class";
-import { BackstopConfiguration } from '../models/backstopConfiguration';
-import { FileService } from '../services/fileService';
+import { BackstopConfiguration } from '../../models/backstopConfiguration';
+import { FileService } from '../../services/fileService';
 
 @Component
 export default class ReportComponent extends Vue {
