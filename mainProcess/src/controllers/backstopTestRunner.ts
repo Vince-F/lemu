@@ -1,14 +1,22 @@
-import backstop = require("backstopjs");
-import puppeteer = require("puppeteer");
-
 export class BackstopTestRunner {
+  /* set import in getter to avoid loading them at launch time */
+  private static get backstop() {
+    const backstop = require("backstopjs");
+    return backstop;
+  }
+
+  private static get puppeteer() {
+    const puppeteer = require("puppeteer");
+    return puppeteer;
+  }
+
   public static setWorkingDir(path: string) {
     process.chdir(path);
   }
 
   public static initTest(path: string) {
     process.chdir(path);
-    return backstop('init');
+    return this.backstop('init');
   }
 
   public static runTest(config: any, scenarioLabel?: string): Promise<any> {
@@ -24,7 +32,7 @@ export class BackstopTestRunner {
     }
     console.log("Test filtered with ", filterRegex);
     config = this.setPuppeteerExecutablePath(config);
-    return backstop('test', {
+    return this.backstop('test', {
       filter: filterRegex,
       config
     });
@@ -39,7 +47,7 @@ export class BackstopTestRunner {
         filterRegex += "_.+_" + this.cleanFilename(viewportLabel);
       }
     }
-    return backstop('approve', {
+    return this.backstop('approve', {
       config,
       filter: filterRegex
     });
@@ -50,8 +58,7 @@ export class BackstopTestRunner {
       config.engineOptions = {};
     }
     if (!config.engineOptions.executablePath) {
-      config.engineOptions.executablePath = puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked');
-      console.log("changed puppeteer path to ", config.engineOptions.executablePath);
+      config.engineOptions.executablePath = this.puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked');
     }
     return config;
   }
