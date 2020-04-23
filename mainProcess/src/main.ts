@@ -4,7 +4,7 @@ import { autoUpdater } from "electron-updater";
 import path = require("path");
 import "v8-compile-cache";
 
-import "./eventBus";
+import "./eventBuses";
 
 try {
   autoUpdater.checkForUpdatesAndNotify();
