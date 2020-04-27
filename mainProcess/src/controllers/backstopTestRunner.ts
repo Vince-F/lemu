@@ -1,22 +1,19 @@
+import { BackstopWorkerManager } from "./backstopWorkerManager";
+
 export class BackstopTestRunner {
   /* set import in getter to avoid loading them at launch time */
-  private static get backstop() {
-    const backstop = require("backstopjs");
-    return backstop;
-  }
-
   private static get puppeteer() {
     const puppeteer = require("puppeteer");
     return puppeteer;
   }
 
-  public static setWorkingDir(path: string) {
-    process.chdir(path);
+  public static setWorkingDir(workingPath: string) {
+    process.chdir(workingPath);
   }
 
-  public static initTest(path: string) {
-    process.chdir(path);
-    return this.backstop('init');
+  public static initTest(workingPath: string) {
+    process.chdir(workingPath);
+    return BackstopWorkerManager.executeCommand("init");
   }
 
   public static runTest(config: any, scenarioLabel?: string): Promise<any> {
@@ -32,7 +29,7 @@ export class BackstopTestRunner {
     }
     console.log("Test filtered with ", filterRegex);
     config = this.setPuppeteerExecutablePath(config);
-    return this.backstop('test', {
+    return BackstopWorkerManager.executeCommand("test", {
       filter: filterRegex,
       config
     });
@@ -47,7 +44,7 @@ export class BackstopTestRunner {
         filterRegex += "_.+_" + this.cleanFilename(viewportLabel);
       }
     }
-    return this.backstop('approve', {
+    return BackstopWorkerManager.executeCommand('approve', {
       config,
       filter: filterRegex
     });
