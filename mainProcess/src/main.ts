@@ -36,6 +36,9 @@ function createWindow() {
   });
 }
 
+// for notification
+app.setAppUserModelId(process.execPath);
+
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
