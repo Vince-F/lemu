@@ -12,7 +12,7 @@
               <span v-else>{{tests.length}} tests</span>
             </v-list-item-subtitle>
             <div class="action text-right">
-              <v-btn color="primary" v-on:click="addScenario">
+              <v-btn color="primary" @click="addScenario">
                 <v-icon>mdi-plus</v-icon>Add
               </v-btn>
             </div>    
@@ -29,7 +29,7 @@
               link
               v-on:click="openTestDetails(index)"
             >
-              <v-tooltip top >
+              <v-tooltip top>
                 <template v-slot:activator="{on}">
                   <v-list-item-icon class="ms-0 mr-1 small-icon" >
                     <v-icon v-if="hasTestBeenModified(index)" v-on="on" x-small color="grey">mdi-circle</v-icon>
@@ -38,7 +38,7 @@
                 <span>This test contains unsaved changes</span>
               </v-tooltip>
               <v-list-item-content>
-                <v-list-item-title >
+                <v-list-item-title>
                   {{ test.label }}
                 </v-list-item-title>
               </v-list-item-content>
@@ -63,7 +63,7 @@
                       </v-list-item-title>
                     </v-list-item>
                     <v-list-item>
-                      <v-list-item-title @click="duplicateTest(index)">
+                      <v-list-item-title @click="duplicateScenario(index)">
                         <v-icon color="grey lighten-1">mdi-content-copy</v-icon>
                         Duplicate
                       </v-list-item-title>
@@ -114,9 +114,9 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, Action } from "vuex-class";
-import { BackstopTest } from "../models/backstopTest";
+import { BackstopTest } from "../../models/backstopTest";
 import TestViewComponent from "./TestViewComponent.vue";
-import { ModalService } from "../services/modalService";
+import { ModalService } from "../../services/modalService";
 
 @Component({
   name: "tests-list-component",
@@ -126,23 +126,19 @@ import { ModalService } from "../services/modalService";
 })
 export default class TestsListComponent extends Vue {
   @Mutation("configurationStore/addScenario")
-  private addScenario!: () => void;
+  private readonly addScenario!: () => void;
   @Mutation("configurationStore/duplicateScenario")
-  private duplicateScenario!: (scenarioIndex: number) => void;
+  private readonly duplicateScenario!: (scenarioIndex: number) => void;
   @Mutation("configurationStore/removeScenario")
-  private removeScenario!: (scenarioIndex: number) => void;
+  private readonly removeScenario!: (scenarioIndex: number) => void;
   @Getter("configurationStore/tests")
-  private tests!: BackstopTest[];
+  private readonly tests!: BackstopTest[];
   @Getter("configurationStore/hasTestBeenModified")
-  private hasTestBeenModified!: (idx: number) => boolean;
+  private readonly hasTestBeenModified!: (idx: number) => boolean;
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
   @Action("testRunnerStore/runTest")
   private readonly runTest!: (testLabel: string) => Promise<any>;
-
-  constructor() {
-    super(arguments);
-  }
 
   private mounted() {
     this.setMenuResizable();
@@ -154,10 +150,6 @@ export default class TestsListComponent extends Vue {
         this.removeScenario(testIndex);
         this.$router.push("/tests/list");
       });
-  }
-
-  private duplicateTest(testIndex: number) {
-    this.duplicateScenario(testIndex);
   }
 
   private openTestDetails(testIndex: number) {

@@ -29,22 +29,23 @@
             label="Predefined field"
             v-model="selectedField"
             item-text="name"
+            :messages="helpMessage"
             return-object
             @change="updateNewValueTypeWithPredefinedField"
           ></v-select>                
         </div>
-        <v-text-field class=""
+        <v-text-field
           v-if="fieldType === 'number'" label="Value" 
           type="number" v-model="fieldValue"
           ></v-text-field>
-        <v-checkbox class="" v-else-if="fieldType === 'boolean'" label="Value"
+        <v-checkbox v-else-if="fieldType === 'boolean'" label="Value"
           v-model="fieldValue"
           ></v-checkbox>
-        <v-combobox class="" v-else-if="fieldType === 'array'" multiple chips
+        <v-combobox v-else-if="fieldType === 'array'" multiple chips
           label="Value" v-model="fieldValue"
           ></v-combobox>
-        <v-text-field class=""
-          v-else label="Value" v-model="fieldValue"
+        <v-text-field v-else 
+          label="Value" v-model="fieldValue"
           ></v-text-field>
       </v-card-text>
 
@@ -63,7 +64,7 @@
           text
           @click="dismiss"
         >
-          cancel
+          Cancel
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -72,11 +73,12 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { backstopScenarioProperties } from '../constants/backstopScenarioProperties';
+import { backstopScenarioProperties } from '../../constants/backstopScenarioProperties';
+import { backstopFieldHelp } from "../../constants/backstopFieldHelp";
 
 @Component({})
 export default class AddTestFieldModalComponent extends Vue {
-  private dialogDisplayed: boolean = true;
+  private dialogDisplayed: boolean;
   private readonly predefinedFields: Array<{name: string,  type: "string" | "number" | "array" | "boolean" }>;
   private readonly modes: string[];
   private readonly types: string[];
@@ -88,6 +90,7 @@ export default class AddTestFieldModalComponent extends Vue {
 
   constructor() {
     super(arguments);
+    this.dialogDisplayed = true;
     this.predefinedFields = backstopScenarioProperties;
     this.modes = ["pre-defined", "custom"];
     this.types = ["number", "boolean", "array", "string"];
@@ -97,6 +100,13 @@ export default class AddTestFieldModalComponent extends Vue {
     this.fieldType = "";
     this.fieldValue = "";
     this.selectedField = null;
+  }
+
+  private get helpMessage() {
+    if (backstopFieldHelp.has(this.selectedField?.name || "")) {
+      return backstopFieldHelp.get(this.selectedField?.name || "");
+    }
+    return "";
   }
 
   private addField() {

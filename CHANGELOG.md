@@ -1,5 +1,11 @@
 # Changelog
 
+## V1.11.0
+### New features
+- Improve performance
+- Add help on field to describe their purpose
+- Add notification when tests finished running
+
 ## V1.10.0
 ### New features
 - Add search to search in tests

@@ -94,8 +94,8 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { State, Mutation } from "vuex-class";
-import { BackstopConfiguration } from "../models/backstopConfiguration";
-import { ModalService } from '../services/modalService';
+import { BackstopConfiguration } from "../../models/backstopConfiguration";
+import { ModalService } from '../../services/modalService';
 import AddEngineOptionModalComponent from "./AddEngineOptionModalComponent.vue";
 
 @Component({
@@ -103,23 +103,24 @@ import AddEngineOptionModalComponent from "./AddEngineOptionModalComponent.vue";
 })
 export default class GeneralConfigurationComponent extends Vue {
   @State((state) => state.configurationStore.currentConfiguration)
-  private configuration!: BackstopConfiguration;
+  private readonly configuration!: BackstopConfiguration;
   @Mutation("configurationStore/addViewport")
-  private addViewportInConfig!: () => void;
+  private readonly addViewportInConfig!: () => void;
   @Mutation("configurationStore/removeViewport")
-  private removeViewportInConfig!: (index: number) => void;
+  private readonly removeViewportInConfig!: (index: number) => void;
   @Mutation("configurationStore/setConfigurationField")
-  private setConfigurationField!: Function;
+  private readonly setConfigurationField!: (payload: {field: string, value: any}) => void;
   @Mutation("configurationStore/setConfigurationPathField")
-  private setConfigurationPathField!: Function;
+  private readonly setConfigurationPathField!: (payload: {field: string, value: any}) => void;
   @Mutation("configurationStore/setConfigurationReport")
-  private setConfigurationReport!: Function;
+  private readonly setConfigurationReport!: (payload: {reportType: string, kept: boolean}) => void;
   @Mutation("configurationStore/setConfigurationViewportField")
-  private setConfigurationViewportField!: Function;
+  private readonly setConfigurationViewportField!:
+    (payload: {viewportIndex: number, field: string, value: any}) => void;
   @Mutation("configurationStore/setConfigurationEngineOptionsField")
-  private setConfigurationEngineOptionsField!: (payload: {field: string, value: any}) => void;
+  private readonly setConfigurationEngineOptionsField!: (payload: {field: string, value: any}) => void;
   @Mutation("configurationStore/removeEngineOption")
-  private removeEngineOption!: (fieldName: string) => void;
+  private readonly removeEngineOption!: (fieldName: string) => void;
 
   private get ciReportEnabled() {
     return this.configuration.report.indexOf("CI") > -1;

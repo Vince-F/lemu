@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "outDir": "../dist-app/electron-main/"
+    "outDir": "../dist-app/electron-main/",
+    "target": "ES2017",
+    "module": "commonjs"
   },
   "references": [
     { "path": "../"}

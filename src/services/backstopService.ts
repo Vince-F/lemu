@@ -6,7 +6,6 @@ const electron = window.require("electron");
 
 export class BackstopService {
   public static setWorkingDir(path: string) {
-    console.log("set working directory to ", path);
     electron.ipcRenderer.send("setWorkingDir", path);
   }
 
@@ -15,8 +14,14 @@ export class BackstopService {
       electron.ipcRenderer.once("testFinished", (event: any, success: boolean, payload: any) => {
           if (success) {
             resolve(payload);
+            new Notification('LEMU', {
+              body: 'Tests finished running with success'
+            });
           } else {
             reject(payload);
+            new Notification('LEMU', {
+              body: 'Tests finished running with error(s)'
+            });
           }
       });
       electron.ipcRenderer.send("runTest", config);
@@ -28,8 +33,14 @@ export class BackstopService {
       electron.ipcRenderer.once("testFinished", (event: any, success: boolean, payload: any) => {
           if (success) {
             resolve(payload);
+            new Notification('LEMU', {
+              body: 'Tests finished running with success'
+            });
           } else {
             reject(payload);
+            new Notification('LEMU', {
+              body: 'Tests finished running with error(s)'
+            });
           }
       });
       electron.ipcRenderer.send("runTest", config, testLabel);

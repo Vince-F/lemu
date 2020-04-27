@@ -47,7 +47,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Action } from "vuex-class";
-import {DialogFileService} from "../services/dialogFileService";
+import {DialogFileService} from "../../services/dialogFileService";
 
 @Component({
     name: "open-configuration-component"

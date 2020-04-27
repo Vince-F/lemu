@@ -1,12 +1,17 @@
 import { app } from "electron";
-import backstop = require("backstopjs");
+
 
 export class AppInfoReader {
+  private static get backstop() {
+    const backstop = require("backstopjs");
+    return backstop;
+  }
+
   public static getAppVersion() {
     return app.getVersion();
   }
 
   public static getBackstopVersion() {
-    return backstop('version');
+    return this.backstop('version');
   }
 }
