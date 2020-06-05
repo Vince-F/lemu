@@ -2,6 +2,7 @@ import electron = require("electron");
 import { BackstopTestRunner } from "../controllers/backstopTestRunner";
 import { BackstopTestResultReader } from "../controllers/backstopTestResultReader";
 import { eventNames } from "../shared/constants/eventNames";
+import { BackstopFileService } from "../controllers/backstopFileService";
 
 electron.ipcMain.on(eventNames.WORKING_DIR.REQUEST, (event, path) => {
   BackstopTestRunner.setWorkingDir(path);
@@ -40,5 +41,15 @@ electron.ipcMain.on(eventNames.RETRIEVE_TEST_RESULT.REQUEST, (event, path) => {
       event.reply(eventNames.RETRIEVE_TEST_RESULT.REPLY, true, result);
     }).catch((error) => {
       event.reply(eventNames.RETRIEVE_TEST_RESULT.REPLY, false, error);
+    });
+});
+
+electron.ipcMain.on(eventNames.RETRIEVE_CUSTOM_SCRIPTS.REQUEST, (event, path) => {
+  BackstopFileService.retrieveCustomScripts(path)
+    .then((files: string[]) => {
+      event.reply(eventNames.RETRIEVE_CUSTOM_SCRIPTS.REPLY, true, files);
+    }).catch((error) => {
+      console.log(error);
+      event.reply(eventNames.RETRIEVE_CUSTOM_SCRIPTS.REPLY, false, error);
     });
 });

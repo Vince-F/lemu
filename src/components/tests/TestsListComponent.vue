@@ -99,6 +99,7 @@
   flex: 0;
   height: 100%;
 }
+
 .content {
   flex: 1;
   height: 100%;
