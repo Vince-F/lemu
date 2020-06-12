@@ -3,7 +3,29 @@
     <div class="menu">
       <v-treeview :items="items"
         activatable
-        @update:active="selectScript"></v-treeview>
+        @update:active="selectScript"
+        open-on-click>
+        <template v-slot:prepend="{ item, open }">
+          <v-icon v-if="!item.isScript">
+            {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
+          </v-icon>
+          <v-icon v-else>
+            mdi-nodejs
+          </v-icon>
+        </template>
+          <template v-slot:append="{ item }">
+            <v-btn icon v-if="item.isScript" @click="deleteScript(item.id)">
+              <v-icon color="grey lighten-1">
+                mdi-delete
+              </v-icon>
+            </v-btn>
+            <v-btn icon v-else @click="addScript(item.id)">
+              <v-icon color="grey lighten-1">
+                mdi-plus
+              </v-icon>
+            </v-btn>
+          </template>
+        </v-treeview>
     </div>
     <router-view class="content" />
   </v-container>
@@ -38,6 +60,8 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, Action, Getter } from "vuex-class";
 import { TreeEntry } from "../../models/treeEntry";
 import { CustomScript } from '../../models/customScript';
+import { ModalService } from "../../services/modalService";
+import AddScriptModalComponent from "./AddScriptModalComponent.vue";
 
 @Component
 export default class ScriptMenuComponent extends Vue {
@@ -54,6 +78,20 @@ export default class ScriptMenuComponent extends Vue {
 
   private mounted() {
     this.updateItemsList();
+  }
+
+  private addScript(path: string) {
+    ModalService.launchModal(AddScriptModalComponent)
+      .then(() => {
+        //
+      });
+  }
+
+  private deleteScript(path: string) {
+    ModalService.launchConfirmationModal()
+      .then(() => {
+        //
+      });
   }
 
   private selectScript([path]: [string]) {
@@ -87,6 +125,7 @@ export default class ScriptMenuComponent extends Vue {
       items.push({
         id: path + (path.length > 0 ? "/" : "") + key,
         name: key,
+        isScript: key.endsWith(".js"),
         children: this.createTreeItemFromMap(value, path + (path.length > 0 ? "/" : "") + key)
       });
     });

@@ -6,12 +6,31 @@ import { BackstopService } from '@/services/backstopService';
   namespaced: true
 })
 export default class CustomScriptStore extends VuexModule {
-  public scripts: CustomScript[] = [];
+  private scripts: CustomScript[] = [];
+  private removedScriptsPath: string[] = [];
+  private scriptsModified: boolean = false;
 
   public get getScript() {
     const scripts = this.scripts;
     return (path: string) => {
       return scripts.filter((entry) => entry.path.endsWith(path))[0];
+    }
+  }
+
+  @Mutation
+  public addScript({scriptPath, content}: {scriptPath: string, content: string}) {
+    const newScript = new CustomScript(scriptPath, content);
+    this.scripts.push(newScript);
+    this.scriptsModified = true;
+  }
+
+  @Mutation
+  public removeScript(scriptPath: string) {
+    const idx = this.scripts.findIndex((entry) => entry.path === scriptPath);
+    if (idx > -1) {
+      this.scripts.splice(idx, 1);
+      this.removedScriptsPath.push(scriptPath);
+      this.scriptsModified = true;
     }
   }
 
