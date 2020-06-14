@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import StartScreenView from "../views/StartScreenView.vue";
 import TestsConfigurationView from "../views/TestsConfigurationView.vue";
 import ReportView from "../views/ReportView.vue";
+import LogsView from "../views/LogsView.vue";
 
 import GeneralConfigurationComponent from "../components/generalConfig/GeneralConfigurationComponent.vue";
 import TestsListComponent from "../components/tests/TestsListComponent.vue";
@@ -48,6 +49,11 @@ const routes = [
         path: "report",
         name: "report",
         component: ReportView
+      },
+      {
+        path: "logs",
+        name: "logs",
+        component: LogsView
       }
     ]
   }

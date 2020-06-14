@@ -91,7 +91,7 @@ export default class ConfigurationStore extends VuexModule {
   public setFullConfiguration({ newConfiguration }: any) {
     this.currentConfiguration = newConfiguration;
     this.testsModified = [];
-    if (this .currentConfiguration && Array.isArray(this.currentConfiguration.scenarios)) {
+    if (this.currentConfiguration && Array.isArray(this.currentConfiguration.scenarios)) {
       this.currentConfiguration.scenarios.forEach(() => {
         this.testsModified.push(false);
       });
@@ -275,6 +275,7 @@ export default class ConfigurationStore extends VuexModule {
                   newConfiguration: content
                 });
                 this.context.commit("setPath", path + "/backstop.json");
+                this.context.commit("testLogStore/resetLogs", null, { root: true });
               });
           });
       });
@@ -294,6 +295,7 @@ export default class ConfigurationStore extends VuexModule {
         });
         this.context.commit("setPath", path);
         this.context.commit("updateRecently", path);
+        this.context.commit("testLogStore/resetLogs", null, { root: true });
         BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
         return Promise.resolve();
       });
@@ -313,6 +315,7 @@ export default class ConfigurationStore extends VuexModule {
         });
         this.context.commit("setPath", path);
         this.context.commit("updateRecently", path);
+        this.context.commit("testLogStore/resetLogs", null, { root: true });
         BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
         return Promise.resolve();
       });

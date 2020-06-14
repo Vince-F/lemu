@@ -1,10 +1,11 @@
-import {app, BrowserWindow, Menu} from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 import { autoUpdater } from "electron-updater";
 
 import path = require("path");
 import "v8-compile-cache";
 
 import "./eventBuses";
+import { BrowserWindowManager } from './controllers/browserWindowManager';
 
 try {
   autoUpdater.checkForUpdatesAndNotify();
@@ -27,9 +28,11 @@ function createWindow() {
   });
   mainWindow.maximize();
 
-  mainWindow.loadFile('./dist-app/index.html');
-  // mainWindow.loadURL("http://localhost:8080");
-  Menu.setApplicationMenu(null);
+  BrowserWindowManager.setInstance(mainWindow);
+
+  // mainWindow.loadFile('./dist-app/index.html');
+  mainWindow.loadURL("http://localhost:8080");
+  // Menu.setApplicationMenu(null);
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -52,4 +55,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-

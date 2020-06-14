@@ -1,6 +1,9 @@
 import {Worker} from "worker_threads";
 import path = require("path");
 import fs = require("fs");
+import { ipcMain } from "electron";
+import { eventNames } from "../shared/constants/eventNames";
+import { BrowserWindowManager } from "./browserWindowManager";
 
 export class BackstopWorkerManager {
   public static executeCommand(command: string, options?: any) {
@@ -10,7 +13,9 @@ export class BackstopWorkerManager {
           reject("Failed to open test launcher.");
         } else {
           const worker = new Worker(fileContent, {
-            eval: true
+            eval: true,
+            stderr: true,
+            stdout: true
           });
           worker.once("message", (result) => {
             if (result.success) {
@@ -23,6 +28,22 @@ export class BackstopWorkerManager {
           worker.postMessage({
             command,
             options
+          });
+
+          worker.stdout.on("data", (data: Buffer) => {
+            console.log(data.toString());
+            BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
+              level: "info",
+              message: data.toString()
+            });
+          });
+
+          worker.stderr.on("data", (data: Buffer) => {
+            console.error(data.toString());
+            BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
+              level: "error",
+              message: data.toString()
+            });
           });
         }
       });

@@ -133,7 +133,7 @@ export default class AppToolbarComponent extends Vue {
       .then((result) => {
         this.displaySnackbar({text: "Tests successful", success: true});
       }).catch((error) => {
-        this.displaySnackbar({text: "Tests failed. Open the report to see more details.", success: false});
+        this.displaySnackbar({text: "Tests failed. Open the logs to see more details.", success: false});
       });
   }
 
