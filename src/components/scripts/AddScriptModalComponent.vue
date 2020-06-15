@@ -81,10 +81,10 @@ export default class AddScriptModalComponent extends Vue {
     this.fileName = "";
     this.valid = false;
     this.filenameRules = [
-      (value: string) => this.fileName.length > 0 || "You must enter a file name"
+      (value: string) => value.length > 0 || "You must enter a file name"
     ];
     this.fileRules = [
-      (value: File) => this.fileToCopy !== null || "You must choose a file"
+      (value: File) => value !== null || "You must choose a file"
     ];
   }
 

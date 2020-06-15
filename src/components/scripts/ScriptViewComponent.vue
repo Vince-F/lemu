@@ -13,7 +13,8 @@
       <monaco-editor 
         theme="vs-dark"
         language="javascript"
-        :value="customScriptData.content"/>
+        :value="customScriptData.content"
+        @change="updateScriptContent"/>
     </v-card-text>
   </v-card>
 </template>
@@ -36,7 +37,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { Getter } from "vuex-class";
+import { Getter, Mutation } from "vuex-class";
 import { CustomScript } from '../../models/customScript';
 import MonacoEditor from 'monaco-editor-vue';
 
@@ -48,6 +49,8 @@ import MonacoEditor from 'monaco-editor-vue';
 export default class ScriptViewComponent extends Vue {
   @Getter("customScriptStore/getScript")
   private readonly getScript!: (path: string) => CustomScript;
+  @Mutation("customScriptStore/setScriptContent")
+  private readonly setScriptContent!: (payload: {path: string, content: string}) => void;
   private customScriptData: CustomScript;
 
   constructor() {
@@ -64,13 +67,20 @@ export default class ScriptViewComponent extends Vue {
     this.loadScript();
   }
 
+  private loadScript() {
+    this.customScriptData = this.getScript(decodeURIComponent(this.$route.params.path));
+  }
+
   @Watch("$route")
   private updateScript() {
     this.loadScript();
   }
 
-  private loadScript() {
-    this.customScriptData = this.getScript(decodeURIComponent(this.$route.params.path));
+  private updateScriptContent(newContent: string) {
+    this.setScriptContent({
+      path: this.customScriptData.path,
+      content: newContent
+    });
   }
 }
 </script>

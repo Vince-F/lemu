@@ -31,4 +31,8 @@ export class FileService {
       });
     });
   }
+
+  public static copyFile(originPath: string, destinationPath: string) {
+    //
+  }
 }

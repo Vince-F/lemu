@@ -58,6 +58,9 @@ export default class ScriptView extends Vue {
 
   private created() {
     this.retrieveCustomScripts()
+      .catch((error) => {
+        console.error("Fail to load scripts", error);
+      })
       .finally(() => {
         this.loading = false;
       });

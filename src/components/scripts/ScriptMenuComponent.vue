@@ -19,7 +19,7 @@
                 mdi-delete
               </v-icon>
             </v-btn>
-            <v-btn icon v-else @click="addScript(item.id)">
+            <v-btn icon v-else @click="createScript(item.id)">
               <v-icon color="grey lighten-1">
                 mdi-plus
               </v-icon>
@@ -57,11 +57,12 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { State, Action, Getter } from "vuex-class";
+import { State, Action, Getter, Mutation } from "vuex-class";
 import { TreeEntry } from "../../models/treeEntry";
 import { CustomScript } from '../../models/customScript';
 import { ModalService } from "../../services/modalService";
 import AddScriptModalComponent from "./AddScriptModalComponent.vue";
+import { FileService } from "../../services/fileService";
 
 @Component
 export default class ScriptMenuComponent extends Vue {
@@ -69,6 +70,10 @@ export default class ScriptMenuComponent extends Vue {
   private readonly scripts!: CustomScript[];
   @Getter("configurationStore/engineScriptDirectory")
   private readonly engineScriptDirectory!: string;
+  @Mutation("applicationStore/displaySnackbar")
+  private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+  @Mutation("customScriptStore/addScript")
+  private readonly addScript!: (payload: {scriptPath: string, content: string}) => void;
   private items: TreeEntry[];
 
   constructor() {
@@ -80,10 +85,35 @@ export default class ScriptMenuComponent extends Vue {
     this.updateItemsList();
   }
 
-  private addScript(path: string) {
+  private createScript(path: string) {
     ModalService.launchModal(AddScriptModalComponent)
-      .then(() => {
-        //
+      .then((result: {
+        type: "empty" | "fromFile",
+        fileName: string,
+        originFilePath: string;
+      }) => {
+        let fileName = result.fileName;
+        if (!fileName.endsWith(".js")) {
+          fileName += ".js";
+        }
+        const fullPath = FileService.resolvePath([this.engineScriptDirectory, path, fileName]);
+        switch (result.type) {
+          case "empty":
+            FileService.writeFile(fullPath, "")
+              .then(() => {
+                this.displaySnackbar({
+                  text: "File successfully created",
+                  success: true
+                });
+                this.addScript({scriptPath: fullPath, content: ""})
+              }).catch((error) => {
+                this.displaySnackbar({
+                  text: error,
+                  success: false
+                });
+              });
+            break;
+        }
       });
   }
 
@@ -104,7 +134,7 @@ export default class ScriptMenuComponent extends Vue {
   private updateItemsList() {
     const paths = new Map();
     this.scripts.forEach((script) => {
-      const basePath = script.path.replace(this.engineScriptDirectory, "");
+      const basePath = script.path.replace(this.engineScriptDirectory, "").replace(/\\/g, "/");
       const splittedPath = basePath.split("/");
       let currentLevelMap = paths;
       splittedPath.forEach((dirOrFile) => {
