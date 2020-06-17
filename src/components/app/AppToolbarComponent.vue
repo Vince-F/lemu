@@ -86,6 +86,8 @@ export default class AppToolbarComponent extends Vue {
   private readonly runBackstopTests!: () => Promise<any>;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+  @Action("engineScriptStore/saveAllScripts")
+  private readonly saveAllScripts!: () => Promise<void>;
 
   private selectedTest: number | null;
   private foundTests: any[];
@@ -133,12 +135,15 @@ export default class AppToolbarComponent extends Vue {
       .then((result) => {
         this.displaySnackbar({text: "Tests successful", success: true});
       }).catch((error) => {
-        this.displaySnackbar({text: "Tests failed. Open the report to see more details.", success: false});
+        this.displaySnackbar({text: "Tests failed. Open the logs to see more details.", success: false});
       });
   }
 
   private save() {
-    return this.saveConfiguration()
+    return Promise.all([
+      this.saveConfiguration(),
+      this.saveAllScripts()
+    ])
       .then(() => {
         this.displaySnackbar({text: "File saved", success: true});
       }).catch((error) => {
