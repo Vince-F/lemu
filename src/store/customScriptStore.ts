@@ -27,11 +27,18 @@ export default class CustomScriptStore extends VuexModule {
   }
 
   @Mutation
+  public cleanAfterSave() {
+    this.scriptsModified = false;
+    this.removedScriptsPath = [];
+  }
+
+  @Mutation
   public removeScript(scriptPath: string) {
-    const idx = this.scripts.findIndex((entry) => entry.path === scriptPath);
+    const idx = this.scripts.findIndex((entry) => entry.path.replace(/\\/g, "/").endsWith(scriptPath));
     if (idx > -1) {
+      const path = this.scripts[idx].path;
       this.scripts.splice(idx, 1);
-      this.removedScriptsPath.push(scriptPath);
+      this.removedScriptsPath.push(path);
       this.scriptsModified = true;
     }
   }
@@ -39,6 +46,7 @@ export default class CustomScriptStore extends VuexModule {
   @Mutation
   public setCustomScripts(customScripts: CustomScript[]) {
     this.scripts = customScripts;
+    this.scriptsModified = true;
   }
 
   @Mutation
@@ -47,7 +55,7 @@ export default class CustomScriptStore extends VuexModule {
       if (script.path === path) {
         script.content = content;
       }
-    })
+    });
   }
 
   @Action({rawError: true})
@@ -60,10 +68,17 @@ export default class CustomScriptStore extends VuexModule {
       });
   }
 
-  @Action
+  @Action({rawError: true})
   public saveAllScripts() {
-    return Promise.all(this.scripts.map((script) => {
+    const savePromises = this.scripts.map((script) => {
       return FileService.writeFile(script.path, script.content);
-    }));
+    });
+    const deletePromises = this.removedScriptsPath.map((path) => {
+      return FileService.deleteFile(path);
+    });
+    return Promise.all([...savePromises, ...deletePromises])
+      .then(() => {
+        this.context.commit("cleanAfterSave");
+      });
   }
 }

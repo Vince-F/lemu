@@ -35,4 +35,16 @@ export class FileService {
   public static copyFile(originPath: string, destinationPath: string) {
     //
   }
+
+  public static deleteFile(filePath: string) {
+    return new Promise((resolve, reject) => {
+      fs.unlink(filePath, (err: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
 }

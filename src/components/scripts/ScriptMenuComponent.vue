@@ -74,6 +74,8 @@ export default class ScriptMenuComponent extends Vue {
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
   @Mutation("customScriptStore/addScript")
   private readonly addScript!: (payload: {scriptPath: string, content: string}) => void;
+  @Mutation("customScriptStore/removeScript")
+  private readonly removeScript!: (scriptPath: string) => void;
   private items: TreeEntry[];
 
   constructor() {
@@ -105,7 +107,7 @@ export default class ScriptMenuComponent extends Vue {
                   text: "File successfully created",
                   success: true
                 });
-                this.addScript({scriptPath: fullPath, content: ""})
+                this.addScript({scriptPath: fullPath, content: ""});
               }).catch((error) => {
                 this.displaySnackbar({
                   text: error,
@@ -120,7 +122,7 @@ export default class ScriptMenuComponent extends Vue {
   private deleteScript(path: string) {
     ModalService.launchConfirmationModal()
       .then(() => {
-        //
+        this.removeScript(path);
       });
   }
 
@@ -134,7 +136,10 @@ export default class ScriptMenuComponent extends Vue {
   private updateItemsList() {
     const paths = new Map();
     this.scripts.forEach((script) => {
-      const basePath = script.path.replace(this.engineScriptDirectory, "").replace(/\\/g, "/");
+      let basePath = script.path.replace(this.engineScriptDirectory, "").replace(/\\/g, "/");
+      const tmp = this.engineScriptDirectory.replace(/\\/g, "/").split("/");
+      const scriptDirectory = tmp[tmp.length - 1];
+      basePath = scriptDirectory + "/" + basePath;
       const splittedPath = basePath.split("/");
       let currentLevelMap = paths;
       splittedPath.forEach((dirOrFile) => {
@@ -146,17 +151,18 @@ export default class ScriptMenuComponent extends Vue {
         }
       });
     });
-    this.items = this.createTreeItemFromMap(paths, "");
+    this.items = this.createTreeItemFromMap(paths, "", true);
   }
 
-  private createTreeItemFromMap(map: Map<string, Map<string, any>>, path: string) {
+  private createTreeItemFromMap(map: Map<string, Map<string, any>>, path: string, rootDirectory?: boolean) {
     const items: TreeEntry[] = [];
     map.forEach((value, key) => {
+
       items.push({
-        id: path + (path.length > 0 ? "/" : "") + key,
+        id: path + (path.length > 0 ? "/" : "") + (rootDirectory ? "" : key),
         name: key,
         isScript: key.endsWith(".js"),
-        children: this.createTreeItemFromMap(value, path + (path.length > 0 ? "/" : "") + key)
+        children: this.createTreeItemFromMap(value, path + (path.length > 0 ? "/" : "") + (rootDirectory ? "" : key))
       });
     });
     return items;
