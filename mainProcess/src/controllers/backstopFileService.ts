@@ -3,7 +3,6 @@ import fs = require("fs");
 export class BackstopFileService {
   public static async retrieveEngineScripts(path: string) {
     const files = await this.retrieveEngineScriptsName(path);
-    console.log("files found", files);
     return Promise.all(files.map((filePath) => this.createEngineScript(filePath)));
   }
 
@@ -11,7 +10,6 @@ export class BackstopFileService {
     return new Promise((resolve, reject) => {
       fs.readFile(path, {encoding: "utf-8"}, (err, content) => {
         if (err) {
-          console.log(err);
           reject(err.message);
         } else {
           resolve({path, content});
