@@ -115,6 +115,20 @@ export default class ScriptMenuComponent extends Vue {
                 });
               });
             break;
+          case "fromFile":
+              FileService.readFile(result.originFilePath)
+                .then((fileContent: string) => {
+                  this.displaySnackbar({
+                    text: "File successfully created",
+                    success: true
+                  });
+                  this.addScript({scriptPath: fullPath, content: fileContent});
+                }).catch((error) => {
+                  this.displaySnackbar({
+                    text: error,
+                    success: false
+                  });
+                });
         }
       });
   }

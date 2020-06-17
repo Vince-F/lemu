@@ -8,7 +8,7 @@ export class FileService {
     return path.resolve(...paths);
   }
 
-  public static readFile(filePath: string) {
+  public static readFile(filePath: string): Promise<string> {
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, {encoding: "utf-8"}, (err: any, content: string) => {
         if (err) {
@@ -33,7 +33,15 @@ export class FileService {
   }
 
   public static copyFile(originPath: string, destinationPath: string) {
-    //
+    return new Promise((resolve, reject) => {
+      fs.copyFile(originPath, destinationPath, (err: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 
   public static deleteFile(filePath: string) {

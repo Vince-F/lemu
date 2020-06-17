@@ -3,6 +3,7 @@
 ## V1.12.0
 ### New features
 - Add section to manage, add and remove engine scripts
+- Add ability to create script from existing file
 - Add section to view Backstop logs when running tests
 
 ## V1.11.0
