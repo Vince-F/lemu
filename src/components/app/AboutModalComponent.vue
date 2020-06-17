@@ -30,7 +30,7 @@
           text
           @click="dismiss"
         >
-          close
+          Close
         </v-btn>
       </v-card-actions>
     </v-card>

@@ -86,6 +86,20 @@ export class BackstopService {
     });
   }
 
+  public static retrieveEngineScripts(path: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      electron.ipcRenderer.once("engineScripts",
+        (event: any, success: boolean, payload: any) => {
+        if (success) {
+          resolve(payload);
+        } else {
+          reject(payload);
+        }
+      });
+      electron.ipcRenderer.send("retrieveEngineScripts", path);
+    });
+  }
+
   public static retrieveTestsResult(path: string): Promise<BackstopReport> {
     return new Promise((resolve, reject) => {
       electron.ipcRenderer.once("testsResult", (event: any, success: boolean, payload: any) => {

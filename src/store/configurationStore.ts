@@ -43,6 +43,13 @@ export default class ConfigurationStore extends VuexModule {
           FileService.resolvePath([prefixPath, reportPath]) || "";
   }
 
+  public get engineScriptDirectory() {
+    const engineScriptPath = this.currentConfiguration?.paths?.engine_scripts ?? "";
+    const prefixPath = this.configurationPath.substr(0, this.configurationPath.length - "backstop.json".length);
+    return engineScriptPath &&
+          FileService.resolvePath([prefixPath, engineScriptPath]) || "";
+  }
+
   @Mutation
   public addViewport() {
     if (this.currentConfiguration) {
