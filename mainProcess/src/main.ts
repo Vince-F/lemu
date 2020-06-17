@@ -27,7 +27,6 @@ function createWindow() {
     backgroundColor: "#fafafa"
   });
   mainWindow.maximize();
-
   BrowserWindowManager.setInstance(mainWindow);
 
   // mainWindow.loadFile('./dist-app/index.html');

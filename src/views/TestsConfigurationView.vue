@@ -10,21 +10,21 @@
 </template>
 
 <style scoped>
-  .container {
-    display: flex;
-    height: 100%;
-  }
+.container {
+  display: flex;
+  height: 100%;
+}
 
-  .menu {
-    flex: 0;
-    height: 100%;
-  }
-  .content {
-    flex: 1;
-    height: 100%;
-    max-height: 100%;
-    overflow: auto;
-  }
+.menu {
+  flex: 0;
+  height: 100%;
+}
+.content {
+  flex: 1;
+  height: 100%;
+  max-height: 100%;
+  overflow: auto;
+}
 </style>
 
 <script lang="ts">

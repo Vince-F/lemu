@@ -24,5 +24,9 @@ export const eventNames = Object.freeze({
   },
   TEST_LOG: {
     REPLY: "testLog"
+  },
+  RETRIEVE_CUSTOM_SCRIPTS: {
+    REQUEST: "retrieveEngineScripts",
+    REPLY: "engineScripts"
   }
 });
