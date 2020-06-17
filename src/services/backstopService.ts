@@ -86,9 +86,9 @@ export class BackstopService {
     });
   }
 
-  public static retrieveCustomScripts(path: string): Promise<string[]> {
+  public static retrieveEngineScripts(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      electron.ipcRenderer.once("customScripts",
+      electron.ipcRenderer.once("engineScripts",
         (event: any, success: boolean, payload: any) => {
         if (success) {
           resolve(payload);
@@ -96,7 +96,7 @@ export class BackstopService {
           reject(payload);
         }
       });
-      electron.ipcRenderer.send("retrieveCustomScripts", path);
+      electron.ipcRenderer.send("retrieveEngineScripts", path);
     });
   }
 

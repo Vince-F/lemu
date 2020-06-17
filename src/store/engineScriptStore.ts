@@ -1,13 +1,13 @@
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
-import { CustomScript } from '@/models/customScript';
+import { EngineScript } from '@/models/engineScript';
 import { BackstopService } from '@/services/backstopService';
 import { FileService } from "../services/fileService";
 
 @Module({
   namespaced: true
 })
-export default class CustomScriptStore extends VuexModule {
-  private scripts: CustomScript[] = [];
+export default class EngineScriptStore extends VuexModule {
+  private scripts: EngineScript[] = [];
   private removedScriptsPath: string[] = [];
   private scriptsModified: boolean = false;
 
@@ -21,7 +21,7 @@ export default class CustomScriptStore extends VuexModule {
 
   @Mutation
   public addScript({scriptPath, content}: {scriptPath: string, content: string}) {
-    const newScript = new CustomScript(scriptPath, content);
+    const newScript = new EngineScript(scriptPath, content);
     this.scripts.push(newScript);
     this.scriptsModified = true;
   }
@@ -44,8 +44,8 @@ export default class CustomScriptStore extends VuexModule {
   }
 
   @Mutation
-  public setCustomScripts(customScripts: CustomScript[]) {
-    this.scripts = customScripts;
+  public setEngineScripts(engineScripts: EngineScript[]) {
+    this.scripts = engineScripts;
     this.scriptsModified = true;
   }
 
@@ -59,12 +59,12 @@ export default class CustomScriptStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public retrieveCustomScripts() {
+  public retrieveEngineScripts() {
     const engineScriptPath = this.context.rootGetters["configurationStore/engineScriptDirectory"];
 
-    return BackstopService.retrieveCustomScripts(engineScriptPath)
+    return BackstopService.retrieveEngineScripts(engineScriptPath)
       .then((files) => {
-        this.context.commit("setCustomScripts", files);
+        this.context.commit("setEngineScripts", files);
       });
   }
 

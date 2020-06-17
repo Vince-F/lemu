@@ -59,22 +59,22 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, Action, Getter, Mutation } from "vuex-class";
 import { TreeEntry } from "../../models/treeEntry";
-import { CustomScript } from '../../models/customScript';
+import { EngineScript } from '../../models/engineScript';
 import { ModalService } from "../../services/modalService";
 import AddScriptModalComponent from "./AddScriptModalComponent.vue";
 import { FileService } from "../../services/fileService";
 
 @Component
 export default class ScriptMenuComponent extends Vue {
-  @State((state) => state.customScriptStore.scripts)
-  private readonly scripts!: CustomScript[];
+  @State((state) => state.engineScriptStore.scripts)
+  private readonly scripts!: EngineScript[];
   @Getter("configurationStore/engineScriptDirectory")
   private readonly engineScriptDirectory!: string;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
-  @Mutation("customScriptStore/addScript")
+  @Mutation("engineScriptStore/addScript")
   private readonly addScript!: (payload: {scriptPath: string, content: string}) => void;
-  @Mutation("customScriptStore/removeScript")
+  @Mutation("engineScriptStore/removeScript")
   private readonly removeScript!: (scriptPath: string) => void;
   private items: TreeEntry[];
 
@@ -128,7 +128,7 @@ export default class ScriptMenuComponent extends Vue {
 
   private selectScript([path]: [string]) {
     if (path.endsWith(".js")) {
-      this.$router.push(`/tests/customScripts/${encodeURIComponent(path)}`);
+      this.$router.push(`/tests/engineScripts/${encodeURIComponent(path)}`);
     }
   }
 

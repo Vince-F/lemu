@@ -52,8 +52,8 @@ const routes = [
         component: ReportView
       },
       {
-        path: "customScripts",
-        name: "customScripts",
+        path: "engineScripts",
+        name: "engineScripts",
         component: ScriptView,
         children: [
           {

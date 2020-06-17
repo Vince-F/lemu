@@ -47,8 +47,8 @@ import ScriptMenuComponent from "../components/scripts/ScriptMenuComponent.vue";
   }
 })
 export default class ScriptView extends Vue {
-  @Action("customScriptStore/retrieveCustomScripts")
-  private readonly retrieveCustomScripts!: () => Promise<void>;
+  @Action("engineScriptStore/retrieveEngineScripts")
+  private readonly retrieveEngineScripts!: () => Promise<void>;
   private loading: boolean;
 
   constructor() {
@@ -57,7 +57,7 @@ export default class ScriptView extends Vue {
   }
 
   private created() {
-    this.retrieveCustomScripts()
+    this.retrieveEngineScripts()
       .catch((error) => {
         console.error("Fail to load scripts", error);
       })

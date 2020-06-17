@@ -45,7 +45,7 @@ electron.ipcMain.on(eventNames.RETRIEVE_TEST_RESULT.REQUEST, (event, path) => {
 });
 
 electron.ipcMain.on(eventNames.RETRIEVE_CUSTOM_SCRIPTS.REQUEST, (event, path) => {
-  BackstopFileService.retrieveCustomScripts(path)
+  BackstopFileService.retrieveEngineScripts(path)
     .then((files: string[]) => {
       event.reply(eventNames.RETRIEVE_CUSTOM_SCRIPTS.REPLY, true, files);
     }).catch((error) => {

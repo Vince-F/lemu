@@ -1,19 +1,19 @@
 <template>
-  <v-card v-if="customScriptData" class="card">
+  <v-card v-if="engineScriptData" class="card">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
       {{scriptName}}
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
       <v-text-field
         label="Path"
-        :value="customScriptData.path"
+        :value="engineScriptData.path"
         readonly
         ></v-text-field>
 
       <monaco-editor 
         theme="vs-dark"
         language="javascript"
-        :value="customScriptData.content"
+        :value="engineScriptData.content"
         @change="updateScriptContent"/>
     </v-card-text>
   </v-card>
@@ -38,7 +38,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Getter, Mutation } from "vuex-class";
-import { CustomScript } from '../../models/customScript';
+import { EngineScript } from '../../models/engineScript';
 import MonacoEditor from 'monaco-editor-vue';
 
 @Component({
@@ -47,19 +47,19 @@ import MonacoEditor from 'monaco-editor-vue';
   }
 })
 export default class ScriptViewComponent extends Vue {
-  @Getter("customScriptStore/getScript")
-  private readonly getScript!: (path: string) => CustomScript;
-  @Mutation("customScriptStore/setScriptContent")
+  @Getter("engineScriptStore/getScript")
+  private readonly getScript!: (path: string) => EngineScript;
+  @Mutation("engineScriptStore/setScriptContent")
   private readonly setScriptContent!: (payload: {path: string, content: string}) => void;
-  private customScriptData: CustomScript;
+  private engineScriptData: EngineScript;
 
   constructor() {
     super(arguments);
-    this.customScriptData = new CustomScript("", "");
+    this.engineScriptData = new EngineScript("", "");
   }
 
   private get scriptName() {
-    const path = this.customScriptData.path.split(/\/|\\/);
+    const path = this.engineScriptData.path.split(/\/|\\/);
     return path[path.length - 1];
   }
 
@@ -68,7 +68,7 @@ export default class ScriptViewComponent extends Vue {
   }
 
   private loadScript() {
-    this.customScriptData = this.getScript(decodeURIComponent(this.$route.params.path));
+    this.engineScriptData = this.getScript(decodeURIComponent(this.$route.params.path));
   }
 
   @Watch("$route")
@@ -78,7 +78,7 @@ export default class ScriptViewComponent extends Vue {
 
   private updateScriptContent(newContent: string) {
     this.setScriptContent({
-      path: this.customScriptData.path,
+      path: this.engineScriptData.path,
       content: newContent
     });
   }

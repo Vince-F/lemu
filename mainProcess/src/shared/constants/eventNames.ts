@@ -23,7 +23,7 @@ export const eventNames = Object.freeze({
     REPLY: "testsResult"
   },
   RETRIEVE_CUSTOM_SCRIPTS: {
-    REQUEST: "retrieveCustomScripts",
-    REPLY: "customScripts"
+    REQUEST: "retrieveEngineScripts",
+    REPLY: "engineScripts"
   }
 });

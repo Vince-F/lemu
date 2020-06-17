@@ -86,7 +86,7 @@ export default class AppToolbarComponent extends Vue {
   private readonly runBackstopTests!: () => Promise<any>;
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
-  @Action("customScriptStore/saveAllScripts")
+  @Action("engineScriptStore/saveAllScripts")
   private readonly saveAllScripts!: () => Promise<void>;
 
   private selectedTest: number | null;

@@ -1,4 +1,4 @@
-export class CustomScript {
+export class EngineScript {
   public path: string;
   public content: string;
 
