@@ -7,6 +7,7 @@ import configurationStore from "./configurationStore";
 import applicationStore from "./applicationStore";
 import testResultStore from "./testResultStore";
 import testRunnerStore from "./testRunnerStore";
+import testLogStore from "./testLogStore";
 import engineScriptStore from "./engineScriptStore";
 
 export default new Vuex.Store({
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     applicationStore,
     testResultStore,
     testRunnerStore,
+    testLogStore,
     engineScriptStore
   },
 });

@@ -48,6 +48,7 @@ export default class MainMenuComponent extends Vue {
       {title: "Tests", icon: "mdi-bug", path: "/tests/list"},
       {title: "Custom scripts", icon: "mdi-script", path: "/tests/engineScripts"},
       {title: "Reports", icon: "mdi-clipboard-text", path: "/tests/report"},
+      {title: "Logs", icon: "mdi-file-document", path: "/tests/logs"},
     ];
   }
 

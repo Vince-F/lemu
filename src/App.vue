@@ -55,8 +55,11 @@ export default class App extends Vue {
   private readonly hideSnackbar!: () => void;
   @Action("applicationStore/retrieveAppInfos")
   private readonly retrieveAppInfos!: () => Promise<void>;
+  @Action("testLogStore/initializeLogListener")
+  private readonly initializeLogListener!: () => Promise<void>;
 
   private mounted() {
+    this.initializeLogListener();
     this.retrieveAppInfos()
       .then(() => {
         if (this.appInfos) {
