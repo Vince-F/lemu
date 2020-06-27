@@ -20,7 +20,7 @@ export default class TestResultStore extends VuexModule {
     this.resultExpired = false;
   }
 
-  public get getTestByLabel() {
+  public get getResultByTestLabel() {
     return (labelName: string) => {
       return this.testsResult.filter((testResult: BackstopTestResult) => {
         return testResult.pair.label === labelName;
