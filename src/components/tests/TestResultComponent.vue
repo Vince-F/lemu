@@ -101,8 +101,6 @@ import ZoomableImageComponent from "./ZoomableImageComponent.vue";
 export default class TestResultComponent extends Vue {
   @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
-  @State((state) => state.testResultStore.resultExpired)
-  private readonly resultExpired!: boolean;
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
   @Action("configurationStore/approveTestViewport")

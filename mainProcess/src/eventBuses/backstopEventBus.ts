@@ -53,3 +53,11 @@ electron.ipcMain.on(eventNames.RETRIEVE_CUSTOM_SCRIPTS.REQUEST, (event, path) =>
       event.reply(eventNames.RETRIEVE_CUSTOM_SCRIPTS.REPLY, false, error);
     });
 });
+
+electron.ipcMain.on(eventNames.TEST_RESULT_CHANGED.REQUEST, (event, path) => {
+  BackstopTestResultReader.watchResultChanges(path);
+});
+
+electron.ipcMain.on(eventNames.UNREGISTER_RESULT_WATCHER.REQUEST, (event, path) => {
+  BackstopTestResultReader.unregisterResultWatcher();
+});

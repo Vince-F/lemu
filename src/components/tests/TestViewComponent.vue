@@ -98,6 +98,8 @@ export default class TestViewComponent extends Vue {
   private readonly configuration!: BackstopConfiguration;
   @State((state) => state.configurationStore.configurationPath)
   private readonly path!: string;
+  @State((state) => state.testResultStore.resultExpired)
+  private readonly resultExpired!: boolean;
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
   @Action("testRunnerStore/runTest")
