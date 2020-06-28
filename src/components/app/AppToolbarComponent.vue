@@ -67,6 +67,7 @@ import { ModalService } from '../../services/modalService';
 import AboutModalComponent from "./AboutModalComponent.vue";
 import { BackstopTest } from '../../models/backstopTest';
 import { SearchService } from '../../services/searchService';
+import { BackstopService } from '../../services/backstopService';
 
 @Component({
 
@@ -104,22 +105,25 @@ export default class AppToolbarComponent extends Vue {
       .then((action) => {
         switch (action) {
           case 'discard':
-            this.dismissCurrentConfiguration();
-            this.$router.push("/");
+            this.dismissAndGoToStartScreen();
             break;
           case 'save':
             this.save()
               .then(() => {
-                this.dismissCurrentConfiguration();
-                this.$router.push("/");
+                this.dismissAndGoToStartScreen();
               });
             break;
         }
       });
     } else {
-      this.dismissCurrentConfiguration();
-      this.$router.push("/");
+      this.dismissAndGoToStartScreen();
     }
+  }
+
+  private dismissAndGoToStartScreen() {
+    this.dismissCurrentConfiguration();
+    BackstopService.unregisterResultWatcher();
+    this.$router.push("/");
   }
 
   private displayAbout() {

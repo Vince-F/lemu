@@ -28,5 +28,12 @@ export const eventNames = Object.freeze({
   RETRIEVE_CUSTOM_SCRIPTS: {
     REQUEST: "retrieveEngineScripts",
     REPLY: "engineScripts"
+  },
+  TEST_RESULT_CHANGED: {
+    REQUEST: "watchTestResultsChange",
+    REPLY: "testResultsChanged"
+  },
+  UNREGISTER_RESULT_WATCHER: {
+    REQUEST: "unregisterResultWatcher"
   }
 });

@@ -40,4 +40,11 @@ export default class TestResultStore extends VuexModule {
         this.context.commit("setTestsResult", reportResult.testsResult);
       });
   }
+
+  @Action
+  public watchResultChange() {
+    BackstopService.registerResultWatcher(this.context.rootGetters["configurationStore/htmlReportDirectory"], () => {
+      this.context.commit("expireTestsResult");
+    });
+  }
 }
