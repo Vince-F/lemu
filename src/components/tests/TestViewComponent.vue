@@ -98,6 +98,8 @@ export default class TestViewComponent extends Vue {
   private readonly configuration!: BackstopConfiguration;
   @State((state) => state.configurationStore.configurationPath)
   private readonly path!: string;
+  @State((state) => state.testResultStore.resultExpired)
+  private readonly resultExpired!: boolean;
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
   @Action("testRunnerStore/runTest")
@@ -106,8 +108,8 @@ export default class TestViewComponent extends Vue {
   private readonly testRunning!: boolean;
   @Action("testResultStore/retrieveTestsResult")
   private readonly retrieveTestsResult!: () => Promise<void>;
-  @Getter("testResultStore/getTestByLabel")
-  private readonly getTestByLabel!: (labelName: string) => BackstopTestResult[];
+  @Getter("testResultStore/getResultByTestLabel")
+  private readonly getResultByTestLabel!: (labelName: string) => BackstopTestResult[];
   @Mutation("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
   @Mutation("configurationStore/removeScenario")
@@ -127,7 +129,7 @@ export default class TestViewComponent extends Vue {
   }
 
   private get testResult() {
-    return this.getTestByLabel(this.testContent?.label || "");
+    return this.getResultByTestLabel(this.testContent?.label || "");
   }
 
   private get testStatus() {

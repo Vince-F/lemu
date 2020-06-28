@@ -1,5 +1,11 @@
 # Changelog
 
+## V1.13.0
+### New features
+- Update test result even after a run happening outside of Lemu
+- Display the state of test in the list
+- Improve log readability by adding seperator between test run and hours
+
 ## V1.12.0
 ### New features
 - Add section to manage, add and remove engine scripts

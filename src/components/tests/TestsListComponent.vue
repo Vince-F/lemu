@@ -43,7 +43,18 @@
                 </v-list-item-title>
               </v-list-item-content>
               <v-list-item-action class="my-0 flex-row">
-                 <v-menu offset-y>
+                <div class="icon-container">
+                  <v-icon color="green" v-if="getTestStatus(test.label) === 'pass'">
+                    mdi-check-circle
+                  </v-icon>
+                  <v-icon color="grey" v-else-if="getTestStatus(test.label) === 'unknown'">
+                    mdi-help-circle 
+                  </v-icon>
+                  <v-icon color="red" v-else>
+                    mdi-alert
+                  </v-icon>
+                </div>
+                <v-menu offset-y>
                   <template v-slot:activator="{ on }">
                     <v-btn icon v-on.stop.prevent="on">
                       <v-icon color="grey lighten-1">mdi-dots-vertical</v-icon>
@@ -110,14 +121,20 @@
 .v-list-item__icon.small-icon {
   min-width: 12px;
 }
+
+.icon-container {
+  height: 100%;
+  display: flex;
+}
 </style>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { Getter, Mutation, Action } from "vuex-class";
+import { Vue, Component, Watch } from "vue-property-decorator";
+import { Getter, Mutation, Action, State } from "vuex-class";
 import { BackstopTest } from "../../models/backstopTest";
 import TestViewComponent from "./TestViewComponent.vue";
 import { ModalService } from "../../services/modalService";
+import { BackstopTestResult } from '../../models/backstopTestResult';
 
 @Component({
   name: "tests-list-component",
@@ -126,6 +143,8 @@ import { ModalService } from "../../services/modalService";
   }
 })
 export default class TestsListComponent extends Vue {
+  @State((state) => state.testResultStore.resultExpired)
+  private readonly resultExpired!: boolean;
   @Mutation("configurationStore/addScenario")
   private readonly addScenario!: () => void;
   @Mutation("configurationStore/duplicateScenario")
@@ -136,13 +155,18 @@ export default class TestsListComponent extends Vue {
   private readonly tests!: BackstopTest[];
   @Getter("configurationStore/hasTestBeenModified")
   private readonly hasTestBeenModified!: (idx: number) => boolean;
+  @Getter("testResultStore/getResultByTestLabel")
+  private readonly getResultByTestLabel!: (labelName: string) => BackstopTestResult[];
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
   @Action("testRunnerStore/runTest")
   private readonly runTest!: (testLabel: string) => Promise<any>;
+  @Action("testResultStore/retrieveTestsResult")
+  private readonly retrieveTestsResult!: () => Promise<void>;
 
   private mounted() {
     this.setMenuResizable();
+    this.retrieveTestsResult();
   }
 
   private deleteTest(testIndex: number) {
@@ -151,6 +175,19 @@ export default class TestsListComponent extends Vue {
         this.removeScenario(testIndex);
         this.$router.push("/tests/list");
       });
+  }
+
+  private getTestStatus(testLabel: string) {
+    const testResults = this.getResultByTestLabel(testLabel);
+    let status = 'unknown';
+    testResults.forEach((result) => {
+      if (result.status === "pass" && status === "unknown") {
+        status = "pass";
+      } else if (result.status !== "pass") {
+        status = 'failed';
+      }
+    });
+    return status;
   }
 
   private openTestDetails(testIndex: number) {
@@ -188,6 +225,11 @@ export default class TestsListComponent extends Vue {
         }
       }
     }
+  }
+
+  @Watch('resultExpired')
+  private updateTestResult() {
+    this.retrieveTestsResult();
   }
 }
 </script>

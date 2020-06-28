@@ -1,6 +1,8 @@
 import fs = require("fs");
 import vm = require("vm");
 import path = require("path");
+import { BrowserWindowManager } from "./browserWindowManager";
+import { eventNames } from "../shared/constants/eventNames";
 
 export class BackstopTestResultReader {
   public static retrieveReportResult(reportPath: string) {
@@ -9,6 +11,20 @@ export class BackstopTestResultReader {
         return this.executeReportResult(content);
       });
   }
+
+  public static watchResultChanges(reportPath: string) {
+    this.resultFileWatcher = fs.watch(path.join(reportPath, "config.js"));
+
+    this.resultFileWatcher.on("change", (eventType) => {
+      BrowserWindowManager.sendEvent(eventNames.TEST_RESULT_CHANGED.REPLY);
+    });
+  }
+
+  public static unregisterResultWatcher() {
+    this.resultFileWatcher.close();
+  }
+
+  private static resultFileWatcher: fs.FSWatcher;
 
   private static openReportResult(reportPath: string): Promise<string> {
     return new Promise((resolve, reject) => {

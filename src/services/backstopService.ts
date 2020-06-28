@@ -112,4 +112,15 @@ export class BackstopService {
       electron.ipcRenderer.send("retrieveTestsResult", path);
     });
   }
+
+  public static registerResultWatcher(path: string, cb: () => void) {
+    electron.ipcRenderer.on("testResultsChanged", () => {
+      cb();
+    });
+    electron.ipcRenderer.send("watchTestResultsChange", path);
+  }
+
+  public static unregisterResultWatcher() {
+    electron.ipcRenderer.send("unregisterResultWatcher");
+  }
 }
