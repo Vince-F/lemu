@@ -6,11 +6,11 @@ const electron = window.require("electron");
   namespaced: true
 })
 export default class TestLogStore extends VuexModule {
-  public logs: string[] = [];
+  public logs: Array<{message: string, time: Date, level: string}> = [];
 
   @Mutation
-  public addLog(log: string) {
-    this.logs.push(log);
+  public addLog(log: {message: string, level: string}) {
+    this.logs.push({message: log.message, level: log.level, time: new Date()});
   }
 
   @Mutation
@@ -23,7 +23,7 @@ export default class TestLogStore extends VuexModule {
     electron.ipcRenderer.on("testLog", (event: EventListenerOrEventListenerObject,
                                         data: {level: "info" | "error", message: string}) => {
       const message = ( data.level === "error" ? "ERROR: " : "" ) + data.message;
-      this.context.commit("addLog", message);
+      this.context.commit("addLog", {message, level: data.level});
     });
   }
 }
