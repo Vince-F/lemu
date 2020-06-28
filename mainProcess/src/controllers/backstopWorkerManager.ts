@@ -25,6 +25,10 @@ export class BackstopWorkerManager {
             }
             worker.terminate();
           });
+          BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
+            level: "divider",
+            message: ""
+          });
           worker.postMessage({
             command,
             options
