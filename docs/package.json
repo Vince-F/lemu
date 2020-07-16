@@ -1,0 +1,21 @@
+{
+  "name": "lemu-doc",
+  "version": "0.0.1",
+  "description": "User guide for Lemu app",
+  "main": "index.js",
+  "authors": {
+    "name": "Vincent Francolin",
+    "email": ""
+  },
+  "repository": "/lemu-doc",
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.3.1",
+    "@vuepress/plugin-back-to-top": "^1.3.1",
+    "@vuepress/plugin-medium-zoom": "^1.3.1"
+  }
+}
