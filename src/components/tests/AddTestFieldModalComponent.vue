@@ -6,47 +6,54 @@
     <v-card>
       <v-card-title class="headline">Add field</v-card-title>
       <v-card-text>
-        <v-select
-          :items="modes"
-          label="Mode"
-          v-model="currentMode"
-        ></v-select>
-        <div v-if="currentMode === 'custom'">
-          <v-text-field
-            label="Field name"
-            v-model="fieldName"
-            ></v-text-field>
+        <v-form
+          v-model="valid"
+          ref="form">
           <v-select
-            :items="types"
-            label="Type"
-            v-model="fieldType"
-            @change="updateNewValueType"
+            :items="modes"
+            label="Mode"
+            v-model="currentMode"
           ></v-select>
-        </div>
-        <div v-else-if="currentMode === 'pre-defined'">
-          <v-select
-            :items="predefinedFields"
-            label="Predefined field"
-            v-model="selectedField"
-            item-text="name"
-            :messages="helpMessage"
-            return-object
-            @change="updateNewValueTypeWithPredefinedField"
-          ></v-select>                
-        </div>
-        <v-text-field
-          v-if="fieldType === 'number'" label="Value" 
-          type="number" v-model="fieldValue"
-          ></v-text-field>
-        <v-checkbox v-else-if="fieldType === 'boolean'" label="Value"
-          v-model="fieldValue"
-          ></v-checkbox>
-        <v-combobox v-else-if="fieldType === 'array'" multiple chips
+          <div v-if="currentMode === 'custom'">
+            <v-text-field
+              label="Field name"
+              v-model="fieldName"
+              :rules="fieldNameRules"
+              ></v-text-field>
+            <v-select
+              :items="types"
+              label="Type"
+              v-model="fieldType"
+              @change="updateNewValueType"
+              :rules="typeRules"
+            ></v-select>
+          </div>
+          <div v-else-if="currentMode === 'pre-defined'">
+            <v-select
+              :items="predefinedFields"
+              label="Predefined field"
+              v-model="selectedField"
+              item-text="name"
+              :messages="helpMessage"
+              return-object
+              @change="updateNewValueTypeWithPredefinedField"
+              :rules="predefinedFieldRules"
+            ></v-select>                
+          </div>
+          <v-text-field
+            v-if="fieldType === 'number'" label="Value" 
+            type="number" v-model="fieldValue"
+            ></v-text-field>
+          <v-checkbox v-else-if="fieldType === 'boolean'" label="Value"
+            v-model="fieldValue"
+            ></v-checkbox>
+          <v-combobox v-else-if="fieldType === 'array'" multiple chips
+            label="Value" v-model="fieldValue"
+            ></v-combobox>
+          <v-text-field v-else 
           label="Value" v-model="fieldValue"
-          ></v-combobox>
-        <v-text-field v-else 
-          label="Value" v-model="fieldValue"
           ></v-text-field>
+        </v-form>
       </v-card-text>
 
       <v-card-actions>
@@ -86,7 +93,11 @@ export default class AddTestFieldModalComponent extends Vue {
   private selectedField: {name: string,  type: "string" | "number" | "array" | "boolean" } | null;
   private fieldName: string;
   private fieldType: string;
+  private valid: boolean;
   private fieldValue: number | boolean | string | string[];
+  private fieldNameRules: Array<(value: string) => boolean | string>;
+  private typeRules: Array<(value: any) => boolean | string>;
+  private predefinedFieldRules: Array<(value: any) => boolean | string>;
 
   constructor() {
     super(arguments);
@@ -100,6 +111,20 @@ export default class AddTestFieldModalComponent extends Vue {
     this.fieldType = "";
     this.fieldValue = "";
     this.selectedField = null;
+
+    this.valid = false;
+
+    this.fieldNameRules = [
+      (value: string) => value.length > 0 || "The field name must not be empty"
+    ];
+
+    this.typeRules = [
+      (value: any) => !!value || "You must choose a type"
+    ];
+
+    this.predefinedFieldRules = [
+      (value: any) => !!value || "You must choose a field"
+    ]
   }
 
   private get helpMessage() {
@@ -110,12 +135,15 @@ export default class AddTestFieldModalComponent extends Vue {
   }
 
   private addField() {
-    this.dialogDisplayed = false;
-    this.$emit("validate", {
-      name: this.fieldName,
-      value: this.fieldValue,
-      type: this.fieldType
-    });
+    (this.$refs.form as any).validate(); // this is Veutify v-form component
+    if (this.valid) {
+      this.dialogDisplayed = false;
+      this.$emit("validate", {
+        name: this.fieldName,
+        value: this.fieldValue,
+        type: this.fieldType
+      });
+    }
   }
 
   private dismiss() {
