@@ -1,4 +1,4 @@
-# Getting started
+# Navigating around LEMU
 
 ## Start screen
 

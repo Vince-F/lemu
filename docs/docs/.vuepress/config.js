@@ -46,9 +46,16 @@ module.exports = {
           children: [
             '',
             'getting-started',
+            'write-first-test'
+          ]
+        },
+        {
+          title: "General configuration",
+          children: [
+            'general-configration'
           ]
         }
-      ],
+      ]
     }
   },
 
