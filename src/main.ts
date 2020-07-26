@@ -13,6 +13,12 @@ import "./styles/main.css";
 declare global {
   interface Window {
     vueApp: any;
+    ipcHandler: {
+      send: (channel: string, ...args: any[]) => void;
+      receive: (channel: string, callback: (...args: any[]) => void) => void;
+      receiveOnce: (channel: string, callback: (...args: any[]) => void) => void;
+      invoke: (channel: string, ...args: any[]) => Promise<any>;
+    };
   }
 }
 

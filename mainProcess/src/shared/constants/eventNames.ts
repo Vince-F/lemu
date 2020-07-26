@@ -35,5 +35,8 @@ export const eventNames = Object.freeze({
   },
   UNREGISTER_RESULT_WATCHER: {
     REQUEST: "unregisterResultWatcher"
-  }
+  },
+  FILE_DIALOG: "openFileDialog",
+  DIRECTORY_DIALOG: "openDirectoryDialog",
+  OPEN_FILE_AND_PARSE: "openFileAndParse"
 });
