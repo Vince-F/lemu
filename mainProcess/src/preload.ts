@@ -1,26 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
 
-class IpcHandler {
-  public send(channel: string, ...args: any[]) {
-    ipcRenderer.send(channel, ...args);
-  }
-
-  public sendSync(channel: string, ...args: any[]) {
-    return ipcRenderer.sendSync(channel, ...args);
-  }
-
-  public receive(channel: string, callback: (...args: any[]) => void) {
-    ipcRenderer.on(channel, (event, ...args) => callback(event, ...args));
-  }
-
-  public receiveOnce(channel: string, callback: (...args: any[]) => void) {
-    ipcRenderer.once(channel, (event, ...args) => callback(event, ...args));
-  }
-
-  public invoke(channel: string, ...args: any[]) {
-    return ipcRenderer.invoke(channel, ...args);
-  }
-}
 
 declare global {
   interface Window {
@@ -34,8 +13,28 @@ declare global {
   }
 }
 
-window.ipcHandler = new IpcHandler();
+const ipcHandler = {
+  send: (channel: string, ...args: any[]) => {
+    ipcRenderer.send(channel, ...args);
+  },
 
-/*contextBridge.exposeInMainWorld(
-  "ipcHandler", new IpcHandler()
-);*/
+  sendSync: (channel: string, ...args: any[]) => {
+    return ipcRenderer.sendSync(channel, ...args);
+  },
+
+  receive: (channel: string, callback: (...args: any[]) => void) => {
+    ipcRenderer.on(channel, (event, ...args) => callback(event, ...args));
+  },
+
+  receiveOnce: (channel: string, callback: (...args: any[]) => void) => {
+    ipcRenderer.once(channel, (event, ...args) => callback(event, ...args));
+  },
+
+  invoke: (channel: string, ...args: any[]) => {
+    return ipcRenderer.invoke(channel, ...args);
+  }
+};
+
+contextBridge.exposeInMainWorld(
+  "ipcHandler", ipcHandler
+);

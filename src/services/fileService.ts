@@ -1,6 +1,3 @@
-// @ts-ignore
-const path = window.require("path");
-
 export class FileService {
   public static resolvePath(paths: string[]) {
     return window.ipcHandler.sendSync("resolvePath", paths);
