@@ -111,7 +111,7 @@ export class BackstopService {
   }
 
   public static registerResultWatcher(path: string, cb: () => void) {
-    electron.ipcRenderer.on("testResultsChanged", () => {
+    window.ipcHandler.receive("testResultsChanged", () => {
       cb();
     });
     window.ipcHandler.send("watchTestResultsChange", path);

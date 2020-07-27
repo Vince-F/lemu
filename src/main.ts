@@ -15,6 +15,7 @@ declare global {
     vueApp: any;
     ipcHandler: {
       send: (channel: string, ...args: any[]) => void;
+      sendSync: (channel: string, ...args: any[]) => any;
       receive: (channel: string, callback: (...args: any[]) => void) => void;
       receiveOnce: (channel: string, callback: (...args: any[]) => void) => void;
       invoke: (channel: string, ...args: any[]) => Promise<any>;

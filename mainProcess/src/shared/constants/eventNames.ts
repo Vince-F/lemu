@@ -38,5 +38,10 @@ export const eventNames = Object.freeze({
   },
   FILE_DIALOG: "openFileDialog",
   DIRECTORY_DIALOG: "openDirectoryDialog",
-  OPEN_FILE_AND_PARSE: "openFileAndParse"
+  OPEN_FILE_AND_PARSE: "openFileAndParse",
+  COPY_FILE: "copyFile",
+  DELETE_FILE: "deleteFile",
+  READ_FILE: "readFile",
+  RESOLVE_PATH: "resolvePath",
+  WRITE_FILE: "writeFile"
 });
