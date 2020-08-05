@@ -70,8 +70,8 @@ export default class AddScriptModalComponent extends Vue {
   private fileToCopy: ElectronFile | null;
   private fileName: string;
   private valid: boolean;
-  private filenameRules: Function[];
-  private fileRules: Function[];
+  private filenameRules: Array<(value: string) => boolean | string>;
+  private fileRules: Array<(value: File) => boolean | string>;
 
   constructor() {
     super(arguments);

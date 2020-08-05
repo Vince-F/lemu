@@ -21,8 +21,10 @@ function createWindow() {
     height: 0,
     icon: path.join(__dirname, "../../icon.png"),
     webPreferences: {
-      nodeIntegration: true,
-      webSecurity: false
+      nodeIntegration: false,
+      webSecurity: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, "preload.js")
     },
     backgroundColor: "#fafafa"
   });

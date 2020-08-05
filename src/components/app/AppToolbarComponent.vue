@@ -39,6 +39,11 @@
       </template>
     </v-btn>
 
+    <v-btn text v-on:click="openConfig">
+      <v-icon>mdi-folder-open</v-icon>
+      Open...
+    </v-btn>
+
     <v-btn text v-on:click="save" v-if="hasConfiguration">
       <v-icon>mdi-content-save</v-icon>
       Save
@@ -57,6 +62,10 @@
 <style scoped>
   .search-container {
     margin-top: 24px;
+  }
+
+  .v-btn .v-icon {
+    margin-right: 8px;
   }
 </style>
 
@@ -89,6 +98,8 @@ export default class AppToolbarComponent extends Vue {
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
   @Action("engineScriptStore/saveAllScripts")
   private readonly saveAllScripts!: () => Promise<void>;
+  @Action("configurationStore/openConfiguration")
+  private openConfiguration!: () => Promise<any>;
 
   private selectedTest: number | null;
   private foundTests: any[];
@@ -134,6 +145,38 @@ export default class AppToolbarComponent extends Vue {
 
   private goToTest() {
     this.$router.push(`/tests/list/test/${this.selectedTest}`);
+  }
+
+  private openConfig() {
+    if (this.hasConfigurationBeenModified) {
+      ModalService.launchSaveConfirmationModal()
+      .then((action) => {
+        switch (action) {
+          case 'discard':
+            this.openConfigAndGoToTestView();
+            break;
+          case 'save':
+            this.save()
+              .then(() => {
+                this.openConfigAndGoToTestView();
+              });
+            break;
+        }
+      });
+    } else {
+      this.openConfigAndGoToTestView();
+    }
+  }
+
+  private openConfigAndGoToTestView() {
+    this.openConfiguration()
+      .then((fileContent) => {
+        this.$router.push("/tests/generalConfig");
+      }).catch((error) => {
+        if (typeof error !== "string" || error !== "dismiss") {
+          this.displaySnackbar({text: "Failed to open file. " + error, success: false});
+        }
+      });
   }
 
   private runTests() {

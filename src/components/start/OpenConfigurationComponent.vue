@@ -29,24 +29,12 @@
         </v-card-text>
       </v-card>
     </v-row>
-    <v-snackbar v-model="snackbarDisplayed">
-      <v-icon color="red">
-        mdi-alert
-      </v-icon>
-      {{ snackbarText }}
-      <v-btn
-        color="white"
-        text @click="snackbarDisplayed = false"
-      >
-        Close
-      </v-btn>
-    </v-snackbar>
   </v-container>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Action } from "vuex-class";
+import { Action, Mutation } from "vuex-class";
 import {DialogFileService} from "../../services/dialogFileService";
 
 @Component({
@@ -54,21 +42,19 @@ import {DialogFileService} from "../../services/dialogFileService";
 })
 export default class OpenConfigurationComponent extends Vue {
   @Action("configurationStore/openConfiguration")
-  private openConfiguration!: () => Promise<any>;
+  private readonly openConfiguration!: () => Promise<any>;
   @Action("configurationStore/openConfigurationFromPath")
-  private openConfigurationFromPath!: (path: string) => Promise<any>;
+  private readonly openConfigurationFromPath!: (path: string) => Promise<any>;
   @Action("configurationStore/initConfig")
-  private initTests!: () => Promise<void>;
+  private readonly initTests!: () => Promise<void>;
+  @Mutation("applicationStore/displaySnackbar")
+  private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
-  private snackbarDisplayed: boolean;
-  private snackbarText: string;
   private recentlyOpened: string[];
 
   constructor() {
     super(arguments);
 
-    this.snackbarDisplayed = false;
-    this.snackbarText = "";
     this.recentlyOpened = [];
   }
 
@@ -86,8 +72,7 @@ export default class OpenConfigurationComponent extends Vue {
         this.$router.push("/tests/generalConfig");
       }).catch((error) => {
         if (typeof error !== "string" || error !== "dismiss") {
-          this.snackbarDisplayed = true;
-          this.snackbarText = "Failed to open file. " + error;
+          this.displaySnackbar({text: "Failed to open file. " + error, success: false});
         }
       });
   }
@@ -98,8 +83,7 @@ export default class OpenConfigurationComponent extends Vue {
         this.$router.push("/tests/generalConfig");
       }).catch((error) => {
         if (typeof error !== "string" || error !== "dismiss") {
-          this.snackbarDisplayed = true;
-          this.snackbarText = "Failed to open file. " + error;
+          this.displaySnackbar({text: "Failed to open file. " + error, success: false});
         }
       });
   }
@@ -110,8 +94,7 @@ export default class OpenConfigurationComponent extends Vue {
         this.$router.push("/tests/generalConfig");
       }).catch((error) => {
         if (typeof error !== "string" || error !== "dismiss") {
-          this.snackbarDisplayed = true;
-          this.snackbarText = "Failed to open file. " + error;
+          this.displaySnackbar({text: "Failed to open file. " + error, success: false});
         }
       });
   }

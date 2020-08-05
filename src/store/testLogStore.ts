@@ -1,6 +1,4 @@
 import { Module, VuexModule, Action, Mutation } from "vuex-module-decorators";
-// @ts-ignore
-const electron = window.require("electron");
 
 @Module({
   namespaced: true
@@ -20,7 +18,7 @@ export default class TestLogStore extends VuexModule {
 
   @Action
   public initializeLogListener() {
-    electron.ipcRenderer.on("testLog", (event: EventListenerOrEventListenerObject,
+    window.ipcHandler.receive("testLog", (event: EventListenerOrEventListenerObject,
                                         data: {level: "info" | "error", message: string}) => {
       const message = ( data.level === "error" ? "ERROR: " : "" ) + data.message;
       this.context.commit("addLog", {message, level: data.level});
