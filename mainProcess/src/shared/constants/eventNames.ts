@@ -35,5 +35,6 @@ export const eventNames = Object.freeze({
   },
   UNREGISTER_RESULT_WATCHER: {
     REQUEST: "unregisterResultWatcher"
-  }
+  },
+  HELP_WINDOW: "helpWindow"
 });

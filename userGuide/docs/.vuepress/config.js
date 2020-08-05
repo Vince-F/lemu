@@ -10,13 +10,15 @@ module.exports = {
    */
   description: description,
 
+  base: "/",
+
   /**
    * Extra tags to be injected to the page HTML `<head>`
    *
    * ref：https://v1.vuepress.vuejs.org/config/#head
    */
   head: [
-    ['meta', { name: 'theme-color', content: '#3eaf7c' }],
+    ['meta', { name: 'theme-color', content: '#1976d2' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }]
   ],
@@ -27,6 +29,7 @@ module.exports = {
    * ref：https://v1.vuepress.vuejs.org/theme/default-theme-config.html
    */
   themeConfig: {
+    logo: '/logo.png',
     repo: '',
     editLinks: false,
     docsDir: '',
@@ -36,6 +39,18 @@ module.exports = {
       {
         text: 'Guide',
         link: '/guide/',
+      },
+      {
+        text: 'Changelog',
+        link: 'https://github.com/Vince-F/lemu/blob/master/CHANGELOG.md'
+      },
+      {
+        text: 'Releases',
+        link: 'https://github.com/Vince-F/lemu/releases'
+      },
+      {
+        text: 'Github',
+        link: 'https://github.com/Vince-F/lemu'
       }
     ],
     sidebar: {
@@ -51,8 +66,39 @@ module.exports = {
         },
         {
           title: "General configuration",
+          collapsable: false,
           children: [
-            'general-configration'
+            'general-configuration'
+          ]
+        },
+        {
+          title: "Tests",
+          collapsable: false,
+          children: [
+            'test-view',
+            'test-configuration',
+            'test-result'
+          ]
+        },
+        {
+          title: "Engine scripts",
+          collapsable: false,
+          children: [
+            'engine-scripts'
+          ]
+        },
+        {
+          title: 'Report',
+          collapsable: false,
+          children: [
+            'report'
+          ]
+        },
+        {
+          title: 'Logs',
+          collapsable: false,
+          children: [
+            'logs'
           ]
         }
       ]

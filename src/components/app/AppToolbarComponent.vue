@@ -128,6 +128,8 @@ export default class AppToolbarComponent extends Vue {
 
   private displayAbout() {
     ModalService.launchModal(AboutModalComponent);
+    const ipcRenderer = window.require("electron").ipcRenderer;
+    ipcRenderer.send("helpWindow");
   }
 
   private goToTest() {
