@@ -1,5 +1,13 @@
 # Changelog
 
+## V1.14.0
+### New features
+- Add open button to open a config file from toolbar
+- Add user guide 
+### Improvments
+- Improve application security
+- Make application faster, especially on file dialog opening
+
 ## V1.13.0
 ### New features
 - Update test result even after a run happening outside of Lemu
