@@ -32,17 +32,16 @@ const routes = [
       },
       {
         path: "list",
-        name: "testsList",
         component: TestsListComponent,
         children: [
           {
             path: "",
-            name: "testWelcome",
+            name: "tests.welcome",
             component: TestWelcomeScreenComponent
           },
           {
             path: "test/:index",
-            name: "testView",
+            name: "tests.view",
             component: TestViewComponent
           }
         ]

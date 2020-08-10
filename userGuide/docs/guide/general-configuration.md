@@ -24,3 +24,11 @@ Engine section will allow you to configure all things related to the headless br
 You can choose which engine to use to run your tests.
 
 Engine options are the arguments to passed to the engine. 
+
+## Report
+This section allows to configure which format of report you want. BackstopJS supports 3 formats:
+- HTML report
+- CI report (for continuous integration server)
+- JSON report
+
+You can also configure the path where those reports will be saved.

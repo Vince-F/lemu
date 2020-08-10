@@ -39,6 +39,11 @@
       </template>
     </v-btn>
 
+    <v-btn text v-on:click="openConfig">
+      <v-icon>mdi-folder-open</v-icon>
+      Open...
+    </v-btn>
+
     <v-btn text v-on:click="save" v-if="hasConfiguration">
       <v-icon>mdi-content-save</v-icon>
       Save
@@ -47,16 +52,42 @@
       <v-icon>mdi-exit-to-app</v-icon>
       Close
     </v-btn>
-    <v-btn text v-on:click="displayAbout">
-      <v-icon>mdi-information</v-icon>
-      About
-    </v-btn>
+    <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          text
+          v-bind="attrs"
+          v-on="on"
+        >
+          <v-icon>mdi-dots-vertical</v-icon>
+          More
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item @click="displayAbout">
+          <v-list-item-icon>
+            <v-icon>mdi-information</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>About</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="displayHelp">
+          <v-list-item-icon>
+            <v-icon>mdi-help</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Help</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-app-bar>
 </template>
 
 <style scoped>
   .search-container {
     margin-top: 24px;
+  }
+
+  .v-btn .v-icon {
+    margin-right: 8px;
   }
 </style>
 
@@ -89,6 +120,8 @@ export default class AppToolbarComponent extends Vue {
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
   @Action("engineScriptStore/saveAllScripts")
   private readonly saveAllScripts!: () => Promise<void>;
+  @Action("configurationStore/openConfiguration")
+  private openConfiguration!: () => Promise<any>;
 
   private selectedTest: number | null;
   private foundTests: any[];
@@ -130,8 +163,44 @@ export default class AppToolbarComponent extends Vue {
     ModalService.launchModal(AboutModalComponent);
   }
 
+  private displayHelp() {
+    window.ipcHandler.send("helpWindow");
+  }
+
   private goToTest() {
     this.$router.push(`/tests/list/test/${this.selectedTest}`);
+  }
+
+  private openConfig() {
+    if (this.hasConfigurationBeenModified) {
+      ModalService.launchSaveConfirmationModal()
+      .then((action) => {
+        switch (action) {
+          case 'discard':
+            this.openConfigAndGoToTestView();
+            break;
+          case 'save':
+            this.save()
+              .then(() => {
+                this.openConfigAndGoToTestView();
+              });
+            break;
+        }
+      });
+    } else {
+      this.openConfigAndGoToTestView();
+    }
+  }
+
+  private openConfigAndGoToTestView() {
+    this.openConfiguration()
+      .then((fileContent) => {
+        this.$router.push("/tests/generalConfig");
+      }).catch((error) => {
+        if (typeof error !== "string" || error !== "dismiss") {
+          this.displaySnackbar({text: "Failed to open file. " + error, success: false});
+        }
+      });
   }
 
   private runTests() {

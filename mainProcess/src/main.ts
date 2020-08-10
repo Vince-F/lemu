@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron';
+import { app, BrowserWindow, Menu, protocol } from 'electron';
 import { autoUpdater } from "electron-updater";
 
 import path = require("path");
@@ -21,8 +21,10 @@ function createWindow() {
     height: 0,
     icon: path.join(__dirname, "../../icon.png"),
     webPreferences: {
-      nodeIntegration: true,
-      webSecurity: false
+      nodeIntegration: false,
+      webSecurity: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, "preload.js")
     },
     backgroundColor: "#fafafa"
   });
@@ -38,10 +40,36 @@ function createWindow() {
   });
 }
 
+function registerDocProtocol() {
+  protocol.registerFileProtocol('doc', (request, callback) => {
+    let url = request.url.substr("doc://".length);
+    url = url.replace("-/", "");
+    // because vuepress uses HTML5 history mode, current page gets in the way
+    // for now we get rid of it the stupid way
+    url = url.replace("guide/", "");
+    if (url.endsWith("/") || url === "") {
+      url += "index.html";
+    }
+    console.log("request url from doc is", url);
+    callback({ path: path.normalize(`./dist-app/docs/${url}`) });
+  }, (error) => {
+    if (error) {
+      console.error("Fail to register doc protocol");
+    }
+  });
+}
+
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'doc', privileges: { secure: true, standard: true } }
+]);
+
 // for notification
 app.setAppUserModelId(process.execPath);
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+  registerDocProtocol();
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

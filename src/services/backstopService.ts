@@ -1,17 +1,14 @@
 import { BackstopConfiguration } from '@/models/backstopConfiguration';
 import { BackstopReport } from '@/models/backstopReport';
 
-// @ts-ignore
-const electron = window.require("electron");
-
 export class BackstopService {
   public static setWorkingDir(path: string) {
-    electron.ipcRenderer.send("setWorkingDir", path);
+    window.ipcHandler.send("setWorkingDir", path);
   }
 
   public static runTests(config: BackstopConfiguration) {
     return new Promise((resolve, reject) => {
-      electron.ipcRenderer.once("testFinished", (event: any, success: boolean, payload: any) => {
+      window.ipcHandler.receiveOnce("testFinished", (event: any, success: boolean, payload: any) => {
           if (success) {
             resolve(payload);
             new Notification('LEMU', {
@@ -24,13 +21,13 @@ export class BackstopService {
             });
           }
       });
-      electron.ipcRenderer.send("runTest", config);
+      window.ipcHandler.send("runTest", config);
     });
   }
 
   public static runTest(config: BackstopConfiguration, testLabel: string) {
     return new Promise((resolve, reject) => {
-      electron.ipcRenderer.once("testFinished", (event: any, success: boolean, payload: any) => {
+      window.ipcHandler.receiveOnce("testFinished", (event: any, success: boolean, payload: any) => {
           if (success) {
             resolve(payload);
             new Notification('LEMU', {
@@ -43,52 +40,52 @@ export class BackstopService {
             });
           }
       });
-      electron.ipcRenderer.send("runTest", config, testLabel);
+      window.ipcHandler.send("runTest", config, testLabel);
     });
   }
 
   public static approveTests(config: BackstopConfiguration) {
     return new Promise((resolve, reject) => {
-      electron.ipcRenderer.once("approvalFinished", (event: any, success: boolean, payload: any) => {
+      window.ipcHandler.receiveOnce("approvalFinished", (event: any, success: boolean, payload: any) => {
         if (success) {
           resolve();
         } else {
           reject(payload);
         }
       });
-      electron.ipcRenderer.send("approveTest", config);
+      window.ipcHandler.send("approveTest", config);
     });
   }
 
   public static approveTest(config: BackstopConfiguration, testLabel: string, viewportLabel?: string) {
     return new Promise((resolve, reject) => {
-      electron.ipcRenderer.once("approvalFinished", (event: any, success: boolean, payload: any) => {
+      window.ipcHandler.receiveOnce("approvalFinished", (event: any, success: boolean, payload: any) => {
         if (success) {
           resolve();
         } else {
           reject(payload);
         }
       });
-      electron.ipcRenderer.send("approveTest", config, testLabel, viewportLabel);
+      window.ipcHandler.send("approveTest", config, testLabel, viewportLabel);
     });
   }
 
   public static initTests(path: string) {
     return new Promise((resolve, reject) => {
-      electron.ipcRenderer.once("initFinished", (event: any, success: boolean, payload: any) => {
+      window.ipcHandler.receiveOnce("initFinished", (event: any, success: boolean, payload: any) => {
         if (success) {
           resolve();
         } else {
           reject();
         }
       });
-      electron.ipcRenderer.send("initTest", path);
+      window.ipcHandler.send("initTest", path);
     });
   }
 
   public static retrieveEngineScripts(path: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      electron.ipcRenderer.once("engineScripts",
+      window.ipcHandler.receiveOnce("engineScripts",
         (event: any, success: boolean, payload: any) => {
         if (success) {
           resolve(payload);
@@ -96,31 +93,31 @@ export class BackstopService {
           reject(payload);
         }
       });
-      electron.ipcRenderer.send("retrieveEngineScripts", path);
+      window.ipcHandler.send("retrieveEngineScripts", path);
     });
   }
 
   public static retrieveTestsResult(path: string): Promise<BackstopReport> {
     return new Promise((resolve, reject) => {
-      electron.ipcRenderer.once("testsResult", (event: any, success: boolean, payload: any) => {
+      window.ipcHandler.receiveOnce("testsResult", (event: any, success: boolean, payload: any) => {
         if (success) {
           resolve(new BackstopReport(payload));
         } else {
           reject(payload);
         }
       });
-      electron.ipcRenderer.send("retrieveTestsResult", path);
+      window.ipcHandler.send("retrieveTestsResult", path);
     });
   }
 
   public static registerResultWatcher(path: string, cb: () => void) {
-    electron.ipcRenderer.on("testResultsChanged", () => {
+    window.ipcHandler.receive("testResultsChanged", () => {
       cb();
     });
-    electron.ipcRenderer.send("watchTestResultsChange", path);
+    window.ipcHandler.send("watchTestResultsChange", path);
   }
 
   public static unregisterResultWatcher() {
-    electron.ipcRenderer.send("unregisterResultWatcher");
+    window.ipcHandler.send("unregisterResultWatcher");
   }
 }

@@ -1,16 +1,17 @@
 {
   "name": "lemu",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "private": true,
   "author": "Vincent Francolin",
   "scripts": {
     "serve": "vue-cli-service serve",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "build:all": "npm run build:render && npm run build:main",
+    "build:all": "npm run build:render && npm run build:main && npm run build:doc",
     "build:main": "cd ./mainProcess && tsc",
     "build:render": "vue-cli-service build",
     "build:render:dev": "vue-cli-service build --mode development",
+    "build:doc": "cd ./userGuide && npm run buildAndCopy",
     "dist": "electron-builder",
     "start": "electron ."
   },
@@ -18,6 +19,7 @@
   "dependencies": {
     "backstopjs": "^4.4.2",
     "electron-updater": "^4.2.0",
+    "fs-extra": "^9.0.1",
     "v8-compile-cache": "^2.1.0"
   },
   "devDependencies": {
@@ -60,7 +62,8 @@
       "github"
     ],
     "files": [
-      "dist-app/**/*"
+      "dist-app/**/*",
+      "userGuide/docs/.vuepress/dist/*"
     ]
   },
   "license": "AGPL-3.0"
