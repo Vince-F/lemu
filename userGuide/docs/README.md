@@ -1,6 +1,6 @@
 ---
 home: true
-heroImage: /icon.png
+#heroImage: /icon.png
 tagline: User guide for Lemu app
 actionText: Quick Start →
 actionLink: /guide/

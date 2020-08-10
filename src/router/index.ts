@@ -35,8 +35,8 @@ const routes = [
         component: TestsListComponent,
         children: [
           {
-            path: "tests.welcome",
-            name: "testWelcome",
+            path: "",
+            name: "tests.welcome",
             component: TestWelcomeScreenComponent
           },
           {

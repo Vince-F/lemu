@@ -17,7 +17,6 @@ After that a modal opens. In this modal you can choose two ways to create your s
 
 ## Editing your script
 To edit your script just click on your script name.
-s
 It will open a view with your script content. You can edit in the code editor.
 
-To save, use the usual "save" burron in the toolbar.
+To save, use the usual "save" button in the toolbar.

@@ -12,9 +12,9 @@ To add a new field in your test, click the "add field" button.
 
 It will open a modal; you can either create a pre-defined field or a custom field.
 
-Pre-defined are field that exists in a BackstopJS configuration. When you select a field, an help message will appear below it explaining what is the field purpose. You can then set a value.
+Pre-defined are fields that exist in a BackstopJS configuration. When you select a field, an help message will appear below it explaining what is the field purpose. You can then set a value.
 
-You can also add a custom field. Custom field are not native for BackstopJS but may be used in your engine scripts. You choose its name, the type of variable it is (a boolean, a string, a boolean or an array), and then the value.
+You can also add a custom field. Custom fields are not native for BackstopJS but may be used in your engine scripts. You choose its name, the type of variable it is (a boolean, a string, a boolean or an array), and then the value.
 
 ## Editing your field
 After their creation the field will appear. You can edit them freely. The displayed control will depend of the field type. On the right along the field type you have an help button. It will give you information about the field when you over it if it is a BackstopJS default field.
