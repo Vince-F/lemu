@@ -26,6 +26,7 @@ jobs:
       with:
         node-version: '12'
     - run: npm ci
+    - run: cd ./userGuide && npm ci && cd ..
     - run: npm run build:all
     - run: npm run dist
       env:
