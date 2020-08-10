@@ -10,7 +10,9 @@
   "repository": "/lemu-doc",
   "scripts": {
     "dev": "vuepress dev docs",
-    "build": "vuepress build docs"
+    "build": "vuepress build docs",
+    "copyDoc": "node ./copyDoc.js",
+    "buildAndCopy": "npm run build && npm run copyDoc"
   },
   "license": "MIT",
   "devDependencies": {

@@ -52,10 +52,32 @@
       <v-icon>mdi-exit-to-app</v-icon>
       Close
     </v-btn>
-    <v-btn text v-on:click="displayAbout">
-      <v-icon>mdi-information</v-icon>
-      About
-    </v-btn>
+    <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          text
+          v-bind="attrs"
+          v-on="on"
+        >
+          <v-icon>mdi-dots-vertical</v-icon>
+          More
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item @click="displayAbout">
+          <v-list-item-icon>
+            <v-icon>mdi-information</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>About</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="displayHelp">
+          <v-list-item-icon>
+            <v-icon>mdi-help</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Help</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-app-bar>
 </template>
 
@@ -139,6 +161,10 @@ export default class AppToolbarComponent extends Vue {
 
   private displayAbout() {
     ModalService.launchModal(AboutModalComponent);
+  }
+
+  private displayHelp() {
+    window.ipcHandler.send("helpWindow");
   }
 
   private goToTest() {
