@@ -197,7 +197,7 @@ export default class AppToolbarComponent extends Vue {
       .then((fileContent) => {
         this.$router.push("/tests/generalConfig");
       }).catch((error) => {
-        if (typeof error !== "string" || error !== "dismiss") {
+        if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
           this.displaySnackbar({text: "Failed to open file. " + error, success: false});
         }
       });
