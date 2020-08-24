@@ -63,7 +63,8 @@
     ],
     "files": [
       "dist-app/**/*",
-      "userGuide/docs/.vuepress/dist/*"
+      "userGuide/docs/.vuepress/dist/*",
+      "icon.png"
     ]
   },
   "license": "AGPL-3.0"
