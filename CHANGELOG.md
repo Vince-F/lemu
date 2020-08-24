@@ -1,5 +1,10 @@
 # Changelog
 
+## V1.14.1
+### Fixes
+- Don't display error when canceling file opening
+- fix error with icon
+
 ## V1.14.0
 ### New features
 - Add open button to open a config file from toolbar
