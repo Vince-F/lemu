@@ -63,6 +63,7 @@ import { EngineScript } from '../../models/engineScript';
 import { ModalService } from "../../services/modalService";
 import AddScriptModalComponent from "./AddScriptModalComponent.vue";
 import { FileService } from "../../services/fileService";
+import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
 
 @Component
 export default class ScriptMenuComponent extends Vue {
@@ -90,9 +91,10 @@ export default class ScriptMenuComponent extends Vue {
   private createScript(path: string) {
     ModalService.launchModal(AddScriptModalComponent)
       .then((result: {
-        type: "empty" | "fromFile",
+        type: "empty" | "template" | "fromFile",
         fileName: string,
-        originFilePath: string;
+        originFilePath?: string,
+        template?: EngineScriptTemplate
       }) => {
         let fileName = result.fileName;
         if (!fileName.endsWith(".js")) {
@@ -116,6 +118,7 @@ export default class ScriptMenuComponent extends Vue {
               });
             break;
           case "fromFile":
+            if (result.originFilePath) {
               FileService.readFile(result.originFilePath)
                 .then((fileContent: string) => {
                   this.displaySnackbar({
@@ -129,6 +132,12 @@ export default class ScriptMenuComponent extends Vue {
                     success: false
                   });
                 });
+            }
+            break;
+          case "template":
+            if (result.template) {
+              this.addScript({scriptPath: fullPath, content: result.template.content});
+            }
         }
       });
   }

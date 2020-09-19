@@ -21,13 +21,24 @@
             <v-btn value="empty">
               Empty
             </v-btn>
-
+            <v-btn value="template">
+              Template
+            </v-btn>
             <v-btn value="fromFile">
               Existing file
             </v-btn>
           </v-btn-toggle>
           <div v-if="type === 'empty'">
             <v-text-field v-model="fileName" label="File name" :rules="filenameRules"></v-text-field>
+          </div>
+          <div v-else-if="type === 'template'">
+            <v-select
+              :items="scriptTemplates"
+              label="Template"
+              v-model="selectedTemplate"
+              item-text="name"
+              return-object
+            ></v-select>        
           </div>
           <div v-else-if="type === 'fromFile'">
             <v-file-input v-model="fileToCopy" accept="text/javascript" label="File to copy" :rules="fileRules"></v-file-input>
@@ -58,6 +69,8 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { State } from "vuex-class";
+import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
 
 interface ElectronFile extends File {
   path: string;
@@ -65,10 +78,14 @@ interface ElectronFile extends File {
 
 @Component
 export default class AddScriptModalComponent extends Vue {
+  @State((state) => state.templateStore.scripts)
+  private readonly scriptTemplates!: EngineScriptTemplate[];
+
   private dialogDisplayed: boolean;
-  private type: "empty" | "fromFile";
+  private type: "empty" | "template" | "fromFile";
   private fileToCopy: ElectronFile | null;
   private fileName: string;
+  private selectedTemplate: EngineScriptTemplate | null;
   private valid: boolean;
   private filenameRules: Array<(value: string) => boolean | string>;
   private fileRules: Array<(value: File) => boolean | string>;
@@ -78,6 +95,7 @@ export default class AddScriptModalComponent extends Vue {
     this.dialogDisplayed = true;
     this.type = "empty";
     this.fileToCopy = null;
+    this.selectedTemplate = null;
     this.fileName = "";
     this.valid = false;
     this.filenameRules = [
@@ -109,6 +127,14 @@ export default class AddScriptModalComponent extends Vue {
           this.dialogDisplayed = false;
         }
         break;
+      case "template":
+          if (this.selectedTemplate) {
+            this.$emit("validate", {
+              type: this.type,
+              fileName: this.selectedTemplate.name,
+              template: this.selectedTemplate
+            });
+          }
       }
     }
   }

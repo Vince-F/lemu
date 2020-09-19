@@ -1,7 +1,20 @@
 <template>
   <v-card v-if="engineScriptData" class="card">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
-      {{scriptName}}
+      <div class="flex-grow-1 flex-shrink-1">
+        {{scriptName}}
+      </div>
+      <div class="flex-grow-0 flex-shrink-0">
+        <v-btn icon @click="saveAsTemplate">
+          <v-icon>
+            mdi-play
+          </v-icon>
+        </v-btn>
+        <v-btn icon @click="deleteScript">
+          <v-icon>
+            mdi-delete
+          </v-icon>
+        </v-btn>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
       <v-text-field
@@ -37,7 +50,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { Getter, Mutation } from "vuex-class";
+import { Getter, Mutation, Action } from "vuex-class";
 import { EngineScript } from '../../models/engineScript';
 import MonacoEditor from 'monaco-editor-vue';
 
@@ -51,6 +64,8 @@ export default class ScriptViewComponent extends Vue {
   private readonly getScript!: (path: string) => EngineScript;
   @Mutation("engineScriptStore/setScriptContent")
   private readonly setScriptContent!: (payload: {path: string, content: string}) => void;
+  @Action("templateStore/createEngineScriptTemplate")
+  private readonly createEngineScriptTemplate!: (payload: {name: string, content: string}) => Promise<void>;
   private engineScriptData: EngineScript;
 
   constructor() {
@@ -67,8 +82,16 @@ export default class ScriptViewComponent extends Vue {
     this.loadScript();
   }
 
+  private deleteScript() {
+    //
+  }
+
   private loadScript() {
     this.engineScriptData = this.getScript(decodeURIComponent(this.$route.params.path));
+  }
+
+  private saveAsTemplate() {
+    //
   }
 
   @Watch("$route")
