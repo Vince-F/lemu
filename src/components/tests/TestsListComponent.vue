@@ -23,7 +23,7 @@
               offset-y
               :close-on-content-click="false"
               :nudge-width="420">
-              <template v-slot:activator="{ on, attrs }">
+              <template v-slot:activator="{ on: menuListener, attrs }">
                 <div class="d-flex">
                   <div class="flex-grow-1 flex-shrink-1 filter-count text-caption">
                     <span>{{filteredTests.length}}</span>
@@ -31,10 +31,15 @@
                     <span v-if="tests.length === 0 || tests.length === 1">{{tests.length}} test</span>
                     <span v-else>{{tests.length}} tests</span>
                   </div>
-                  <v-btn icon class="flex-grow-0 flex-shrink-0">
-                    <v-icon v-on="on" v-bind="attrs" 
-                      :color="filterModified? 'primary lighten-1' : 'grey lighten-1'">mdi-filter-variant</v-icon>
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on: tooltipListener }">
+                      <v-btn icon class="flex-grow-0 flex-shrink-0">
+                        <v-icon v-on="{...menuListener, ...tooltipListener}" v-bind="attrs" 
+                          :color="filterModified? 'primary lighten-1' : 'grey lighten-1'">mdi-filter-variant</v-icon>
+                      </v-btn>
+                    </template>
+                    Filter
+                  </v-tooltip>
                 </div>
               </template>
               <v-card>
