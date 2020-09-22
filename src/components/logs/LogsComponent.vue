@@ -5,11 +5,16 @@
         Logs 
       </div>
       <div class="flex-grow-0 flex-shrink-0">
-        <v-btn icon @click="resetLogs">
-          <v-icon>
-            mdi-delete
-          </v-icon>
-        </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon @click="resetLogs" v-on="on">
+              <v-icon>
+                mdi-delete
+              </v-icon>
+            </v-btn>
+          </template>
+          Reset logs
+        </v-tooltip>
       </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1" ref="container">
@@ -21,6 +26,10 @@
           <div class="flex-grow-0 flex-shrink-0">{{log.time.toLocaleTimeString()}}</div>
           <div class="flex-grow-1 flex-shrink-1" :class="{'red--text': log.message.toLocaleLowerCase().includes('error')}">{{log.message}}</div>
         </template>
+      </div>
+      <div v-if="logs.length === 0">
+        <p>No log here yet...</p>
+        <p>Here the logs of Backstop when tests are run will be displayed</p>
       </div>
       <div ref="end" class="end"></div>
     </v-card-text>

@@ -1,6 +1,15 @@
 <template>
   <v-container fluid class="container pa-0">
     <div class="menu">
+      <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>
+              ENGINE SCRIPTS
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        
+        <v-divider></v-divider>
       <v-treeview :items="items"
         activatable
         @update:active="selectScript"

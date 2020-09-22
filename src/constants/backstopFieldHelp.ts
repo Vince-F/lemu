@@ -19,7 +19,7 @@ backstopFieldHelp.set("clickSelectors", "*Puppeteer only* takes array of selecto
 backstopFieldHelp.set("postInteractionWait", "Wait for a selector after interacting with hoverSelector or clickSelector (optionally accepts wait time in ms. Idea for use with a click or hover element transition. available with default onReadyScript)");
 backstopFieldHelp.set("scrollToSelector", "Scrolls the specified DOM element into view prior to screen shot (available with default onReadyScript)");
 backstopFieldHelp.set("selectors", "Array of selectors to capture. Defaults to document if omitted. Use \"viewport\" to capture the viewport size. See Targeting elements in the next section for more info...");
-backstopFieldHelp.set("selectorExpansion", "See Targeting elements in the next section for more info...");
+backstopFieldHelp.set("selectorExpansion", "When you use selectors, allow to display more than one");
 backstopFieldHelp.set("misMatchThreshold", "Percentage of different pixels allowed to pass test");
 backstopFieldHelp.set("requireSameDimensions", "If set to true -- any change in selector size will trigger a test failure.");
 backstopFieldHelp.set("viewports", "An array of screen size objects your DOM will be tested against. This configuration will override the viewports property assigned at the config root.");
