@@ -1,4 +1,6 @@
-const { description } = require('../../package')
+const { description } = require('../../package');
+
+console.log(process.argv);
 
 module.exports = {
   /**
