@@ -14,26 +14,46 @@
         </v-icon>
       </div>
       <div class="flex-grow-0 flex-shrink-0">
-        <v-btn icon :disabled="testRunning" @click="runCurrentTest">
-          <v-icon>
-            mdi-play
-          </v-icon>
-        </v-btn>
-        <v-btn icon :disabled="testRunning" @click="approveCurrentTest">
-          <v-icon>
-            mdi-check-circle
-          </v-icon>
-        </v-btn>
-        <v-btn icon :disabled="testRunning" @click="duplicateTest">
-          <v-icon>
-            mdi-content-copy
-          </v-icon>
-        </v-btn>
-        <v-btn icon :disabled="testRunning" @click="deleteTest">
-          <v-icon>
-            mdi-delete
-          </v-icon>
-        </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon :disabled="testRunning" v-on="on" @click="runCurrentTest">
+              <v-icon>
+                mdi-play
+              </v-icon>
+            </v-btn>
+          </template>
+          Run this test
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon :disabled="testRunning" v-on="on" @click="approveCurrentTest">
+              <v-icon>
+                mdi-check-circle
+              </v-icon>
+            </v-btn>
+          </template>
+          Approve this test
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon :disabled="testRunning" v-on="on" @click="duplicateTest">
+              <v-icon>
+                mdi-content-copy
+              </v-icon>
+            </v-btn>
+          </template>
+          Duplicate
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon v-on="on" :disabled="testRunning" @click="deleteTest">
+              <v-icon>
+                mdi-delete
+              </v-icon>
+            </v-btn>
+          </template>
+          Delete this test
+        </v-tooltip>
       </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
