@@ -7,10 +7,6 @@
             <v-list-item-title>
               TESTS
             </v-list-item-title>
-            <v-list-item-subtitle>
-              <span v-if="tests.length === 0 || tests.length === 1">{{tests.length}} test</span>
-              <span v-else>{{tests.length}} tests</span>
-            </v-list-item-subtitle>
             <div class="action text-right">
               <v-btn color="primary" @click="addScenario">
                 <v-icon>mdi-plus</v-icon>Add
@@ -22,9 +18,57 @@
         <v-divider></v-divider>
 
         <v-list dense>
+          <div class="filter-area">
+            <v-menu 
+              offset-y
+              :close-on-content-click="false"
+              :nudge-width="420">
+              <template v-slot:activator="{ on: menuListener, attrs }">
+                <div class="d-flex">
+                  <div class="flex-grow-1 flex-shrink-1 filter-count text-caption">
+                    <span>{{filteredTests.length}}</span>
+                    /
+                    <span v-if="tests.length === 0 || tests.length === 1">{{tests.length}} test</span>
+                    <span v-else>{{tests.length}} tests</span>
+                  </div>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on: tooltipListener }">
+                      <v-btn icon class="flex-grow-0 flex-shrink-0">
+                        <v-icon v-on="{...menuListener, ...tooltipListener}" v-bind="attrs" 
+                          :color="filterModified? 'primary lighten-1' : 'grey lighten-1'">mdi-filter-variant</v-icon>
+                      </v-btn>
+                    </template>
+                    Filter
+                  </v-tooltip>
+                </div>
+              </template>
+              <v-card>
+                <v-card-title>
+                  Filter test list
+                </v-card-title>
+                <v-card-text>
+                  <v-select
+                    v-model="filter.testStatus"
+                    :items="testStatusValues"
+                    chips
+                    label="Test status"
+                    multiple
+                    dense
+                  ></v-select>
+                  <v-text-field
+                    label="Test name"
+                    v-model="filter.name"
+                  ></v-text-field>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn text @click="clearFilter">Clear filter</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-menu>
+          </div>
           <v-list-item-group color="primary">
             <v-list-item
-              v-for="(test, index) in tests"
+              v-for="(test, index) in filteredTests"
               :key="index"
               link
               v-on:click="openTestDetails(index)"
@@ -90,6 +134,11 @@
               </v-list-item-action>
             </v-list-item>
           </v-list-item-group>
+          <v-list-item-group v-if="tests.length > 0 && filteredTests.length === 0"
+              class=empty-placeholder>
+            <p>No test match your filter.</p>
+            <v-btn @click="clearFilter">Clear filter</v-btn>
+          </v-list-item-group>
         </v-list>
       </v-navigation-drawer>
     </div>
@@ -125,6 +174,20 @@
 .icon-container {
   height: 100%;
   display: flex;
+}
+
+.filter-area {
+  padding-left: 30px;
+  padding-right: 16px;
+}
+
+.filter-count {
+  padding-top: 10px;
+}
+
+.empty-placeholder {
+  padding: 16px;
+  text-align: center;
 }
 </style>
 
@@ -164,9 +227,38 @@ export default class TestsListComponent extends Vue {
   @Action("testResultStore/retrieveTestsResult")
   private readonly retrieveTestsResult!: () => Promise<void>;
 
+  private filter: {testStatus: string[], name: string};
+  private testStatusValues: string[];
+
+  constructor() {
+    super(arguments);
+    this.testStatusValues = ["pass", "failed", "unknown"];
+    this.filter = {
+      testStatus: this.testStatusValues.slice(),
+      name: ""
+    };
+  }
+
   private mounted() {
     this.setMenuResizable();
     this.retrieveTestsResult();
+  }
+
+  private get filterModified() {
+    return this.filter.name.length > 0
+      || this.filter.testStatus.length !== this.testStatusValues.length;
+  }
+
+  private get filteredTests() {
+    return this.tests.filter((test) => {
+      return test.label.includes(this.filter.name)
+        && this.filter.testStatus.includes(this.getTestStatus(test.label));
+    });
+  }
+
+  private clearFilter() {
+    this.filter.name = "";
+    this.filter.testStatus = this.testStatusValues.slice();
   }
 
   private deleteTest(testIndex: number) {
