@@ -262,7 +262,7 @@ export default class TestsListComponent extends Vue {
   }
 
   private deleteTest(testIndex: number) {
-    ModalService.launchConfirmationModal()
+    ModalService.launchConfirmationModal("Do you really wish to delete this entry?")
       .then(() => {
         this.removeScenario(testIndex);
         this.$router.push("/tests/list");

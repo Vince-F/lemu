@@ -28,16 +28,38 @@
 </style>
 
 <script lang="ts">
-import {Vue, Component} from "vue-property-decorator";
+import { BackstopService } from "@/services/backstopService";
+import { ModalService } from '@/services/modalService';
+import { Vue, Component } from "vue-property-decorator";
+import { Action, State } from "vuex-class";
 import MainMenuComponent from "../components/app/MainMenuComponent.vue";
 
 @Component({
   name: "test-configuration-view",
   components: {
-    MainMenuComponent
-  }
+    MainMenuComponent,
+  },
 })
 export default class TestConfigurationView extends Vue {
+  @State((state) => state.configurationStore.configurationPath)
+  private configurationPath!: string;
+  @State((state) => state.configurationStore.configurationModified)
+  private configurationModified!: string;
+  @Action("configurationStore/openConfigurationFromPath")
+  private openConfigurationFromPath!: (path: string) => Promise<void>;
 
+  private mounted() {
+    BackstopService.registerConfigWatcher(this.configurationPath, () => {
+      if (this.configurationModified) {
+
+      } else {
+        ModalService.launchConfirmationModal("Configuration file has been modified outside of LEMU." +
+          "Do you wish to reload it?")
+          .then(() => {
+            this.openConfigurationFromPath(this.configurationPath);
+          });
+      }
+    });
+  }
 }
 </script>

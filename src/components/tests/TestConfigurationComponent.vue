@@ -115,7 +115,7 @@ export default class TestConfigurationComponent extends Vue {
   }
 
   private removeField(fieldName: string) {
-    ModalService.launchConfirmationModal()
+    ModalService.launchConfirmationModal("Do you really wish to delete this entry?")
       .then(() => {
         this.removeScenarioField({index: this.testIndex, fieldName});
       });

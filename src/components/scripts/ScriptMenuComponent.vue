@@ -143,7 +143,7 @@ export default class ScriptMenuComponent extends Vue {
   }
 
   private deleteScript(path: string) {
-    ModalService.launchConfirmationModal()
+    ModalService.launchConfirmationModal("Do you really wish to delete this entry?")
       .then(() => {
         this.removeScript(path);
       });

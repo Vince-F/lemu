@@ -1,4 +1,7 @@
 import fs = require("fs");
+import path = require("path");
+import { eventNames } from "../shared/constants/eventNames";
+import { BrowserWindowManager } from "./browserWindowManager";
 
 export class BackstopFileService {
   public static async retrieveEngineScripts(path: string) {
@@ -55,4 +58,18 @@ export class BackstopFileService {
       });
     });
   }
+
+  public static watchConfigurationFile(configPath: string) {
+    this.configFileWatcher = fs.watch(configPath);
+
+    this.configFileWatcher.on("change", (eventType) => {
+      BrowserWindowManager.sendEvent(eventNames.TEST_RESULT_CHANGED.REPLY);
+    });
+  }
+
+  public static unregisterConfigurationWatcher() {
+    this.configFileWatcher.close();
+  }
+
+  private static configFileWatcher: fs.FSWatcher;
 }

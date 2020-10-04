@@ -4,10 +4,10 @@
       max-width="400"
     >
     <v-card>
-      <v-card-title class="headline">Are you sure?</v-card-title>
+      <v-card-title class="headline">Confirmation</v-card-title>
 
       <v-card-text>
-        Do you really wish to delete this entry?
+        
       </v-card-text>
 
       <v-card-actions>
@@ -38,6 +38,9 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component({})
 export default class ConfirmationModalComponent extends Vue {
+  @Prop({required: true, type: String})
+  private textContent!: string;
+
   private dialogDisplayed: boolean = true;
 
   private accept() {

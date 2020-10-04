@@ -149,7 +149,7 @@ export default class GeneralConfigurationComponent extends Vue {
   }
 
   private confirmEngineOptionRemove(fieldName: string) {
-    ModalService.launchConfirmationModal()
+    ModalService.launchConfirmationModal("Do you really wish to delete this entry?")
       .then(() => {
         this.removeEngineOption(fieldName);
       });
