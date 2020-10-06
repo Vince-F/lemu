@@ -123,6 +123,7 @@ export class BackstopService {
 
   public static registerConfigWatcher(path: string, cb: () => void) {
     window.ipcHandler.receive("configChanged", () => {
+      console.log("change seen")
       cb();
     });
     window.ipcHandler.send("watchConfigChange", path);

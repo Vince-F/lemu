@@ -7,7 +7,7 @@
       <v-card-title class="headline">Confirmation</v-card-title>
 
       <v-card-text>
-        
+        {{textContent}}
       </v-card-text>
 
       <v-card-actions>
