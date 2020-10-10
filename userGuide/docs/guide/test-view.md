@@ -7,6 +7,10 @@ From the menu you can add new test, by clicking on the "add button" on top. Alon
 - duplicate the test
 - delete the test
 
+You can filter your tests to find them easily.
+
+![filter test](./filter_test.png)
+
 You can select your test by clicking on it in the menu. 
 
 After clicking on one it will open in the right part.
