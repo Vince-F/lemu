@@ -61,3 +61,11 @@ electron.ipcMain.on(eventNames.TEST_RESULT_CHANGED.REQUEST, (event, path) => {
 electron.ipcMain.on(eventNames.UNREGISTER_RESULT_WATCHER.REQUEST, (event, path) => {
   BackstopTestResultReader.unregisterResultWatcher();
 });
+
+electron.ipcMain.on(eventNames.CONFIG_CHANGED.REQUEST, (event, path) => {
+  BackstopFileService.watchConfigurationFile(path);
+});
+
+electron.ipcMain.on(eventNames.UNREGISTER_CONFIG_WATCHER.REQUEST, (event) => {
+  BackstopFileService.unregisterConfigurationWatcher();
+});

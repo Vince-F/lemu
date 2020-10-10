@@ -36,6 +36,13 @@ export const eventNames = Object.freeze({
   UNREGISTER_RESULT_WATCHER: {
     REQUEST: "unregisterResultWatcher"
   },
+  CONFIG_CHANGED: {
+    REQUEST: "watchConfigChange",
+    REPLY: "configChanged"
+  },
+  UNREGISTER_CONFIG_WATCHER: {
+    REQUEST: "unregisterConfigWatcher"
+  },
   HELP_WINDOW: "helpWindow",
   FILE_DIALOG: "openFileDialog",
   DIRECTORY_DIALOG: "openDirectoryDialog",
