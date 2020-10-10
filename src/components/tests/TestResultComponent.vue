@@ -38,12 +38,17 @@
             </v-icon>
           </div>
           <v-spacer></v-spacer>
-          <v-btn icon :disabled="testRunning" class="flex-grow-0 flex-shrink-0"
-            @click.stop.prevent="approveCurrentTestWithViewport(result.pair.viewportLabel)" >
-            <v-icon>
-              mdi-checkbox-marked-circle
-            </v-icon>
-          </v-btn>
+          <v-tooltip top>
+            <template v-slot:activator="{on}">
+              <v-btn icon :disabled="testRunning" v-on="on" class="flex-grow-0 flex-shrink-0"
+                @click.stop.prevent="approveCurrentTestWithViewport(result.pair.viewportLabel)" >
+                <v-icon>
+                  mdi-checkbox-marked-circle
+                </v-icon>
+              </v-btn>
+            </template>
+            Approve this viewport
+          </v-tooltip>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <hr class="panel-separator">
