@@ -23,11 +23,14 @@ export class ModalService {
     });
   }
 
-  public static launchConfirmationModal(): Promise<void> {
+  public static launchConfirmationModal(textContent: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const element = this.getModalContainerElement();
       const modal = new ConfirmationModalComponent({
-        parent: window.vueApp
+        parent: window.vueApp,
+        propsData: {
+          textContent
+        }
       });
 
       modal.$on('accept', () => {

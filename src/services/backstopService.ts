@@ -120,4 +120,15 @@ export class BackstopService {
   public static unregisterResultWatcher() {
     window.ipcHandler.send("unregisterResultWatcher");
   }
+
+  public static registerConfigWatcher(path: string, cb: () => void) {
+    window.ipcHandler.receive("configChanged", () => {
+      cb();
+    });
+    window.ipcHandler.send("watchConfigChange", path);
+  }
+
+  public static unregisterConfigWatcher() {
+    window.ipcHandler.send("unregisterConfigWatcher");
+  }
 }

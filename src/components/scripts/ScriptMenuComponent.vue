@@ -1,18 +1,36 @@
 <template>
   <v-container fluid class="container pa-0">
     <div class="menu">
-      <v-treeview :items="items"
-        activatable
-        @update:active="selectScript"
-        open-on-click>
-        <template v-slot:prepend="{ item, open }">
-          <v-icon v-if="!item.isScript">
-            {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
-          </v-icon>
-          <v-icon v-else>
-            mdi-nodejs
-          </v-icon>
-        </template>
+      <v-navigation-drawer permanent ref="leftMenu">
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>
+              ENGINE SCRIPTS
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+          
+        <v-divider></v-divider>
+        <v-treeview :items="items"
+          activatable
+          @update:active="selectScript"
+          open-on-click>
+          <template v-slot:prepend="{ item, open }">
+            <v-icon v-if="!item.isScript">
+              {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
+            </v-icon>
+            <v-icon v-else>
+              mdi-nodejs
+            </v-icon>
+          </template>
+          <template v-slot:label="{item}">
+            <v-tooltip top>
+              <template v-slot:activator="{on}">
+                <span v-on="on">{{item.name}}</span>
+              </template>
+              {{item.name}}
+            </v-tooltip>
+          </template>
           <template v-slot:append="{ item }">
             <v-btn icon v-if="item.isScript" @click="deleteScript(item.id)">
               <v-icon color="grey lighten-1">
@@ -26,6 +44,7 @@
             </v-btn>
           </template>
         </v-treeview>
+      </v-navigation-drawer>
     </div>
     <router-view class="content" />
   </v-container>
@@ -134,7 +153,7 @@ export default class ScriptMenuComponent extends Vue {
   }
 
   private deleteScript(path: string) {
-    ModalService.launchConfirmationModal()
+    ModalService.launchConfirmationModal("Do you really wish to delete this entry?")
       .then(() => {
         this.removeScript(path);
       });

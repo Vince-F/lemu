@@ -1,5 +1,12 @@
 # Changelog
 
+## V1.15.0
+### Features
+- add filtering for tests menu
+- add tooltip on various icon buttons to make them clearer
+- few design improvments on engine script view
+- detects if configuration has been modified outside of Lemu
+
 ## V1.14.1
 ### Fixes
 - Don't display error when canceling file opening

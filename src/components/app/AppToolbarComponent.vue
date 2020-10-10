@@ -155,7 +155,6 @@ export default class AppToolbarComponent extends Vue {
 
   private dismissAndGoToStartScreen() {
     this.dismissCurrentConfiguration();
-    BackstopService.unregisterResultWatcher();
     this.$router.push("/");
   }
 

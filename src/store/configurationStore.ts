@@ -73,6 +73,8 @@ export default class ConfigurationStore extends VuexModule {
     this.currentConfiguration = null;
     this.configurationPath = "";
     this.configurationModified = false;
+    BackstopService.unregisterResultWatcher();
+    BackstopService.unregisterConfigWatcher();
   }
 
   @Mutation

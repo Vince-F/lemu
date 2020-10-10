@@ -1,10 +1,37 @@
 import fs = require("fs");
+import path = require("path");
+import { eventNames } from "../shared/constants/eventNames";
+import { BrowserWindowManager } from "./browserWindowManager";
 
 export class BackstopFileService {
   public static async retrieveEngineScripts(path: string) {
     const files = await this.retrieveEngineScriptsName(path);
     return Promise.all(files.map((filePath) => this.createEngineScript(filePath)));
   }
+
+  public static watchConfigurationFile(configPath: string) {
+    this.configFileWatcher = fs.watch(configPath);
+
+    let eventReceived = false;
+    this.configFileWatcher.on("change", (eventType) => {
+      if (!eventReceived) {
+        eventReceived = true;
+        BrowserWindowManager.sendEvent(eventNames.CONFIG_CHANGED.REPLY);
+        // mitigate watch being called twice on change
+        setTimeout(() => {
+          eventReceived = false;
+        }, 300);
+      }
+    });
+  }
+
+  public static unregisterConfigurationWatcher() {
+    if (this.configFileWatcher) {
+      this.configFileWatcher.close();
+    }
+  }
+
+  private static configFileWatcher: fs.FSWatcher;
 
   private static createEngineScript(path: string) {
     return new Promise((resolve, reject) => {
