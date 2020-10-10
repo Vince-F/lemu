@@ -9,6 +9,30 @@ export class BackstopFileService {
     return Promise.all(files.map((filePath) => this.createEngineScript(filePath)));
   }
 
+  public static watchConfigurationFile(configPath: string) {
+    this.configFileWatcher = fs.watch(configPath);
+
+    let eventReceived = false;
+    this.configFileWatcher.on("change", (eventType) => {
+      if (!eventReceived) {
+        eventReceived = true;
+        BrowserWindowManager.sendEvent(eventNames.CONFIG_CHANGED.REPLY);
+        // mitigate watch being called twice on change
+        setTimeout(() => {
+          eventReceived = false;
+        }, 300);
+      }
+    });
+  }
+
+  public static unregisterConfigurationWatcher() {
+    if (this.configFileWatcher) {
+      this.configFileWatcher.close();
+    }
+  }
+
+  private static configFileWatcher: fs.FSWatcher;
+
   private static createEngineScript(path: string) {
     return new Promise((resolve, reject) => {
       fs.readFile(path, {encoding: "utf-8"}, (err, content) => {
@@ -58,31 +82,4 @@ export class BackstopFileService {
       });
     });
   }
-
-  public static watchConfigurationFile(configPath: string) {
-    this.configFileWatcher = fs.watch(configPath);
-
-    let eventReceived = false;
-    this.configFileWatcher.on("change", (eventType) => {
-      console.log("change call");
-      if (!eventReceived) {
-        eventReceived = true;
-        BrowserWindowManager.sendEvent(eventNames.CONFIG_CHANGED.REPLY);
-        console.log("change emit")
-        // mitigate watch being called twice on change
-        setTimeout(() => { 
-          eventReceived = false;
-        }, 300);
-      }
-      
-    });
-  }
-
-  public static unregisterConfigurationWatcher() {
-    if (this.configFileWatcher) {
-      this.configFileWatcher.close();
-    }
-  }
-
-  private static configFileWatcher: fs.FSWatcher;
 }
