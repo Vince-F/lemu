@@ -150,7 +150,7 @@ export default class ScriptMenuComponent extends Vue {
   }
 
   private selectScript([path]: [string]) {
-    if (path.endsWith(".js")) {
+    if (path && path.endsWith(".js")) {
       this.$router.push(`/tests/engineScripts/${encodeURIComponent(path)}`);
     }
   }

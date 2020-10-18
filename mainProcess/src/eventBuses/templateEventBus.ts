@@ -6,7 +6,7 @@ ipcMain.handle(eventNames.CREATE_SCRIPT_TEMPLATE, (event, name: string, content:
   return TemplateManager.getInstance().createScriptTemplate(name, content);
 });
 
-ipcMain.handle(eventNames.RETRIEVE_SCRIPT_TEMPLATE, (event) => {
+ipcMain.handle(eventNames.RETRIEVE_SCRIPT_TEMPLATES, (event) => {
   return TemplateManager.getInstance().retrieveEngineScriptTemplates();
 });
 

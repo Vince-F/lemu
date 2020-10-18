@@ -8,11 +8,11 @@ import { TemplateService } from '@/services/templateService';
 export default class TemplateStore extends VuexModule {
   private scripts: EngineScriptTemplate[] = [];
 
-  @Action
+  @Action({rawError: true})
   public createEngineScriptTemplate({name, content}: EngineScriptTemplate) {
-    const hasNameDuplicate = this.scripts.find((script) => script.name === name) !== null;
+    const hasNameDuplicate = !!this.scripts.find((script) => script.name === name);
     if (hasNameDuplicate) {
-      return Promise.reject("A script template with this name already exists");
+      return Promise.reject("duplicateName");
     } else {
       return TemplateService.createScriptTemplate(name, content)
         .then(() => {

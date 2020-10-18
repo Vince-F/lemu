@@ -52,7 +52,7 @@ export default class ScriptView extends Vue {
   @Action("templateStore/retrieveEngineScriptTemplates")
   private readonly retrieveEngineScriptTemplates!: () => Promise<void>;
   @Mutation("applicationStore/displaySnackbar")
-  private readonly displaySnackbar!: (payload: {text: string, success: boolean});
+  private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
   private loading: boolean;
 

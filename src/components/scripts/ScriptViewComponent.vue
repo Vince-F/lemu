@@ -7,7 +7,7 @@
       <div class="flex-grow-0 flex-shrink-0">
         <v-btn icon @click="saveAsTemplate">
           <v-icon>
-            mdi-play
+            mdi-archive-arrow-up 
           </v-icon>
         </v-btn>
         <v-btn icon @click="deleteScript">
@@ -15,6 +15,7 @@
             mdi-delete
           </v-icon>
         </v-btn>
+      </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
       <v-text-field
@@ -22,7 +23,7 @@
         :value="engineScriptData.path"
         readonly
         ></v-text-field>
-
+      content: {{engineScriptData.content}}
       <monaco-editor 
         theme="vs-dark"
         language="javascript"
@@ -53,6 +54,8 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { Getter, Mutation, Action } from "vuex-class";
 import { EngineScript } from '../../models/engineScript';
 import MonacoEditor from 'monaco-editor-vue';
+import { ModalService } from '@/services/modalService';
+import SaveAsScriptTemplateModalComponent from "./SaveAsScriptTemplateModalComponent.vue";
 
 @Component({
   components: {
@@ -91,7 +94,17 @@ export default class ScriptViewComponent extends Vue {
   }
 
   private saveAsTemplate() {
-    //
+    ModalService.launchModal(SaveAsScriptTemplateModalComponent)
+      .then((name: string) => {
+        this.createEngineScriptTemplate({name, content: this.engineScriptData.content})
+          .then(() => {
+            // todo display success
+            alert("ok");
+          }).catch((error) => {
+            // TODO: display error
+            alert("NOK" + error);
+          });
+      });
   }
 
   @Watch("$route")

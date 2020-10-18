@@ -32,13 +32,16 @@
             <v-text-field v-model="fileName" label="File name" :rules="filenameRules"></v-text-field>
           </div>
           <div v-else-if="type === 'template'">
-            <v-select
+            <p v-if="scriptTemplates.length === 0">
+              No scripts template found.
+            </p> 
+            <v-select v-else
               :items="scriptTemplates"
               label="Template"
               v-model="selectedTemplate"
               item-text="name"
               return-object
-            ></v-select>        
+            ></v-select>    
           </div>
           <div v-else-if="type === 'fromFile'">
             <v-file-input v-model="fileToCopy" accept="text/javascript" label="File to copy" :rules="fileRules"></v-file-input>

@@ -15,7 +15,7 @@ export default class EngineScriptStore extends VuexModule {
     const scripts = this.scripts;
     return (path: string) => {
       path = path.replace(/\\/g, "/");
-      return scripts.filter((entry) => entry.path.replace(/\\/g, "/").endsWith(path))[0];
+      return scripts.find((entry) => entry.path.replace(/\\/g, "/").endsWith(path));
     };
   }
 

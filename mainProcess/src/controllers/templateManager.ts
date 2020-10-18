@@ -32,9 +32,9 @@ export class TemplateManager {
 
   public createScriptTemplate(name: string, content: string) {
     return new Promise((resolve, reject) => {
-      const scriptPath = path.join(this.engineScriptsTemplateDirectory, name, ".js");
+      const scriptPath = path.join(this.engineScriptsTemplateDirectory, name + ".js");
       if (!fs.existsSync(scriptPath)) {
-        fs.writeFile(scriptPath, scriptPath, { encoding: "utf-8" }, (err) => {
+        fs.writeFile(scriptPath, content, { encoding: "utf-8" }, (err) => {
           if (err) {
             reject("Fail to create file, error: " + err.message);
           } else {
@@ -49,6 +49,7 @@ export class TemplateManager {
 
   public retrieveEngineScriptTemplates() {
     return new Promise((resolve, reject) => {
+      this.createIfNotExistTemplateDirectories();
       fs.readdir(this.engineScriptsTemplateDirectory, (err, files) => {
         if (err) {
           reject(err);
