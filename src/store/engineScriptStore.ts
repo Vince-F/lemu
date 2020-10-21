@@ -45,7 +45,10 @@ export default class EngineScriptStore extends VuexModule {
 
   @Mutation
   public setEngineScripts(engineScripts: EngineScript[]) {
-    this.scripts = engineScripts;
+    this.scripts = engineScripts.map((entry) => {
+      entry.path = entry.path.replace(/\\/g, "/");
+      return entry;
+    });
     this.scriptsModified = true;
   }
 

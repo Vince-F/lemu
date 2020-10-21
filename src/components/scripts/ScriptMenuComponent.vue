@@ -159,8 +159,9 @@ export default class ScriptMenuComponent extends Vue {
   private updateItemsList() {
     const paths = new Map();
     this.scripts.forEach((script) => {
-      let basePath = script.path.replace(this.engineScriptDirectory, "").replace(/\\/g, "/");
-      const tmp = this.engineScriptDirectory.replace(/\\/g, "/").split("/");
+      const harmonizedEngineScriptDirectory = this.engineScriptDirectory.replace(/\\/g, "/")
+      let basePath = script.path.replace(harmonizedEngineScriptDirectory, "").replace(/\\/g, "/");
+      const tmp = harmonizedEngineScriptDirectory.split("/");
       const scriptDirectory = tmp[tmp.length - 1];
       basePath = scriptDirectory + "/" + basePath;
       const splittedPath = basePath.split("/");

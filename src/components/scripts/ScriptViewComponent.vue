@@ -23,7 +23,6 @@
         :value="engineScriptData.path"
         readonly
         ></v-text-field>
-      content: {{engineScriptData.content}}
       <monaco-editor 
         theme="vs-dark"
         language="javascript"
@@ -69,6 +68,8 @@ export default class ScriptViewComponent extends Vue {
   private readonly setScriptContent!: (payload: {path: string, content: string}) => void;
   @Action("templateStore/createEngineScriptTemplate")
   private readonly createEngineScriptTemplate!: (payload: {name: string, content: string}) => Promise<void>;
+  @Mutation("engineScriptStore/removeScript")
+  private readonly removeScript!: (scriptPath: string) => void;
   private engineScriptData: EngineScript;
 
   constructor() {
@@ -86,7 +87,11 @@ export default class ScriptViewComponent extends Vue {
   }
 
   private deleteScript() {
-    //
+    ModalService.launchConfirmationModal()
+      .then(() => {
+        this.removeScript(this.engineScriptData.path);
+        this.$router.push("/tests/engineScripts");
+      });
   }
 
   private loadScript() {
