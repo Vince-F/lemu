@@ -1,5 +1,10 @@
 # Changelog
 
+## V1.16.0
+### Features
+- add engine script template: you can now save engine scripts to reuse them in other project
+- Allow to close the zoomed image for test report by clicking on overlay
+
 ## V1.15.0
 ### Features
 - add filtering for tests menu
