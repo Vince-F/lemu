@@ -82,6 +82,7 @@ import { EngineScript } from '../../models/engineScript';
 import { ModalService } from "../../services/modalService";
 import AddScriptModalComponent from "./AddScriptModalComponent.vue";
 import { FileService } from "../../services/fileService";
+import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
 
 @Component
 export default class ScriptMenuComponent extends Vue {
@@ -109,9 +110,10 @@ export default class ScriptMenuComponent extends Vue {
   private createScript(path: string) {
     ModalService.launchModal(AddScriptModalComponent)
       .then((result: {
-        type: "empty" | "fromFile",
+        type: "empty" | "template" | "fromFile",
         fileName: string,
-        originFilePath: string;
+        originFilePath?: string,
+        template?: EngineScriptTemplate
       }) => {
         let fileName = result.fileName;
         if (!fileName.endsWith(".js")) {
@@ -135,6 +137,7 @@ export default class ScriptMenuComponent extends Vue {
               });
             break;
           case "fromFile":
+            if (result.originFilePath) {
               FileService.readFile(result.originFilePath)
                 .then((fileContent: string) => {
                   this.displaySnackbar({
@@ -148,6 +151,12 @@ export default class ScriptMenuComponent extends Vue {
                     success: false
                   });
                 });
+            }
+            break;
+          case "template":
+            if (result.template) {
+              this.addScript({scriptPath: fullPath, content: result.template.content});
+            }
         }
       });
   }
@@ -160,7 +169,7 @@ export default class ScriptMenuComponent extends Vue {
   }
 
   private selectScript([path]: [string]) {
-    if (path.endsWith(".js")) {
+    if (path && path.endsWith(".js")) {
       this.$router.push(`/tests/engineScripts/${encodeURIComponent(path)}`);
     }
   }
@@ -169,8 +178,9 @@ export default class ScriptMenuComponent extends Vue {
   private updateItemsList() {
     const paths = new Map();
     this.scripts.forEach((script) => {
-      let basePath = script.path.replace(this.engineScriptDirectory, "").replace(/\\/g, "/");
-      const tmp = this.engineScriptDirectory.replace(/\\/g, "/").split("/");
+      const harmonizedEngineScriptDirectory = this.engineScriptDirectory.replace(/\\/g, "/")
+      let basePath = script.path.replace(harmonizedEngineScriptDirectory, "").replace(/\\/g, "/");
+      const tmp = harmonizedEngineScriptDirectory.split("/");
       const scriptDirectory = tmp[tmp.length - 1];
       basePath = scriptDirectory + "/" + basePath;
       const splittedPath = basePath.split("/");

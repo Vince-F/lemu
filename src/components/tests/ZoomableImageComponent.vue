@@ -10,7 +10,7 @@
         :size="30"
         :width="3"
       ></v-progress-circular>
-    <v-overlay :value="zoomed" class="image-overlay">
+    <v-overlay :value="zoomed" class="image-overlay" @click.native="zoomed = false">
       <div class="d-flex fill-height">
         <div class="overlay-image-container flex-grow-1 flex-shrink-1">
           <img :src="imgSrc" v-on:load="stopLoading" />

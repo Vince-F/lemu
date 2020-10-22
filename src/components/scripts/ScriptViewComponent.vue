@@ -1,7 +1,31 @@
 <template>
   <v-card v-if="engineScriptData" class="card">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
-      {{scriptName}}
+      <div class="flex-grow-1 flex-shrink-1">
+        {{scriptName}}
+      </div>
+      <div class="flex-grow-0 flex-shrink-0">
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon @click="saveAsTemplate" v-on="on">
+              <v-icon>
+                mdi-archive-arrow-up 
+              </v-icon>
+            </v-btn>
+          </template>
+          Save as a template
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon @click="deleteScript" v-on="on">
+              <v-icon>
+                mdi-delete
+              </v-icon>
+            </v-btn>
+          </template>
+          Delete
+        </v-tooltip>
+      </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
       <v-text-field
@@ -9,7 +33,6 @@
         :value="engineScriptData.path"
         readonly
         ></v-text-field>
-
       <monaco-editor 
         theme="vs-dark"
         language="javascript"
@@ -37,9 +60,11 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
-import { Getter, Mutation } from "vuex-class";
+import { Getter, Mutation, Action } from "vuex-class";
 import { EngineScript } from '../../models/engineScript';
 import MonacoEditor from 'monaco-editor-vue';
+import { ModalService } from '@/services/modalService';
+import SaveAsScriptTemplateModalComponent from "./SaveAsScriptTemplateModalComponent.vue";
 
 @Component({
   components: {
@@ -51,6 +76,12 @@ export default class ScriptViewComponent extends Vue {
   private readonly getScript!: (path: string) => EngineScript;
   @Mutation("engineScriptStore/setScriptContent")
   private readonly setScriptContent!: (payload: {path: string, content: string}) => void;
+  @Action("templateStore/createEngineScriptTemplate")
+  private readonly createEngineScriptTemplate!: (payload: {name: string, content: string}) => Promise<void>;
+  @Mutation("engineScriptStore/removeScript")
+  private readonly removeScript!: (scriptPath: string) => void;
+  @Mutation("applicationStore/displaySnackbar")
+  private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
   private engineScriptData: EngineScript;
 
   constructor() {
@@ -67,8 +98,28 @@ export default class ScriptViewComponent extends Vue {
     this.loadScript();
   }
 
+  private deleteScript() {
+    ModalService.launchConfirmationModal()
+      .then(() => {
+        this.removeScript(this.engineScriptData.path);
+        this.$router.push("/tests/engineScripts");
+      });
+  }
+
   private loadScript() {
     this.engineScriptData = this.getScript(decodeURIComponent(this.$route.params.path));
+  }
+
+  private saveAsTemplate() {
+    ModalService.launchModal(SaveAsScriptTemplateModalComponent)
+      .then((name: string) => {
+        this.createEngineScriptTemplate({name, content: this.engineScriptData.content})
+          .then(() => {
+            this.displaySnackbar({text: "Template successfully created.", success: true});
+          }).catch((error) => {
+            this.displaySnackbar({text: "Error when creating template " + error, success: false});
+          });
+      });
   }
 
   @Watch("$route")

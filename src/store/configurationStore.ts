@@ -111,7 +111,7 @@ export default class ConfigurationStore extends VuexModule {
 
   @Mutation
   public setPath(path: string) {
-    this.configurationPath = path;
+    this.configurationPath = path.replace(/\\/g, "/");
   }
 
   @Mutation
