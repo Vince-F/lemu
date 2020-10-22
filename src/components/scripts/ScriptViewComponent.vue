@@ -5,16 +5,26 @@
         {{scriptName}}
       </div>
       <div class="flex-grow-0 flex-shrink-0">
-        <v-btn icon @click="saveAsTemplate">
-          <v-icon>
-            mdi-archive-arrow-up 
-          </v-icon>
-        </v-btn>
-        <v-btn icon @click="deleteScript">
-          <v-icon>
-            mdi-delete
-          </v-icon>
-        </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon @click="saveAsTemplate" v-on="on">
+              <v-icon>
+                mdi-archive-arrow-up 
+              </v-icon>
+            </v-btn>
+          </template>
+          Save as a template
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon @click="deleteScript" v-on="on">
+              <v-icon>
+                mdi-delete
+              </v-icon>
+            </v-btn>
+          </template>
+          Delete
+        </v-tooltip>
       </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
