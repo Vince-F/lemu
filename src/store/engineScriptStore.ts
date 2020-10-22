@@ -15,7 +15,7 @@ export default class EngineScriptStore extends VuexModule {
     const scripts = this.scripts;
     return (path: string) => {
       path = path.replace(/\\/g, "/");
-      return scripts.filter((entry) => entry.path.replace(/\\/g, "/").endsWith(path))[0];
+      return scripts.find((entry) => entry.path.replace(/\\/g, "/").endsWith(path));
     };
   }
 
@@ -45,7 +45,10 @@ export default class EngineScriptStore extends VuexModule {
 
   @Mutation
   public setEngineScripts(engineScripts: EngineScript[]) {
-    this.scripts = engineScripts;
+    this.scripts = engineScripts.map((entry) => {
+      entry.path = entry.path.replace(/\\/g, "/");
+      return entry;
+    });
     this.scriptsModified = true;
   }
 

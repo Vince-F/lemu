@@ -30,10 +30,12 @@ function createWindow() {
   });
   mainWindow.maximize();
   BrowserWindowManager.setInstance(mainWindow);
-
-  mainWindow.loadFile('./dist-app/index.html');
-  // mainWindow.loadURL("http://localhost:8080");
-  Menu.setApplicationMenu(null);
+  if (app.isPackaged) {
+    mainWindow.loadFile('./dist-app/index.html');
+    Menu.setApplicationMenu(null);
+  } else {
+    mainWindow.loadURL("http://localhost:8080");
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
