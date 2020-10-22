@@ -99,7 +99,7 @@ export default class ScriptViewComponent extends Vue {
   }
 
   private deleteScript() {
-    ModalService.launchConfirmationModal()
+    ModalService.launchConfirmationModal("Do you want to delete this script?")
       .then(() => {
         this.removeScript(this.engineScriptData.path);
         this.$router.push("/tests/engineScripts");
