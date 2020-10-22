@@ -70,6 +70,8 @@ export default class ScriptViewComponent extends Vue {
   private readonly createEngineScriptTemplate!: (payload: {name: string, content: string}) => Promise<void>;
   @Mutation("engineScriptStore/removeScript")
   private readonly removeScript!: (scriptPath: string) => void;
+  @Mutation("applicationStore/displaySnackbar")
+  private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
   private engineScriptData: EngineScript;
 
   constructor() {
@@ -103,11 +105,9 @@ export default class ScriptViewComponent extends Vue {
       .then((name: string) => {
         this.createEngineScriptTemplate({name, content: this.engineScriptData.content})
           .then(() => {
-            // todo display success
-            alert("ok");
+            this.displaySnackbar({text: "Template successfully created.", success: true});
           }).catch((error) => {
-            // TODO: display error
-            alert("NOK" + error);
+            this.displaySnackbar({text: "Error when creating template " + error, success: false});
           });
       });
   }
