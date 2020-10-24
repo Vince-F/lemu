@@ -29,15 +29,20 @@
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
       <v-text-field
+        class="flex-grow-0 flex-shrink-0"
         label="Path"
         :value="engineScriptData.path"
         readonly
         ></v-text-field>
-      <monaco-editor 
-        theme="vs-dark"
-        language="javascript"
-        :value="engineScriptData.content"
-        @change="updateScriptContent"/>
+      <div class="code-container flex-grow-1 flex-shrink-1">
+        <monaco-editor
+          theme="vs-dark"
+          width="99%"
+          height="97%"
+          language="javascript"
+          :value="engineScriptData.content"
+          @change="updateScriptContent"/>
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -55,6 +60,8 @@
 
 .content {
   overflow:auto;
+  display: flex;
+  flex-direction: column;
 }
 </style>
 
