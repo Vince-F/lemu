@@ -80,7 +80,7 @@ export default class ScriptViewComponent extends Vue {
   private readonly createEngineScriptTemplate!: (payload: {name: string, content: string}) => Promise<void>;
   @Mutation("engineScriptStore/removeScript")
   private readonly removeScript!: (scriptPath: string) => void;
-  @Mutation("applicationStore/displaySnackbar")
+  @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
   private engineScriptData: EngineScript;
 

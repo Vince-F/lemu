@@ -112,7 +112,7 @@ export default class TestResultComponent extends Vue {
   private readonly approveTestViewport!: (payload: {testLabel: string, viewportLabel: string}) => Promise<void>;
   @Getter("configurationStore/htmlReportDirectory")
   private readonly htmlReportDirectory!: string;
-  @Mutation("applicationStore/displaySnackbar")
+  @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
   @Prop({required: true, type: BackstopTest})

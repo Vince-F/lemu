@@ -74,7 +74,7 @@ export default class TestConfigurationComponent extends Vue {
   private setScenarioField!: (paylod: {scenarioIndex: number, field: string, value: any}) => void;
   @Mutation("configurationStore/removeScenarioField")
   private readonly removeScenarioField!: (payload: {index: number, fieldName: string}) => void;
-  @Mutation("applicationStore/displaySnackbar")
+  @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
   @Prop({required: true, type: BackstopTest})

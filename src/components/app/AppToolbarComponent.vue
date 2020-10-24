@@ -21,20 +21,22 @@
         @update:search-input="updateTestSearchInput"
         @change="goToTest"
         label="Search in tests"
-      ></v-autocomplete>   
-    </div> 
+      ></v-autocomplete>
+    </div>
     <v-spacer></v-spacer>
 
-    <v-btn text v-on:click="runTests" v-if="hasConfiguration" :disabled="testRunning">
+    <v-btn
+      text
+      v-on:click="runTests"
+      v-if="hasConfiguration"
+      :disabled="testRunning"
+    >
       <template v-if="!testRunning">
         <v-icon>mdi-play</v-icon>
         Run tests
       </template>
       <template v-else>
-        <v-progress-circular
-          indeterminate
-          color="white"
-        ></v-progress-circular>
+        <v-progress-circular indeterminate color="white"></v-progress-circular>
         Tests running
       </template>
     </v-btn>
@@ -54,11 +56,7 @@
     </v-btn>
     <v-menu offset-y>
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          text
-          v-bind="attrs"
-          v-on="on"
-        >
+        <v-btn text v-bind="attrs" v-on="on">
           <v-icon>mdi-dots-vertical</v-icon>
           More
         </v-btn>
@@ -82,27 +80,25 @@
 </template>
 
 <style scoped>
-  .search-container {
-    margin-top: 24px;
-  }
+.search-container {
+  margin-top: 24px;
+}
 
-  .v-btn .v-icon {
-    margin-right: 8px;
-  }
+.v-btn .v-icon {
+  margin-right: 8px;
+}
 </style>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
-import { ModalService } from '../../services/modalService';
+import { ModalService } from "../../services/modalService";
 import AboutModalComponent from "./AboutModalComponent.vue";
-import { BackstopTest } from '../../models/backstopTest';
-import { SearchService } from '../../services/searchService';
-import { BackstopService } from '../../services/backstopService';
+import { BackstopTest } from "../../models/backstopTest";
+import { SearchService } from "../../services/searchService";
+import { BackstopService } from "../../services/backstopService";
 
-@Component({
-
-})
+@Component({})
 export default class AppToolbarComponent extends Vue {
   @Action("configurationStore/saveConfiguration")
   private readonly saveConfiguration!: () => Promise<void>;
@@ -116,8 +112,11 @@ export default class AppToolbarComponent extends Vue {
   private readonly testRunning!: boolean;
   @Action("testRunnerStore/runTests")
   private readonly runBackstopTests!: () => Promise<any>;
-  @Mutation("applicationStore/displaySnackbar")
-  private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+  @Action("applicationStore/displaySnackbar")
+  private readonly displaySnackbar!: (payload: {
+    text: string;
+    success: boolean;
+  }) => void;
   @Action("engineScriptStore/saveAllScripts")
   private readonly saveAllScripts!: () => Promise<void>;
   @Action("configurationStore/openConfiguration")
@@ -134,17 +133,15 @@ export default class AppToolbarComponent extends Vue {
 
   private close() {
     if (this.hasConfigurationBeenModified) {
-      ModalService.launchSaveConfirmationModal()
-      .then((action) => {
+      ModalService.launchSaveConfirmationModal().then((action) => {
         switch (action) {
-          case 'discard':
+          case "discard":
             this.dismissAndGoToStartScreen();
             break;
-          case 'save':
-            this.save()
-              .then(() => {
-                this.dismissAndGoToStartScreen();
-              });
+          case "save":
+            this.save().then(() => {
+              this.dismissAndGoToStartScreen();
+            });
             break;
         }
       });
@@ -172,17 +169,15 @@ export default class AppToolbarComponent extends Vue {
 
   private openConfig() {
     if (this.hasConfigurationBeenModified) {
-      ModalService.launchSaveConfirmationModal()
-      .then((action) => {
+      ModalService.launchSaveConfirmationModal().then((action) => {
         switch (action) {
-          case 'discard':
+          case "discard":
             this.openConfigAndGoToTestView();
             break;
-          case 'save':
-            this.save()
-              .then(() => {
-                this.openConfigAndGoToTestView();
-              });
+          case "save":
+            this.save().then(() => {
+              this.openConfigAndGoToTestView();
+            });
             break;
         }
       });
@@ -195,9 +190,13 @@ export default class AppToolbarComponent extends Vue {
     this.openConfiguration()
       .then((fileContent) => {
         this.$router.push("/tests/generalConfig");
-      }).catch((error) => {
+      })
+      .catch((error) => {
         if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
-          this.displaySnackbar({text: "Failed to open file. " + error, success: false});
+          this.displaySnackbar({
+            text: "Failed to open file. " + error,
+            success: false,
+          });
         }
       });
   }
@@ -205,21 +204,26 @@ export default class AppToolbarComponent extends Vue {
   private runTests() {
     this.runBackstopTests()
       .then((result) => {
-        this.displaySnackbar({text: "Tests successful", success: true});
-      }).catch((error) => {
-        this.displaySnackbar({text: "Tests failed. Open the logs to see more details.", success: false});
+        this.displaySnackbar({ text: "Tests successful", success: true });
+      })
+      .catch((error) => {
+        this.displaySnackbar({
+          text: "Tests failed. Open the logs to see more details.",
+          success: false,
+        });
       });
   }
 
   private save() {
-    return Promise.all([
-      this.saveConfiguration(),
-      this.saveAllScripts()
-    ])
+    return Promise.all([this.saveConfiguration(), this.saveAllScripts()])
       .then(() => {
-        this.displaySnackbar({text: "File saved", success: true});
-      }).catch((error) => {
-        this.displaySnackbar({text: "Failed to save file: " + error, success: false});
+        this.displaySnackbar({ text: "File saved", success: true });
+      })
+      .catch((error) => {
+        this.displaySnackbar({
+          text: "Failed to save file: " + error,
+          success: false,
+        });
       });
   }
 

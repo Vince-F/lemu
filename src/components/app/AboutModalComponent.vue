@@ -1,8 +1,5 @@
 <template>
-  <v-dialog
-      v-model="dialogDisplayed"
-      max-width="400"
-    >
+  <v-dialog v-model="dialogDisplayed" max-width="400">
     <v-card>
       <v-card-title class="headline">
         <v-icon>mdi-information</v-icon>
@@ -18,33 +15,30 @@
           v-if="loading"
         ></v-progress-circular>
         <div v-else-if="appInfos">
-          <p>Version: {{appInfos.appVersion}}</p>
-          <p>Backstop version: {{appInfos.backstopVersion}}</p>
+          <p>Version: {{ appInfos.appVersion }}</p>
+          <p>Backstop version: {{ appInfos.backstopVersion }}</p>
         </div>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          color="grey darken-1"
-          text
-          @click="dismiss"
-        >
-          Close
-        </v-btn>
+        <v-btn color="grey darken-1" text @click="dismiss"> Close </v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog> 
+  </v-dialog>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import {State, Action} from "vuex-class";
+import { State, Action } from "vuex-class";
 
 @Component({})
 export default class AboutModalComponent extends Vue {
   @State((state) => state.applicationStore.appInfos)
-  private readonly appInfos!: {appVersion: string, backstopVersion: string} | null;
+  private readonly appInfos!: {
+    appVersion: string;
+    backstopVersion: string;
+  } | null;
   @Action("applicationStore/retrieveAppInfos")
   private readonly retrieveAppInfos!: () => Promise<void>;
 
@@ -58,10 +52,9 @@ export default class AboutModalComponent extends Vue {
   }
 
   private created() {
-    this.retrieveAppInfos()
-      .finally(() => {
-        this.loading = false;
-      });
+    this.retrieveAppInfos().finally(() => {
+      this.loading = false;
+    });
   }
 
   private dismiss() {

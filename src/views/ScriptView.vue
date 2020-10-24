@@ -51,7 +51,7 @@ export default class ScriptView extends Vue {
   private readonly retrieveEngineScripts!: () => Promise<void>;
   @Action("templateStore/retrieveEngineScriptTemplates")
   private readonly retrieveEngineScriptTemplates!: () => Promise<void>;
-  @Mutation("applicationStore/displaySnackbar")
+  @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
   private loading: boolean;
@@ -64,7 +64,7 @@ export default class ScriptView extends Vue {
   private created() {
     this.retrieveEngineScripts()
       .catch((error) => {
-        console.error("Fail to load scripts", error);
+        this.displaySnackbar({text: "Failed to load engine scripts " + error, success: false});
       })
       .finally(() => {
         this.loading = false;
