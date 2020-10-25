@@ -31,7 +31,8 @@ export const eventNames = Object.freeze({
   },
   TEST_RESULT_CHANGED: {
     REQUEST: "watchTestResultsChange",
-    REPLY: "testResultsChanged"
+    REPLY: "testResultsChanged",
+    NOT_EXIST: "testResultNonExistent"
   },
   UNREGISTER_RESULT_WATCHER: {
     REQUEST: "unregisterResultWatcher"
