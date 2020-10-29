@@ -46,6 +46,8 @@ export default class TestConfigurationView extends Vue {
   private configurationPath!: string;
   @State((state) => state.configurationStore.configurationModified)
   private configurationModified!: string;
+  @State((state) => state.configurationStore.isSaving)
+  private configurationIsSaving!: boolean;
   @Action("configurationStore/openConfigurationFromPath")
   private openConfigurationFromPath!: (path: string) => Promise<void>;
   @Action("configurationStore/saveConfiguration")
@@ -60,7 +62,7 @@ export default class TestConfigurationView extends Vue {
 
   private mounted() {
     BackstopService.registerConfigWatcher(this.configurationPath, () => {
-      if (!this.reloadModalOpened) {
+      if (!this.reloadModalOpened && !this.configurationIsSaving) {
         this.reloadModalOpened = true;
 
         if (this.configurationModified) {
