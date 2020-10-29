@@ -20,6 +20,11 @@ export class BackstopService {
               body: 'Tests finished running with error(s)'
             });
           }
+          if (this.registerAgainTestWatcher) {
+            window.ipcHandler.send("watchTestResultsChange", this.resultPath);
+            this.resultPath = "";
+            this.registerAgainTestWatcher = false;
+          }
       });
       window.ipcHandler.send("runTest", config);
     });
@@ -114,6 +119,10 @@ export class BackstopService {
     window.ipcHandler.receive("testResultsChanged", () => {
       cb();
     });
+    window.ipcHandler.receiveOnce("testResultNonExistent", () => {
+      this.registerAgainTestWatcher = true;
+      this.resultPath = path;
+    });
     window.ipcHandler.send("watchTestResultsChange", path);
   }
 
@@ -131,4 +140,7 @@ export class BackstopService {
   public static unregisterConfigWatcher() {
     window.ipcHandler.send("unregisterConfigWatcher");
   }
+
+  private static registerAgainTestWatcher: boolean = false;
+  private static resultPath: string = "";
 }
