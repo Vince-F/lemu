@@ -47,7 +47,7 @@ export default class OpenConfigurationComponent extends Vue {
   private readonly openConfigurationFromPath!: (path: string) => Promise<any>;
   @Action("configurationStore/initConfig")
   private readonly initTests!: () => Promise<void>;
-  @Mutation("applicationStore/displaySnackbar")
+  @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
   private recentlyOpened: string[];

@@ -130,7 +130,7 @@ export default class TestViewComponent extends Vue {
   private readonly retrieveTestsResult!: () => Promise<void>;
   @Getter("testResultStore/getResultByTestLabel")
   private readonly getResultByTestLabel!: (labelName: string) => BackstopTestResult[];
-  @Mutation("applicationStore/displaySnackbar")
+  @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
   @Mutation("configurationStore/removeScenario")
   private readonly removeScenario!: (index: number) => void;

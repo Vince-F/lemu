@@ -19,7 +19,7 @@ export default class TestLogStore extends VuexModule {
   @Action
   public initializeLogListener() {
     window.ipcHandler.receive("testLog", (event: EventListenerOrEventListenerObject,
-                                        data: {level: "info" | "error", message: string}) => {
+                                          data: {level: "info" | "error", message: string}) => {
       const message = ( data.level === "error" ? "ERROR: " : "" ) + data.message;
       this.context.commit("addLog", {message, level: data.level});
     });

@@ -15,7 +15,7 @@ export default class ApplicationStore extends VuexModule {
   } | null = null;
 
   @Mutation
-  public displaySnackbar({text, success}: {text: string, success: boolean}) {
+  public setSnackbarDisplayed({text, success}: {text: string, success: boolean}) {
     this.snackbarDisplayed = false;
     this.snackbarText = text;
     this.snackbarSuccess = success;
@@ -30,6 +30,14 @@ export default class ApplicationStore extends VuexModule {
   @Mutation
   public fillAppInfos(appInfos: any) {
     this.appInfos = appInfos;
+  }
+
+  @Action
+  public displaySnackbar(payload: {text: string, success: boolean}) {
+    this.context.commit("setSnackbarDisplayed", payload);
+    setTimeout(() => {
+      this.context.commit("hideSnackbar");
+    }, 15000);
   }
 
   @Action

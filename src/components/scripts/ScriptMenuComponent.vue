@@ -90,7 +90,7 @@ export default class ScriptMenuComponent extends Vue {
   private readonly scripts!: EngineScript[];
   @Getter("configurationStore/engineScriptDirectory")
   private readonly engineScriptDirectory!: string;
-  @Mutation("applicationStore/displaySnackbar")
+  @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
   @Mutation("engineScriptStore/addScript")
   private readonly addScript!: (payload: {scriptPath: string, content: string}) => void;
@@ -178,7 +178,7 @@ export default class ScriptMenuComponent extends Vue {
   private updateItemsList() {
     const paths = new Map();
     this.scripts.forEach((script) => {
-      const harmonizedEngineScriptDirectory = this.engineScriptDirectory.replace(/\\/g, "/")
+      const harmonizedEngineScriptDirectory = this.engineScriptDirectory.replace(/\\/g, "/");
       let basePath = script.path.replace(harmonizedEngineScriptDirectory, "").replace(/\\/g, "/");
       const tmp = harmonizedEngineScriptDirectory.split("/");
       const scriptDirectory = tmp[tmp.length - 1];
