@@ -54,6 +54,9 @@ export default class ConfigurationStore extends VuexModule {
   @Mutation
   public addViewport() {
     if (this.currentConfiguration) {
+      if (!Array.isArray(this.currentConfiguration.viewports)) {
+        this.currentConfiguration.viewports = [];
+      }
       this.currentConfiguration.viewports.push({label: "", width: 0, height: 0});
       this.configurationModified = true;
     }
@@ -61,11 +64,14 @@ export default class ConfigurationStore extends VuexModule {
 
   @Mutation
   public addScenario() {
-    if (this.currentConfiguration?.scenarios) {
+    if (this.currentConfiguration) {
+      if (!Array.isArray(this.currentConfiguration.scenarios)) {
+        this.currentConfiguration.scenarios = [];
+      }
       const label = "New test " + (this.currentConfiguration.scenarios.length + 1);
       this.currentConfiguration.scenarios.push(new BackstopTest({ label }));
       this.configurationModified = true;
-      SearchService.addDocumentsToIndex(this.currentConfiguration?.scenarios || []);
+      SearchService.addDocumentsToIndex(this.currentConfiguration.scenarios);
     }
   }
 
