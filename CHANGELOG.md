@@ -1,5 +1,17 @@
 # Changelog
 
+## V1.17.0
+### Features
+- improve design of test result page
+- add feature to open/close all viewport panels in test result view
+- improve design of engine script view
+- close automatically notifications after 15 seconds
+
+### Fixes
+- Correctly refresh test result when opening a new configuration
+- Stop displaying "outside modification" modal when saving configuration inside Lemu
+- Fix issue when opening a backstop configuration where tests were never run before
+
 ## V1.16.0
 ### Features
 - add engine script template: you can now save engine scripts to reuse them in other project
