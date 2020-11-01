@@ -1,11 +1,11 @@
 <template>
   <v-app>
     <app-toolbar-component></app-toolbar-component>
-    <v-content>
+    <v-main>
       <router-view />
-    </v-content>
+    </v-main>
 
-    <v-snackbar :value="snackbarDisplayed" top :timeout=0>
+    <v-snackbar :value="snackbarDisplayed" top>
       <v-icon color="green" v-if="snackbarSuccess">
         mdi-check-circle
       </v-icon>
@@ -13,6 +13,7 @@
         mdi-alert
       </v-icon>
       {{ snackbarText }}
+      <v-spacer />
       <v-btn
         color="white"
         text

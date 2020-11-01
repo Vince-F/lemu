@@ -4,14 +4,13 @@
       <v-navigation-drawer permanent ref="leftMenu">
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>
+            <v-list-item-title class="title-with-action">
               TESTS
-            </v-list-item-title>
-            <div class="action text-right">
+              <v-spacer />
               <v-btn color="primary" @click="addScenario">
                 <v-icon>mdi-plus</v-icon>Add
               </v-btn>
-            </div>    
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         
@@ -188,6 +187,11 @@
 .empty-placeholder {
   padding: 16px;
   text-align: center;
+}
+
+.title-with-action {
+  display: flex;
+  align-items: center;
 }
 </style>
 
