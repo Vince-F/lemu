@@ -3,15 +3,22 @@
     <v-card-title class="header flex-grow-0 flex-shrink-0">
       <div class="flex-grow-1 flex-shrink-1">
         {{testContent.label}} 
-        <v-icon color="green" v-if="testStatus === 'pass'">
-          mdi-check-circle
-        </v-icon>
-        <v-icon color="grey" v-else-if="testStatus === 'unknown'">
-          mdi-help-circle 
-        </v-icon>
-        <v-icon color="red" v-else>
-          mdi-alert
-        </v-icon>
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-icon v-on="on" color="green" class="icon-offset" v-if="testStatus === 'pass'">
+              mdi-check-circle
+            </v-icon>
+            <v-icon v-on="on" color="grey" class="icon-offset" v-else-if="testStatus === 'unknown'">
+              mdi-help-circle 
+            </v-icon>
+            <v-icon v-on="on" color="red" class="icon-offset" v-else>
+              mdi-alert
+            </v-icon>
+          </template>
+          <template v-if="testStatus === 'pass'">Test passed successfully</template>
+          <template v-else-if="testStatus === 'unknown'">Test status unknown</template>
+          <template v-else>Test failed</template>
+        </v-tooltip>
       </div>
       <div class="flex-grow-0 flex-shrink-0">
         <v-tooltip top>
@@ -93,6 +100,30 @@
 
 .content {
   overflow:auto;
+  padding: 0;
+}
+
+.content >>> .v-tabs {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+.content >>> .v-tabs .v-tabs-bar {
+  margin: 16px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.content >>> .v-tabs .v-tabs-items {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.icon-offset {
+  top: -2px;
 }
 </style>
 
@@ -130,7 +161,7 @@ export default class TestViewComponent extends Vue {
   private readonly retrieveTestsResult!: () => Promise<void>;
   @Getter("testResultStore/getResultByTestLabel")
   private readonly getResultByTestLabel!: (labelName: string) => BackstopTestResult[];
-  @Mutation("applicationStore/displaySnackbar")
+  @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
   @Mutation("configurationStore/removeScenario")
   private readonly removeScenario!: (index: number) => void;

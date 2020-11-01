@@ -15,6 +15,7 @@ export default class ConfigurationStore extends VuexModule {
   public configurationPath: string = "";
   public testsModified: boolean[] = [];
   public configurationModified: boolean = false;
+  public isSaving: boolean = false;
 
   public get tests() {
     return this.currentConfiguration ? this.currentConfiguration.scenarios : [];
@@ -53,6 +54,9 @@ export default class ConfigurationStore extends VuexModule {
   @Mutation
   public addViewport() {
     if (this.currentConfiguration) {
+      if (!Array.isArray(this.currentConfiguration.viewports)) {
+        this.currentConfiguration.viewports = [];
+      }
       this.currentConfiguration.viewports.push({label: "", width: 0, height: 0});
       this.configurationModified = true;
     }
@@ -60,11 +64,14 @@ export default class ConfigurationStore extends VuexModule {
 
   @Mutation
   public addScenario() {
-    if (this.currentConfiguration?.scenarios) {
+    if (this.currentConfiguration) {
+      if (!Array.isArray(this.currentConfiguration.scenarios)) {
+        this.currentConfiguration.scenarios = [];
+      }
       const label = "New test " + (this.currentConfiguration.scenarios.length + 1);
       this.currentConfiguration.scenarios.push(new BackstopTest({ label }));
       this.configurationModified = true;
-      SearchService.addDocumentsToIndex(this.currentConfiguration?.scenarios || []);
+      SearchService.addDocumentsToIndex(this.currentConfiguration.scenarios);
     }
   }
 
@@ -236,6 +243,11 @@ export default class ConfigurationStore extends VuexModule {
     localStorage.setItem("recentlyOpened", JSON.stringify(recentPaths.slice(0, 5)));
   }
 
+  @Mutation
+  public setSavingState(savingState: boolean) {
+    this.isSaving = savingState;
+  }
+
   @Action
   public approveTests() {
     if (this.context.rootState.testRunnerStore.testRunning) {
@@ -306,6 +318,7 @@ export default class ConfigurationStore extends VuexModule {
         this.context.commit("setPath", path);
         this.context.commit("updateRecently", path);
         this.context.commit("testLogStore/resetLogs", null, { root: true });
+        this.context.commit("testResultStore/expireTestsResult", undefined, { root: true });
         this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
         BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
         return Promise.resolve();
@@ -327,6 +340,7 @@ export default class ConfigurationStore extends VuexModule {
         this.context.commit("setPath", path);
         this.context.commit("updateRecently", path);
         this.context.commit("testLogStore/resetLogs", null, { root: true });
+        this.context.commit("testResultStore/expireTestsResult", undefined, { root: true });
         BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
         this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
         return Promise.resolve();
@@ -335,12 +349,15 @@ export default class ConfigurationStore extends VuexModule {
 
   @Action
   public saveConfiguration() {
+    this.context.commit("setSavingState", true);
     const content = JSON.stringify(this.currentConfiguration, null, 4);
 
     return FileService.writeFile(this.configurationPath, content)
             .then(() => {
               this.context.commit("resetModification");
               this.context.commit("setConfigurationModified", false);
+            }).finally(() => {
+              this.context.commit("setSavingState", false);
             });
   }
 }

@@ -13,11 +13,15 @@ export class BackstopTestResultReader {
   }
 
   public static watchResultChanges(reportPath: string) {
-    this.resultFileWatcher = fs.watch(path.join(reportPath, "config.js"));
+    if (fs.existsSync(path.join(reportPath, "config.js"))) {
+      this.resultFileWatcher = fs.watch(path.join(reportPath, "config.js"));
 
-    this.resultFileWatcher.on("change", (eventType) => {
-      BrowserWindowManager.sendEvent(eventNames.TEST_RESULT_CHANGED.REPLY);
-    });
+      this.resultFileWatcher.on("change", (eventType) => {
+        BrowserWindowManager.sendEvent(eventNames.TEST_RESULT_CHANGED.REPLY);
+      });
+    } else {
+      BrowserWindowManager.sendEvent(eventNames.TEST_RESULT_CHANGED.NOT_EXIST);
+    }
   }
 
   public static unregisterResultWatcher() {

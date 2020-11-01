@@ -51,7 +51,7 @@ export default class ReportComponent extends Vue {
   private readonly testRunning!: boolean;
   @Action("configurationStore/approveTests")
   private readonly approveTests!: () => Promise<any>;
-  @Mutation("applicationStore/displaySnackbar")
+  @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
   private get reportPath() {

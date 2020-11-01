@@ -124,7 +124,7 @@ export default class AddTestFieldModalComponent extends Vue {
 
     this.predefinedFieldRules = [
       (value: any) => !!value || "You must choose a field"
-    ]
+    ];
   }
 
   private get helpMessage() {

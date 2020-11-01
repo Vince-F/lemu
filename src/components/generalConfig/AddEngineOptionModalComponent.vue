@@ -50,7 +50,7 @@
           text
           @click="dismiss"
         >
-          cancel
+          Cancel
         </v-btn>
       </v-card-actions>
     </v-card>
