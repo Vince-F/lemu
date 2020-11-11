@@ -12,6 +12,12 @@ import TestViewComponent from "../components/tests/TestViewComponent.vue";
 import TestWelcomeScreenComponent from "../components/tests/TestWelcomeScreenComponent.vue";
 import ScriptViewComponent from "../components/scripts/ScriptViewComponent.vue";
 
+import TemplatesView from "../views/TemplatesView.vue";
+import TemplateContentView from "../views/TemplateContentView.vue";
+import TemplateScriptsMenuComponent from "../components/templates/scripts/TemplateScriptsMenuComponent.vue";
+import TemplateScriptViewComponent from "../components/templates/scripts/TemplateScriptViewComponent.vue";
+import TemplateScriptWelcomeComponent from "../components/templates/scripts/TemplateScriptViewComponent.vue";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -65,6 +71,35 @@ const routes = [
             path: ":path",
             name: "scriptView",
             component: ScriptViewComponent
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: "/templates",
+    name: "templates",
+    component: TemplatesView,
+    children: [
+      {
+        path: "script",
+        component: TemplateContentView,
+        children: [
+          {
+            path: "",
+            name: "scriptTemplates.welcome",
+            components: {
+              menu: TemplateScriptsMenuComponent,
+              view: TemplateScriptWelcomeComponent
+            }
+          },
+          {
+            path: ":name",
+            name: "scriptTemplates.view",
+            components: {
+              menu: TemplateScriptsMenuComponent,
+              view: TemplateScriptViewComponent
+            }
           }
         ]
       }

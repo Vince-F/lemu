@@ -1,12 +1,23 @@
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
 import { TemplateService } from '@/services/templateService';
+import Vue from "vue";
 
 @Module({
   namespaced: true
 })
 export default class TemplateStore extends VuexModule {
   private scripts: EngineScriptTemplate[] = [];
+  private originalScriptNames: string[] = [];
+  private scriptModified: boolean[] = [];
+
+  private get getScriptByName() {
+    return (scriptName: string) => this.scripts.find((script) => script.name === scriptName);
+  }
+
+  public get hasScriptBeenModified() {
+    return (idx: number) => !!this.scriptModified[idx];
+  }
 
   @Action({rawError: true})
   public createEngineScriptTemplate({name, content}: EngineScriptTemplate) {
@@ -29,13 +40,58 @@ export default class TemplateStore extends VuexModule {
       });
   }
 
+  @Action({rawError: true})
+  public saveTemplates() {
+    const scriptNames = this.scripts.map((script) => script.name);
+    const scriptNamesToDelete = this.originalScriptNames.filter((scriptName) => {
+      return !scriptNames.includes(scriptName);
+    });
+
+    const savePromises = this.scripts.map((script) => TemplateService.createOrUpdateScriptTemplate(script));
+    const deletionPromises = scriptNamesToDelete.map((name) => TemplateService.deleteScriptTemplate(name));
+
+    const allPromises = [...savePromises, ...deletionPromises];
+    return Promise.all(allPromises);
+  }
+
   @Mutation
   private addEngineScriptTemplate(script: EngineScriptTemplate) {
     this.scripts.push(script);
+    this.originalScriptNames.push(script.name);
+  }
+
+  @Mutation
+  private removeEngineScriptTemplate(script: EngineScriptTemplate) {
+    const idx = this.scripts.indexOf(script);
+    if (idx > -1) {
+      this.scripts.splice(idx, 1);
+    }
   }
 
   @Mutation
   private setEngineScriptTemplates(scripts: EngineScriptTemplate[]) {
     this.scripts = scripts;
+    this.originalScriptNames = this.scripts.map((script) => script.name);
+  }
+
+  @Mutation
+  private setEngineScriptTemplateContent({name, content}: {name: string, content: string}) {
+    const script = this.scripts.find((scriptEntry) => scriptEntry.name === name);
+    if (script) {
+      script.content = content;
+      const idx = this.scripts.indexOf(script);
+      if (idx > -1) {
+        Vue.set(this.scriptModified, idx, true);
+      }
+    }
+  }
+
+  @Mutation
+  private setEngineScriptTemplateName({script, newName}: {script: EngineScriptTemplate, newName: string}) {
+    const scriptIdx = this.scripts.indexOf(script);
+    if (scriptIdx > -1) {
+      this.scripts[scriptIdx].name = newName;
+      Vue.set(this.scriptModified, scriptIdx, true);
+    }
   }
 }

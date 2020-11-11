@@ -46,11 +46,11 @@
       Open...
     </v-btn>
 
-    <v-btn text v-on:click="save" v-if="hasConfiguration">
+    <v-btn text v-on:click="save" v-if="hasConfiguration || isInTemplate">
       <v-icon>mdi-content-save</v-icon>
       Save
     </v-btn>
-    <v-btn text v-on:click="close" v-if="hasConfiguration">
+    <v-btn text v-on:click="close" v-if="hasConfiguration || isInTemplate">
       <v-icon>mdi-exit-to-app</v-icon>
       Close
     </v-btn>
@@ -121,6 +121,8 @@ export default class AppToolbarComponent extends Vue {
   private readonly saveAllScripts!: () => Promise<void>;
   @Action("configurationStore/openConfiguration")
   private openConfiguration!: () => Promise<any>;
+  @Action("templateStore/saveTemplates")
+  private saveTemplates!: () => Promise<void>;
 
   private selectedTest: number | null;
   private foundTests: any[];
@@ -129,6 +131,10 @@ export default class AppToolbarComponent extends Vue {
     super(arguments);
     this.selectedTest = null;
     this.foundTests = [];
+  }
+
+  private get isInTemplate() {
+    return this.$route.path.startsWith("/template");
   }
 
   private close() {
@@ -215,7 +221,13 @@ export default class AppToolbarComponent extends Vue {
   }
 
   private save() {
-    return Promise.all([this.saveConfiguration(), this.saveAllScripts()])
+    let savePromises: Array<Promise<void>> = [];
+    if (this.isInTemplate) {
+      savePromises = [this.saveTemplates()];
+    } else {
+      savePromises = [this.saveConfiguration(), this.saveAllScripts()];
+    }
+    return Promise.all(savePromises)
       .then(() => {
         this.displaySnackbar({ text: "File saved", success: true });
       })

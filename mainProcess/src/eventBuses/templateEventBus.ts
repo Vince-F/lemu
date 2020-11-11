@@ -10,3 +10,6 @@ ipcMain.handle(eventNames.RETRIEVE_SCRIPT_TEMPLATES, (event) => {
   return TemplateManager.getInstance().retrieveEngineScriptTemplates();
 });
 
+ipcMain.handle(eventNames.DELETE_SCRIPT_TEMPLATE, (event, name: string) => {
+  return TemplateManager.getInstance().deleteScriptTemplate(name);
+});
