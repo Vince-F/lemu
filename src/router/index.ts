@@ -16,7 +16,7 @@ import TemplatesView from "../views/TemplatesView.vue";
 import TemplateContentView from "../views/TemplateContentView.vue";
 import TemplateScriptsMenuComponent from "../components/templates/scripts/TemplateScriptsMenuComponent.vue";
 import TemplateScriptViewComponent from "../components/templates/scripts/TemplateScriptViewComponent.vue";
-import TemplateScriptWelcomeComponent from "../components/templates/scripts/TemplateScriptViewComponent.vue";
+import TemplateScriptWelcomeComponent from "../components/templates/scripts/TemplateScriptWelcomeComponent.vue";
 
 Vue.use(VueRouter);
 

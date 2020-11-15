@@ -51,7 +51,10 @@ export default class TemplateStore extends VuexModule {
     const deletionPromises = scriptNamesToDelete.map((name) => TemplateService.deleteScriptTemplate(name));
 
     const allPromises = [...savePromises, ...deletionPromises];
-    return Promise.all(allPromises);
+    return Promise.all(allPromises)
+      .then(() => {
+        this.context.commit("setOriginalScripts", this.scripts.map((script) => script.name));
+      });
   }
 
   @Mutation
@@ -66,6 +69,11 @@ export default class TemplateStore extends VuexModule {
     if (idx > -1) {
       this.scripts.splice(idx, 1);
     }
+  }
+
+  @Mutation
+  private setOriginalScripts(scriptsNames: string[]) {
+    this.originalScriptNames = scriptsNames;
   }
 
   @Mutation

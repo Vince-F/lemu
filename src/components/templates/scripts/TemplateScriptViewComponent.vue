@@ -71,7 +71,7 @@ export default class TemplateScriptViewComponent extends Vue {
   @Getter("templateStore/getScriptByName")
   private readonly getScriptByName!: (name: string) => EngineScriptTemplate;
   @Mutation("templateStore/removeEngineScriptTemplate")
-  private readonly removeEngineScriptTemplate!: (scriptPath: string) => void;
+  private readonly removeEngineScriptTemplate!: (script: EngineScriptTemplate) => void;
   @Mutation("templateStore/setEngineScriptTemplateContent")
   private readonly setEngineScriptTemplateContent!: (payload: {name: string, content: string}) => void;
   @Action("applicationStore/displaySnackbar")
@@ -91,10 +91,10 @@ export default class TemplateScriptViewComponent extends Vue {
 
   private deleteScript() {
     if (this.script) {
-      const scriptName = this.script.name;
+      const scriptToDelete = this.script;
       ModalService.launchConfirmationModal("Do you want to delete this script?")
         .then(() => {
-          this.removeEngineScriptTemplate(scriptName);
+          this.removeEngineScriptTemplate(scriptToDelete);
           this.$router.push({name: "scriptTemplates.welcome"});
         });
     }

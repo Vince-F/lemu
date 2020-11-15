@@ -2,7 +2,7 @@
   <v-container fluid class="container pa-0">
     <div class="menu">
       <v-navigation-drawer permanent ref="leftMenu">
-        <h1>Templates</h1>
+        <h1 class="px-3 py-2">Templates</h1>
         <router-view name="menu"/>
       </v-navigation-drawer>
     </div>
