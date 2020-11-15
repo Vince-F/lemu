@@ -36,7 +36,7 @@ export class TemplateManager {
       if (!fs.existsSync(scriptPath)) {
         fs.writeFile(scriptPath, content, { encoding: "utf-8" }, (err) => {
           if (err) {
-            reject("Fail to create file, error: " + err.message);
+            reject("Failed to create file, error: " + err.message);
           } else {
             resolve();
           }
@@ -44,6 +44,32 @@ export class TemplateManager {
       } else {
         reject("File alreay exists");
       }
+    });
+  }
+
+  public createOrUpdateScriptTemplate(name: string, content: string) {
+    return new Promise((resolve, reject) => {
+      const scriptPath = path.join(this.engineScriptsTemplateDirectory, name + ".js");
+      fs.writeFile(scriptPath, content, { encoding: "utf-8" }, (err) => {
+        if (err) {
+          reject("Failed to create file, error: " + err.message);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
+  public deleteScriptTemplate(name: string) {
+    return new Promise((resolve, reject) => {
+      const scriptPath = path.join(this.engineScriptsTemplateDirectory, name + ".js");
+      fs.unlink(scriptPath, (err) => {
+        if (err) {
+          reject("Failed to delete file, error: " + err.message);
+        } else {
+          resolve();
+        }
+      });
     });
   }
 

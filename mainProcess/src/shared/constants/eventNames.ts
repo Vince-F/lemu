@@ -54,5 +54,7 @@ export const eventNames = Object.freeze({
   RESOLVE_PATH: "resolvePath",
   WRITE_FILE: "writeFile",
   CREATE_SCRIPT_TEMPLATE: "createScriptTemplate",
-  RETRIEVE_SCRIPT_TEMPLATES: "retrieveScriptTemplates"
+  CREATE_OR_UPDATE_SCRIPT_TEMPLATE: "createOrUpdateScriptTemplate",
+  RETRIEVE_SCRIPT_TEMPLATES: "retrieveScriptTemplates",
+  DELETE_SCRIPT_TEMPLATE: "deleteScriptTemplate"
 });
