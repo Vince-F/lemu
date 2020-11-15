@@ -1,7 +1,7 @@
 
 
 export const backstopScenarioProperties = Object.freeze([
-  {name: "onBeforeScript", type: "string"},
+  {name: "onBeforeScript", type: "scripts"},
   {name: "cookiePath", type: "string"},
   {name: "referenceUrl", type: "string"},
   {name: "readyEvent", type: "string"},
@@ -9,7 +9,7 @@ export const backstopScenarioProperties = Object.freeze([
   {name: "delay", type: "number"},
   {name: "hideSelectors", type: "array"},
   {name: "removeSelectors", type: "array"},
-  {name: "onReadyScript", type: "string"},
+  {name: "onReadyScript", type: "scripts"},
   {name: "keyPressSelectors", type: "array"},
   {name: "hoverSelector", type: "string"},
   {name: "hoverSelectors", type: "array"},
@@ -21,4 +21,4 @@ export const backstopScenarioProperties = Object.freeze([
   {name: "selectorExpansion", type: "boolean"},
   {name: "misMatchThreshold", type: "number"},
   {name: "requireSameDimensions", type: "boolean"}
-]) as Array<{name: string, type: "string" | "number" | "array" | "boolean" }>;
+]) as Array<{name: string, type: "string" | "number" | "array" | "boolean" | "scripts" }>;

@@ -25,7 +25,9 @@ export class BackstopTestResultReader {
   }
 
   public static unregisterResultWatcher() {
-    this.resultFileWatcher.close();
+    if (this.resultFileWatcher) {
+      this.resultFileWatcher.close();
+    }
   }
 
   private static resultFileWatcher: fs.FSWatcher;

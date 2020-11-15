@@ -5,7 +5,7 @@
       <v-card class="elevation-8">
         <v-card-title>Welcome to LEMU!</v-card-title>
         <v-card-text class="open-file-starter">
-            <div>
+          <div>
             <p>
             To start open a BackstopJS tests configuration file ("backstop.json")
             </p>
@@ -17,6 +17,16 @@
               Create new config...
             </v-btn> 
           </div>
+          <v-divider class="my-3" />
+          <div>
+            <p>
+              Manage your templates to ease reuse accross projects.
+            </p>
+            <v-btn large color="primary" @click="goToTemplates">
+              Manage templates
+            </v-btn> 
+          </div>
+          <v-divider class="my-3" />
           <div>
             <h1 class="v-card__title">Recently opened</h1>
             <p v-if="recentlyOpened.length === 0">
@@ -75,6 +85,10 @@ export default class OpenConfigurationComponent extends Vue {
           this.displaySnackbar({text: "Failed to open file. " + error, success: false});
         }
       });
+  }
+
+  private goToTemplates() {
+    this.$router.push({name: "scriptTemplates.welcome"});
   }
 
   private openSearchFileModal() {
