@@ -5,8 +5,10 @@
         <v-expansion-panel-header>General</v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-text-field label="id" :value="configuration.id" @input="updateField('id', $event)"></v-text-field>
-          <v-text-field label="OnBeforeScript" :value="configuration.onBeforeScript" @input="updateField('onBeforeScript', $event)"></v-text-field>
-          <v-text-field label="onReadyScript" :value="configuration.onReadyScript" @input="updateField('onReadyScript', $event)"></v-text-field>
+          <v-select :value="configuration.onBeforeScript" @input="updateField('onBeforeScript', $event)" :items="scriptNames"
+            label="onBeforeScript" multiple></v-select>
+          <v-select :value="configuration.onReadyScript" @input="updateField('onReadyScript', $event)" :items="scriptNames"
+            label="onReadyScript" multiple></v-select>
           <v-text-field label="Path for reference bitmaps" :value="configuration.paths.bitmaps_reference" @input="updatePathField('bitmaps_reference', $event)"></v-text-field>
           <v-text-field label="Path for test bitmaps" :value="configuration.paths.bitmaps_test" @input="updatePathField('bitmaps_test', $event)"></v-text-field>
         </v-expansion-panel-content>
@@ -92,8 +94,9 @@
 </style>
 
 <script lang="ts">
+import { EngineScript } from '@/models/engineScript';
 import { Vue, Component } from "vue-property-decorator";
-import { State, Mutation } from "vuex-class";
+import { State, Mutation, Getter, Action } from "vuex-class";
 import { BackstopConfiguration } from "../../models/backstopConfiguration";
 import { ModalService } from '../../services/modalService';
 import AddEngineOptionModalComponent from "./AddEngineOptionModalComponent.vue";
@@ -121,6 +124,12 @@ export default class GeneralConfigurationComponent extends Vue {
   private readonly setConfigurationEngineOptionsField!: (payload: {field: string, value: any}) => void;
   @Mutation("configurationStore/removeEngineOption")
   private readonly removeEngineOption!: (fieldName: string) => void;
+  @State((state) => state.engineScriptStore.scripts)
+  private readonly scripts!: EngineScript[];
+  @Getter("configurationStore/engineScriptDirectory")
+  private readonly engineScriptDirectory!: string;
+  @Action("engineScriptStore/retrieveEngineScripts")
+  private readonly retrieveEngineScripts!: () => Promise<void>;
 
   private get ciReportEnabled() {
     return this.configuration.report.indexOf("CI") > -1;
@@ -132,6 +141,26 @@ export default class GeneralConfigurationComponent extends Vue {
 
   private get htmlReportEnabled() {
     return this.configuration.report.indexOf("browser") > -1;
+  }
+
+  private get scriptNames() {
+    let scriptDirectory = this.engineScriptDirectory.replace(/\\/g, "/");
+    if (!scriptDirectory.endsWith("/")) {
+      scriptDirectory += "/";
+    }
+    return this.scripts.map((script) => {
+      return script.path.replace(scriptDirectory, "");
+    });
+  }
+
+  private created() {
+    if (!Array.isArray(this.configuration.onBeforeScript)) {
+      this.updateField("onBeforeScript", [this.configuration.onBeforeScript]);
+    }
+    if (!Array.isArray(this.configuration.onReadyScript)) {
+      this.updateField("onReadyScript", [this.configuration.onReadyScript]);
+    }
+    this.retrieveEngineScripts();
   }
 
   private addEngineOption() {

@@ -50,6 +50,8 @@
           <v-combobox v-else-if="fieldType === 'array'" multiple chips
             label="Value" v-model="fieldValue"
             ></v-combobox>
+          <v-select v-if="fieldType === 'scripts'" :items="scriptNames"
+            label="Value" multiple v-model="fieldValue"></v-select>
           <v-text-field v-else 
           label="Value" v-model="fieldValue"
           ></v-text-field>
@@ -80,17 +82,27 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
+import { State, Getter, Action } from "vuex-class";
 import { backstopScenarioProperties } from '../../constants/backstopScenarioProperties';
 import { backstopFieldHelp } from "../../constants/backstopFieldHelp";
+import { EngineScript } from '@/models/engineScript';
 
 @Component({})
 export default class AddTestFieldModalComponent extends Vue {
+  @State((state) => state.engineScriptStore.scripts)
+  private readonly scripts!: EngineScript[];
+  @Getter("configurationStore/engineScriptDirectory")
+  private readonly engineScriptDirectory!: string;
+  @Action("engineScriptStore/retrieveEngineScripts")
+  private readonly retrieveEngineScripts!: () => Promise<void>;
+
   private dialogDisplayed: boolean;
-  private readonly predefinedFields: Array<{name: string,  type: "string" | "number" | "array" | "boolean" }>;
+  private readonly predefinedFields: Array<{name: string,
+    type: "string" | "number" | "array" | "boolean" | "scripts" }>;
   private readonly modes: string[];
   private readonly types: string[];
   private currentMode: string;
-  private selectedField: {name: string,  type: "string" | "number" | "array" | "boolean" } | null;
+  private selectedField: {name: string,  type: "string" | "number" | "array" | "boolean" | "scripts" } | null;
   private fieldName: string;
   private fieldType: string;
   private valid: boolean;
@@ -127,11 +139,25 @@ export default class AddTestFieldModalComponent extends Vue {
     ];
   }
 
+  private created() {
+    this.retrieveEngineScripts();
+  }
+
   private get helpMessage() {
     if (backstopFieldHelp.has(this.selectedField?.name || "")) {
       return backstopFieldHelp.get(this.selectedField?.name || "");
     }
     return "";
+  }
+
+  private get scriptNames() {
+    let scriptDirectory = this.engineScriptDirectory.replace(/\\/g, "/");
+    if (!scriptDirectory.endsWith("/")) {
+      scriptDirectory += "/";
+    }
+    return this.scripts.map((script) => {
+      return script.path.replace(scriptDirectory, "");
+    });
   }
 
   private addField() {
@@ -154,6 +180,7 @@ export default class AddTestFieldModalComponent extends Vue {
   private updateNewValueType() {
     switch (this.fieldType) {
       case 'array':
+      case 'scripts':
         this.fieldValue = [];
         break;
       case 'boolean':
