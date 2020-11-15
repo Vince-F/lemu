@@ -26,6 +26,9 @@
           :label="additionnalField.name" :value="additionnalField.value"
           :key="index" @change="updateField(additionnalField.name, $event)"
           class="flex-grow-1 flex-shrink-1"></v-combobox>
+        <v-select v-else-if="additionnalField.type === 'scripts'" 
+          :value="additionnalField.value" @input="updateField(additionnalField.name, $event)" 
+            :items="scriptNames" :label="additionnalField.name" multiple></v-select>
         <v-text-field 
           v-else :label="additionnalField.name" 
           :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, $event)"
@@ -63,6 +66,8 @@ import { ModalService } from "../../services/modalService";
 import { BackstopTest } from '../../models/backstopTest';
 import { backstopFieldHelp } from "../../constants/backstopFieldHelp";
 import AddTestFieldModalComponent from "./AddTestFieldModalComponent.vue";
+import { backstopScenarioProperties } from '@/constants/backstopScenarioProperties';
+import { EngineScript } from '@/models/engineScript';
 
 @Component({})
 export default class TestConfigurationComponent extends Vue {
@@ -76,11 +81,21 @@ export default class TestConfigurationComponent extends Vue {
   private readonly removeScenarioField!: (payload: {index: number, fieldName: string}) => void;
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+  @State((state) => state.engineScriptStore.scripts)
+  private readonly scripts!: EngineScript[];
+  @Getter("configurationStore/engineScriptDirectory")
+  private readonly engineScriptDirectory!: string;
+  @Action("engineScriptStore/retrieveEngineScripts")
+  private readonly retrieveEngineScripts!: () => Promise<void>;
 
   @Prop({required: true, type: BackstopTest})
   private readonly testContent!: BackstopTest;
   @Prop({required: true, type: Number})
   private readonly testIndex!: number;
+
+  private created() {
+    this.retrieveEngineScripts();
+  }
 
   private get additionnalFields(): Array<{name: string, value: string | number | boolean, type: string}> {
     const result = [];
@@ -89,15 +104,31 @@ export default class TestConfigurationComponent extends Vue {
         const entry = {} as any;
         entry.name = key;
         entry.value = this.testContent[key];
-        if (Array.isArray(this.testContent[key])) {
+        const matchingPredefinedField = backstopScenarioProperties.find((field) => field.name === key);
+        if (matchingPredefinedField) {
+          entry.type = matchingPredefinedField.type;
+        } else if (Array.isArray(this.testContent[key])) {
           entry.type = 'array';
         } else {
           entry.type = typeof this.testContent[key];
+        }
+        if (entry.type === 'scripts' && !Array.isArray(entry.value)) {
+          entry.value = [entry.value];
         }
         result.push(entry);
       }
     }
     return result;
+  }
+
+  private get scriptNames() {
+    let scriptDirectory = this.engineScriptDirectory.replace(/\\/g, "/");
+    if (!scriptDirectory.endsWith("/")) {
+      scriptDirectory += "/";
+    }
+    return this.scripts.map((script) => {
+      return script.path.replace(scriptDirectory, "");
+    });
   }
 
   private addNewField() {
