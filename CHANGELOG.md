@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.18.0
+### Features
+- Add engine script templates view to manage them
+- For "onBeforeScript" and "onReadyScript", display them as combobox to select script from engine scripts in the backstop configuration
 ## V1.17.0
 ### Features
 - improve design of test result page
