@@ -53,7 +53,7 @@ export class BackstopService {
     return new Promise((resolve, reject) => {
       window.ipcHandler.receiveOnce("approvalFinished", (event: any, success: boolean, payload: any) => {
         if (success) {
-          resolve();
+          resolve(payload);
         } else {
           reject(payload);
         }
@@ -66,7 +66,7 @@ export class BackstopService {
     return new Promise((resolve, reject) => {
       window.ipcHandler.receiveOnce("approvalFinished", (event: any, success: boolean, payload: any) => {
         if (success) {
-          resolve();
+          resolve(payload);
         } else {
           reject(payload);
         }
@@ -79,7 +79,7 @@ export class BackstopService {
     return new Promise((resolve, reject) => {
       window.ipcHandler.receiveOnce("initFinished", (event: any, success: boolean, payload: any) => {
         if (success) {
-          resolve();
+          resolve(payload);
         } else {
           reject();
         }
