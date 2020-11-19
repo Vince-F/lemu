@@ -43,7 +43,7 @@ function createWindow() {
 }
 
 function registerDocProtocol() {
-  protocol.registerFileProtocol('doc', (request, callback) => {
+  const successfull = protocol.registerFileProtocol('doc', (request, callback) => {
     let url = request.url.substr("doc://".length);
     url = url.replace("-/", "");
     // because vuepress uses HTML5 history mode, current page gets in the way
@@ -54,11 +54,10 @@ function registerDocProtocol() {
     }
     console.log("request url from doc is", url);
     callback({ path: path.normalize(`./dist-app/docs/${url}`) });
-  }, (error) => {
-    if (error) {
-      console.error("Fail to register doc protocol");
-    }
   });
+  if (!successfull) {
+    console.error("Fail to register doc protocol");
+  }
 }
 
 protocol.registerSchemesAsPrivileged([
