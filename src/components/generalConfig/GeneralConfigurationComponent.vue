@@ -46,7 +46,6 @@
         <v-expansion-panel-content>
           <v-radio-group :value="configuration.engine" @change="updateField('engine', $event)">
             <v-radio label="Puppeteer" value="puppeteer"></v-radio>
-            <v-radio label="Chromy" value="chromy"></v-radio>
           </v-radio-group>
           <strong>Engine options</strong>
           <div v-for="(value, key) of configuration.engineOptions" :key="key" class="d-flex">
