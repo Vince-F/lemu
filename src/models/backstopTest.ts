@@ -1,3 +1,4 @@
+import { Viewport } from './viewport';
 
 
 export class BackstopTest {
@@ -21,6 +22,7 @@ export class BackstopTest {
   public expect!: number;
   public misMatchThreshold!: number;
   public requireSameDimensions!: boolean;
+  public viewports!: Viewport[];
 
   /* for custom fields */
   [key: string]: any;

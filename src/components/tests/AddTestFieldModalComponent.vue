@@ -50,8 +50,11 @@
           <v-combobox v-else-if="fieldType === 'array'" multiple chips
             label="Value" v-model="fieldValue"
             ></v-combobox>
-          <v-select v-if="fieldType === 'scripts'" :items="scriptNames"
+          <v-select v-else-if="fieldType === 'scripts'" :items="scriptNames"
             label="Value" multiple v-model="fieldValue"></v-select>
+          <viewports-component v-else-if="fieldType === 'viewports'" 
+            :viewports="fieldValue" @addViewport="addViewport"
+            @removeViewport="removeViewport" @updateViewportField="updatedViewportField" />
           <v-text-field v-else 
           label="Value" v-model="fieldValue"
           ></v-text-field>
@@ -86,8 +89,14 @@ import { State, Getter, Action } from "vuex-class";
 import { backstopScenarioProperties } from '../../constants/backstopScenarioProperties';
 import { backstopFieldHelp } from "../../constants/backstopFieldHelp";
 import { EngineScript } from '@/models/engineScript';
+import ViewportsComponent from "./ViewportsComponent.vue";
+import { Viewport } from '@/models/viewport';
 
-@Component({})
+@Component({
+  components: {
+    ViewportsComponent
+  }
+})
 export default class AddTestFieldModalComponent extends Vue {
   @State((state) => state.engineScriptStore.scripts)
   private readonly scripts!: EngineScript[];
@@ -98,15 +107,16 @@ export default class AddTestFieldModalComponent extends Vue {
 
   private dialogDisplayed: boolean;
   private readonly predefinedFields: Array<{name: string,
-    type: "string" | "number" | "array" | "boolean" | "scripts" }>;
+    type: "string" | "number" | "array" | "boolean" | "scripts" | "viewports" }>;
   private readonly modes: string[];
   private readonly types: string[];
   private currentMode: string;
-  private selectedField: {name: string,  type: "string" | "number" | "array" | "boolean" | "scripts" } | null;
+  private selectedField: {name: string,  type: "string" | "number" | "array" | "boolean" | 
+    "scripts" | "viewports" } | null;
   private fieldName: string;
   private fieldType: string;
   private valid: boolean;
-  private fieldValue: number | boolean | string | string[];
+  private fieldValue: number | boolean | string | string[] | Viewport[];
   private fieldNameRules: Array<(value: string) => boolean | string>;
   private typeRules: Array<(value: any) => boolean | string>;
   private predefinedFieldRules: Array<(value: any) => boolean | string>;
@@ -172,15 +182,28 @@ export default class AddTestFieldModalComponent extends Vue {
     }
   }
 
+  private addViewport() {
+    if (Array.isArray(this.fieldValue)) {
+      (this.fieldValue as Viewport[]).push(new Viewport());
+    }
+  }
+
   private dismiss() {
     this.dialogDisplayed = false;
     this.$emit("dismiss");
+  }
+
+  private removeViewport(index: number) {
+    if (Array.isArray(this.fieldValue)) {
+      this.fieldValue.splice(index, 1);
+    }
   }
 
   private updateNewValueType() {
     switch (this.fieldType) {
       case 'array':
       case 'scripts':
+      case 'viewports':
         this.fieldValue = [];
         break;
       case 'boolean':
@@ -192,6 +215,12 @@ export default class AddTestFieldModalComponent extends Vue {
       default:
         this.fieldValue = "";
         break;
+    }
+  }
+
+  private updateViewportField(index: number, field: string, value: any) {
+    if (Array.isArray(this.fieldValue) && this.fieldValue[index]) {
+      Vue.set((this.fieldValue[index] as Viewport), field, value);
     }
   }
 

@@ -20,5 +20,6 @@ export const backstopScenarioProperties = Object.freeze([
   {name: "selectors", type: "array"},
   {name: "selectorExpansion", type: "boolean"},
   {name: "misMatchThreshold", type: "number"},
-  {name: "requireSameDimensions", type: "boolean"}
-]) as Array<{name: string, type: "string" | "number" | "array" | "boolean" | "scripts" }>;
+  {name: "requireSameDimensions", type: "boolean"},
+  {name: "viewports", type: "viewports"}
+]) as Array<{name: string, type: "string" | "number" | "array" | "boolean" | "scripts" | "viewports" }>;

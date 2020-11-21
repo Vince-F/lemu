@@ -29,6 +29,13 @@
         <v-select v-else-if="additionnalField.type === 'scripts'" 
           :value="additionnalField.value" @input="updateField(additionnalField.name, $event)" 
             :items="scriptNames" :label="additionnalField.name" multiple></v-select>
+        <div v-else-if="additionnalField.type === 'viewports'" class="viewports-area">
+          <h3>Viewports</h3>
+          <viewports-component 
+            :viewports="additionnalField.value" @addViewport="addViewport(additionnalField.value)" 
+            @removeViewport="removeViewport(additionnalField.value, arguments[0])"
+            @updateViewportField="updateViewportField(additionnalField.value, arguments[0], arguments[1], arguments[2])"/>
+        </div>
         <v-text-field 
           v-else :label="additionnalField.name" 
           :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, $event)"
@@ -57,6 +64,11 @@
 .input-action-btn {
   align-self: center;
 }
+
+.viewports-area {
+  width: 100%;
+  margin-bottom: 16px;
+}
 </style>
 
 <script lang="ts">
@@ -68,8 +80,14 @@ import { backstopFieldHelp } from "../../constants/backstopFieldHelp";
 import AddTestFieldModalComponent from "./AddTestFieldModalComponent.vue";
 import { backstopScenarioProperties } from '@/constants/backstopScenarioProperties';
 import { EngineScript } from '@/models/engineScript';
+import ViewportsComponent from "./ViewportsComponent.vue";
+import { Viewport } from '@/models/viewport';
 
-@Component({})
+@Component({
+  components: {
+    ViewportsComponent
+  }
+})
 export default class TestConfigurationComponent extends Vue {
   @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
@@ -138,6 +156,12 @@ export default class TestConfigurationComponent extends Vue {
       });
   }
 
+  private addViewport(fieldValue: any) {
+    if (Array.isArray(fieldValue)) {
+      fieldValue.push(new Viewport());
+    }
+  }
+
   private getHelpMessage(fieldName: string) {
     if (backstopFieldHelp.has(fieldName)) {
       return backstopFieldHelp.get(fieldName);
@@ -150,6 +174,12 @@ export default class TestConfigurationComponent extends Vue {
       .then(() => {
         this.removeScenarioField({index: this.testIndex, fieldName});
       });
+  }
+
+  private removeViewport(fieldValue: any, index: number) {
+    if (Array.isArray(fieldValue)) {
+      fieldValue.splice(index, 1);
+    }
   }
 
   private runCurrentTest() {
@@ -165,6 +195,12 @@ export default class TestConfigurationComponent extends Vue {
 
   private updateField(field: string, value: any) {
     this.setScenarioField({scenarioIndex: this.testIndex, field, value});
+  }
+
+  private updateViewportField(fieldValue: any, index: number, field: string, value: any) {
+    if (Array.isArray(fieldValue)) {
+      Vue.set(fieldValue[index], field, value);
+    }
   }
 
   private validateField(newField: {name: string, value: any, type: string}) {
