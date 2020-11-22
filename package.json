@@ -33,7 +33,7 @@
     "@vue/test-utils": "^1.1.1",
     "axios": "^0.21.0",
     "core-js": "^3.7.0",
-    "electron": "^10.1.5",
+    "electron": "^11.0.2",
     "electron-builder": "^22.9.1",
     "marked": "^1.2.5",
     "minisearch": "^3.0.2",
