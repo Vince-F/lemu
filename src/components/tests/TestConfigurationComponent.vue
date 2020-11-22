@@ -28,7 +28,7 @@
           class="flex-grow-1 flex-shrink-1"></v-combobox>
         <v-select v-else-if="additionnalField.type === 'scripts'" 
           :value="additionnalField.value" @input="updateField(additionnalField.name, $event)" 
-            :items="scriptNames" :label="additionnalField.name" multiple></v-select>
+            :items="scriptNames" :label="additionnalField.name"></v-select>
         <div v-else-if="additionnalField.type === 'viewports'" class="viewports-area">
           <h3>Viewports</h3>
           <viewports-component 
@@ -129,9 +129,6 @@ export default class TestConfigurationComponent extends Vue {
           entry.type = 'array';
         } else {
           entry.type = typeof this.testContent[key];
-        }
-        if (entry.type === 'scripts' && !Array.isArray(entry.value)) {
-          entry.value = [entry.value];
         }
         result.push(entry);
       }

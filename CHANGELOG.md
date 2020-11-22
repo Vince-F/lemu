@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.18.1
+### Fixes
+- Script field accept only one value instead of several values
+
 ## V1.18.0
 ### Features
 - Add engine script templates view to manage them

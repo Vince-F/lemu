@@ -6,9 +6,9 @@
         <v-expansion-panel-content>
           <v-text-field label="id" :value="configuration.id" @input="updateField('id', $event)"></v-text-field>
           <v-select :value="configuration.onBeforeScript" @input="updateField('onBeforeScript', $event)" :items="scriptNames"
-            label="onBeforeScript" multiple></v-select>
+            label="onBeforeScript"></v-select>
           <v-select :value="configuration.onReadyScript" @input="updateField('onReadyScript', $event)" :items="scriptNames"
-            label="onReadyScript" multiple></v-select>
+            label="onReadyScript"></v-select>
           <v-text-field label="Path for reference bitmaps" :value="configuration.paths.bitmaps_reference" @input="updatePathField('bitmaps_reference', $event)"></v-text-field>
           <v-text-field label="Path for test bitmaps" :value="configuration.paths.bitmaps_test" @input="updatePathField('bitmaps_test', $event)"></v-text-field>
         </v-expansion-panel-content>
@@ -139,12 +139,6 @@ export default class GeneralConfigurationComponent extends Vue {
   }
 
   private created() {
-    if (!Array.isArray(this.configuration.onBeforeScript)) {
-      this.updateField("onBeforeScript", [this.configuration.onBeforeScript]);
-    }
-    if (!Array.isArray(this.configuration.onReadyScript)) {
-      this.updateField("onReadyScript", [this.configuration.onReadyScript]);
-    }
     this.retrieveEngineScripts();
   }
 
