@@ -30,7 +30,7 @@ export class TemplateManager {
     }
   }
 
-  public createScriptTemplate(name: string, content: string) {
+  public createScriptTemplate(name: string, content: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const scriptPath = path.join(this.engineScriptsTemplateDirectory, name + ".js");
       if (!fs.existsSync(scriptPath)) {
@@ -47,7 +47,7 @@ export class TemplateManager {
     });
   }
 
-  public createOrUpdateScriptTemplate(name: string, content: string) {
+  public createOrUpdateScriptTemplate(name: string, content: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const scriptPath = path.join(this.engineScriptsTemplateDirectory, name + ".js");
       fs.writeFile(scriptPath, content, { encoding: "utf-8" }, (err) => {
@@ -60,7 +60,7 @@ export class TemplateManager {
     });
   }
 
-  public deleteScriptTemplate(name: string) {
+  public deleteScriptTemplate(name: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const scriptPath = path.join(this.engineScriptsTemplateDirectory, name + ".js");
       fs.unlink(scriptPath, (err) => {
@@ -94,5 +94,4 @@ export class TemplateManager {
       });
     });
   }
-
 }

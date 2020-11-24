@@ -2,7 +2,7 @@ import fs = require("fs");
 import path = require("path");
 
 export class FileService {
-  public static copyFile(originPath: string, destinationPath: string) {
+  public static copyFile(originPath: string, destinationPath: string): Promise<void> {
     return new Promise((resolve, reject) => {
       fs.copyFile(originPath, destinationPath, (err: any) => {
         if (err) {
@@ -14,7 +14,7 @@ export class FileService {
     });
   }
 
-  public static deleteFile(filePath: string) {
+  public static deleteFile(filePath: string): Promise<void> {
     return new Promise((resolve, reject) => {
       fs.unlink(filePath, (err: any) => {
         if (err) {
