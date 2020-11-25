@@ -30,11 +30,17 @@
           :value="additionnalField.value" @input="updateField(additionnalField.name, $event)" 
             :items="scriptNames" :label="additionnalField.name"></v-select>
         <div v-else-if="additionnalField.type === 'viewports'" class="viewports-area">
-          <h3>Viewports</h3>
-          <viewports-component 
-            :viewports="additionnalField.value" @addViewport="addViewport(additionnalField.value)" 
-            @removeViewport="removeViewport(additionnalField.value, arguments[0])"
-            @updateViewportField="updateViewportField(additionnalField.value, arguments[0], arguments[1], arguments[2])"/>
+          <v-expansion-panels>
+            <v-expansion-panel>
+              <v-expansion-panel-header>Viewports</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <viewports-component 
+                  :viewports="additionnalField.value" @addViewport="addViewport(additionnalField.value)" 
+                  @removeViewport="removeViewport(additionnalField.value, arguments[0])"
+                  @updateViewportField="updateViewportField(additionnalField.value, arguments[0], arguments[1], arguments[2])"/>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </div>
         <v-text-field 
           v-else :label="additionnalField.name" 
@@ -42,13 +48,13 @@
           class="flex-grow-1 flex-shrink-1"></v-text-field>
         <v-tooltip top >
           <template v-slot:activator="{on}">
-            <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" v-on="on" v-if="getHelpMessage(additionnalField.name)">
+            <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" :class="{'for-viewport': additionnalField.type === 'viewports'}" v-on="on" v-if="getHelpMessage(additionnalField.name)">
               <v-icon color="grey">mdi-help-circle-outline</v-icon>
             </v-btn>
           </template>
           <span>{{getHelpMessage(additionnalField.name)}}</span>
         </v-tooltip>
-        <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" @click="removeField(additionnalField.name)">
+        <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" :class="{'for-viewport': additionnalField.type === 'viewports'}" @click="removeField(additionnalField.name)">
           <v-icon color="grey">mdi-delete</v-icon>
         </v-btn>
       </div>
@@ -63,6 +69,11 @@
 <style scoped>
 .input-action-btn {
   align-self: center;
+}
+
+.input-action-btn.for-viewport {
+  align-self: baseline;
+  margin-top: 8px;
 }
 
 .viewports-area {
