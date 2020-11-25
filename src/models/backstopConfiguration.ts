@@ -1,9 +1,10 @@
 import { BackstopTest } from './backstopTest';
+import { Viewport } from './viewport';
 
 
 export class BackstopConfiguration {
     public id: string;
-    public viewports: Array<{label: string, width: number, height: number}>;
+    public viewports: Viewport[];
     public onBeforeScript: string;
     public onReadyScript: string;
     public scenarios: BackstopTest[];
@@ -25,7 +26,10 @@ export class BackstopConfiguration {
 
     constructor(data: any) {
         this.id = data && data.id || "";
-        this.viewports = data && data.viewports || [];
+        this.viewports = [];
+        if (Array.isArray(data?.viewports)) {
+          this.viewports = data.viewports.forEach((viewport: any) => new Viewport(viewport));
+        }
         this.onBeforeScript = data && data.onBeforeScript || "";
         this.onReadyScript = data && data.onReadyScript || "";
         this.scenarios = [];

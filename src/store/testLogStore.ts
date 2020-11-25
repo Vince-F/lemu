@@ -8,7 +8,7 @@ export default class TestLogStore extends VuexModule {
 
   @Mutation
   public addLog(log: {message: string, level: string}) {
-    this.logs.push({message: log.message, level: log.level, time: new Date()});
+    this.logs.push({message: log.message, level: log.level, time: new Date(Date.now())});
   }
 
   @Mutation

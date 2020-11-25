@@ -1,7 +1,6 @@
 import {Worker} from "worker_threads";
 import path = require("path");
 import fs = require("fs");
-import { ipcMain } from "electron";
 import { eventNames } from "../shared/constants/eventNames";
 import { BrowserWindowManager } from "./browserWindowManager";
 
@@ -19,9 +18,9 @@ export class BackstopWorkerManager {
           });
           worker.once("message", (result) => {
             if (result.success) {
-              resolve(...result.arguments);
+              resolve(result.arguments[0]);
             } else {
-              reject(...result.arguments);
+              reject(result.arguments[0]);
             }
             worker.terminate();
           });

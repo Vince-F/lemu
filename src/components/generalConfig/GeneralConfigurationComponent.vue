@@ -17,27 +17,8 @@
       <v-expansion-panel>
         <v-expansion-panel-header>Viewports ({{configuration.viewports.length || 0}})</v-expansion-panel-header>
         <v-expansion-panel-content>
-          <div v-for="(viewport, index) in configuration.viewports" :key="index">
-            <hr v-if="index > 0" class="ma-4">
-            <div class="d-flex">
-              <strong class="flex-grow-1 flex-shrink-1">
-                Viewport {{index}}
-              </strong>
-              <v-btn color="error" class="flex-grow-0 flex-shrink-0" @click="removeViewport(index)">
-                <v-icon>mdi-delete</v-icon>
-                Remove viewport
-              </v-btn>
-            </div>
-            <v-text-field label="label" :value="viewport.label" @input="updateViewportField(index, 'label', $event)"></v-text-field>
-            <div class="d-flex">
-              <v-text-field class="mr-2" type="number" min="0" step="1" label="width" :value="viewport.width" @input="updateViewportField(index, 'width', Number.parseInt($event))"></v-text-field>
-              <v-text-field class="ml-2" type="number" min="0" step="1" label="height" :value="viewport.height" @input="updateViewportField(index, 'height', Number.parseInt($event))"></v-text-field>
-            </div>
-          </div>
-          <v-btn color="primary" v-on:click="addViewport">
-            <v-icon>mdi-add</v-icon>
-            Add viewport
-          </v-btn>
+          <viewports-component :viewports="configuration.viewports" @addViewport="addViewport"
+            @removeViewport="removeViewport" @updateViewportField="updateViewportField"/>
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -46,7 +27,6 @@
         <v-expansion-panel-content>
           <v-radio-group :value="configuration.engine" @change="updateField('engine', $event)">
             <v-radio label="Puppeteer" value="puppeteer"></v-radio>
-            <v-radio label="Chromy" value="chromy"></v-radio>
           </v-radio-group>
           <strong>Engine options</strong>
           <div v-for="(value, key) of configuration.engineOptions" :key="key" class="d-flex">
@@ -83,6 +63,18 @@
           <v-text-field label="Path for JSON report" :value="configuration.paths.json_report" @input="updatePathField('json_report', $event)"></v-text-field>
         </v-expansion-panel-content>
       </v-expansion-panel>
+
+      <v-expansion-panel>
+        <v-expansion-panel-header>Perfomance</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-text-field type="number" label="Maximum parallel captures (asyncCaptureLimit)" :value="configuration.asyncCaptureLimit" 
+            @input="updateField('asyncCaptureLimit', Number.parseInt($event))"></v-text-field>
+          <v-text-field type="number" label="Maximum parallel screen comparison (asyncCompareLimit)" :value="configuration.asyncCompareLimit" 
+            @input="updateField('asyncCompareLimit', Number.parseInt($event))"></v-text-field>
+          <v-checkbox label="Debug window" :input-value="configuration.debugWindow" @change="updateField('debugWindow', $event)"></v-checkbox>
+          <v-checkbox label="Debug output" :input-value="configuration.debug" @change="updateField('debug', $event)"></v-checkbox>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
     </v-expansion-panels>
   </v-card>
 </template>
@@ -100,9 +92,13 @@ import { State, Mutation, Getter, Action } from "vuex-class";
 import { BackstopConfiguration } from "../../models/backstopConfiguration";
 import { ModalService } from '../../services/modalService';
 import AddEngineOptionModalComponent from "./AddEngineOptionModalComponent.vue";
+import ViewportsComponent from "../tests/ViewportsComponent.vue";
 
 @Component({
-  name: "general-configuration-component"
+  name: "general-configuration-component",
+  components: {
+    ViewportsComponent
+  }
 })
 export default class GeneralConfigurationComponent extends Vue {
   @State((state) => state.configurationStore.currentConfiguration)
