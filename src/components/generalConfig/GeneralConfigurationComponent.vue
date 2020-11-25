@@ -63,6 +63,18 @@
           <v-text-field label="Path for JSON report" :value="configuration.paths.json_report" @input="updatePathField('json_report', $event)"></v-text-field>
         </v-expansion-panel-content>
       </v-expansion-panel>
+
+      <v-expansion-panel>
+        <v-expansion-panel-header>Perfomance</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-text-field type="number" label="Maximum parallel captures (asyncCaptureLimit)" :value="configuration.asyncCaptureLimit" 
+            @input="updateField('asyncCaptureLimit', Number.parseInt($event))"></v-text-field>
+          <v-text-field type="number" label="Maximum parallel screen comparison (asyncCompareLimit)" :value="configuration.asyncCompareLimit" 
+            @input="updateField('asyncCompareLimit', Number.parseInt($event))"></v-text-field>
+          <v-checkbox label="Debug window" :input-value="configuration.debugWindow" @change="updateField('debugWindow', $event)"></v-checkbox>
+          <v-checkbox label="Debug output" :input-value="configuration.debug" @change="updateField('debug', $event)"></v-checkbox>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
     </v-expansion-panels>
   </v-card>
 </template>

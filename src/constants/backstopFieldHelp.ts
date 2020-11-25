@@ -23,3 +23,5 @@ backstopFieldHelp.set("selectorExpansion", "When you use selectors, allow to dis
 backstopFieldHelp.set("misMatchThreshold", "Percentage of different pixels allowed to pass test");
 backstopFieldHelp.set("requireSameDimensions", "If set to true -- any change in selector size will trigger a test failure.");
 backstopFieldHelp.set("viewports", "An array of screen size objects your DOM will be tested against. This configuration will override the viewports property assigned at the config root.");
+backstopFieldHelp.set("readySelector", "Tells BackstopJS to wait until a selector exists before taking a screenshot.");
+backstopFieldHelp.set("readyEvent", "Enables you to trigger the screen capture by logging a predefined string to the console.");
