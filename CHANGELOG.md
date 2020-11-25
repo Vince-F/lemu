@@ -1,5 +1,12 @@
 # Changelog
 
+## V1.19.0
+### Features
+- Improve security and performance by updating third party libraries to last version
+- Add "viewport" in test view
+- Add "pre-defined" field "readyEvent" and "readySelector" in test view
+- Add "performance" section in general configuration
+
 ## V1.18.1
 ### Fixes
 - Script field accept only one value instead of several values
