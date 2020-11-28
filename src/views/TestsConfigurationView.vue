@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="container pa-0">
-    <div class="menu">
+    <div class="menu" v-if="displayMainMenu">
       <main-menu-component />
     </div>
     <div class="content">
@@ -101,6 +101,10 @@ export default class TestConfigurationView extends Vue {
         }
       }
     });
+  }
+
+  private get displayMainMenu() {
+    return this.$route.name !== "test.fullscreenView";
   }
 }
 </script>

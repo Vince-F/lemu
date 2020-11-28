@@ -23,6 +23,19 @@
       <div class="flex-grow-0 flex-shrink-0">
         <v-tooltip top>
           <template v-slot:activator="{on}">
+            <v-btn icon v-on="on" @click="toggleFullscreen">
+              <v-icon v-if="isFullscreen">
+                mdi-fullscreen-exit
+              </v-icon>
+              <v-icon v-else>
+                mdi-fullscreen
+              </v-icon>
+            </v-btn>
+          </template>
+          Toggle fullscreen
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
             <v-btn icon :disabled="testRunning" v-on="on" @click="runCurrentTest">
               <v-icon>
                 mdi-play
@@ -179,6 +192,10 @@ export default class TestViewComponent extends Vue {
     this.testIndex = -1;
   }
 
+  private get isFullscreen() {
+    return this.$route.name === "test.fullscreenView";
+  }
+
   private get testResult() {
     return this.getResultByTestLabel(this.testContent?.label || "");
   }
@@ -245,6 +262,14 @@ export default class TestViewComponent extends Vue {
         }).catch((err) => {
           this.displaySnackbar({text: "Test failed, error: " + err, success: false});
         });
+    }
+  }
+
+  private toggleFullscreen() {
+    if (this.$route.name === "test.fullscreenView") {
+      this.$router.push({ name: "tests.view", params: { index: "" + this.testIndex } });
+    } else {
+      this.$router.push({ name: "test.fullscreenView", params: { index: "" + this.testIndex } });
     }
   }
 
