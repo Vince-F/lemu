@@ -1,88 +1,126 @@
 <template>
-  <v-card outlined height="100%" max-height="100%">
-    <v-expansion-panels multiple>
-      <v-expansion-panel>
-        <v-expansion-panel-header>General</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <v-text-field label="id" :value="configuration.id" @input="updateField('id', $event)"></v-text-field>
-          <v-select :value="configuration.onBeforeScript" @input="updateField('onBeforeScript', $event)" :items="scriptNames"
+  <v-card outlined height="100%" max-height="100%" class="card">
+    <v-card-title class="header flex-grow-0 flex-shrink-0">
+      <div class="flex-grow-1 flex-shrink-1">
+        General configuration 
+      </div>
+    </v-card-title>
+    <v-card-text class="content flex-grow-1 flex-shrink-1">
+      <v-tabs>
+        <v-tab>General</v-tab>
+        <v-tab-item>
+          <v-text-field outlined dense label="id" :value="configuration.id" @input="updateField('id', $event)"></v-text-field>
+          <v-select outlined dense :value="configuration.onBeforeScript" @input="updateField('onBeforeScript', $event)" :items="scriptNames"
             label="onBeforeScript"></v-select>
-          <v-select :value="configuration.onReadyScript" @input="updateField('onReadyScript', $event)" :items="scriptNames"
+          <v-select outlined dense :value="configuration.onReadyScript" @input="updateField('onReadyScript', $event)" :items="scriptNames"
             label="onReadyScript"></v-select>
-          <v-text-field label="Path for reference bitmaps" :value="configuration.paths.bitmaps_reference" @input="updatePathField('bitmaps_reference', $event)"></v-text-field>
-          <v-text-field label="Path for test bitmaps" :value="configuration.paths.bitmaps_test" @input="updatePathField('bitmaps_test', $event)"></v-text-field>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
+          <v-text-field outlined dense label="Path for reference bitmaps" :value="configuration.paths.bitmaps_reference" @input="updatePathField('bitmaps_reference', $event)"></v-text-field>
+          <v-text-field outlined dense label="Path for test bitmaps" :value="configuration.paths.bitmaps_test" @input="updatePathField('bitmaps_test', $event)"></v-text-field>
+        </v-tab-item>
 
-      <v-expansion-panel>
-        <v-expansion-panel-header>Viewports ({{configuration.viewports.length || 0}})</v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-tab>Viewports ({{configuration.viewports.length || 0}})</v-tab>
+        <v-tab-item>
           <viewports-component :viewports="configuration.viewports" @addViewport="addViewport"
             @removeViewport="removeViewport" @updateViewportField="updateViewportField"/>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
+        </v-tab-item>
 
-      <v-expansion-panel>
-        <v-expansion-panel-header>Engine</v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-tab>Engine</v-tab>
+        <v-tab-item>
           <v-radio-group :value="configuration.engine" @change="updateField('engine', $event)">
             <v-radio label="Puppeteer" value="puppeteer"></v-radio>
           </v-radio-group>
-          <strong>Engine options</strong>
+          <div class="mb-4">
+            <strong>Engine options</strong>
+          </div>
           <div v-for="(value, key) of configuration.engineOptions" :key="key" class="d-flex">
-            <v-combobox v-if="Array.isArray(value)" class="flex-shrink-1 flex-grow-1" multiple chips
+            <v-combobox outlined dense v-if="Array.isArray(value)" class="flex-shrink-1 flex-grow-1" multiple
               :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"
               ></v-combobox>
-            <v-text-field v-else-if="typeof value === 'number'" class="flex-shrink-1 flex-grow-1" type="number"
+            <v-text-field outlined dense v-else-if="typeof value === 'number'" class="flex-shrink-1 flex-grow-1" type="number"
               :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"
               ></v-text-field>
             <v-checkbox v-else-if="typeof value === 'boolean'" class="flex-shrink-1 flex-grow-1"
               :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: !!$event})"
               ></v-checkbox>
-            <v-text-field v-else class="flex-shrink-1 flex-grow-1"
+            <v-text-field outlined dense v-else class="flex-shrink-1 flex-grow-1"
               :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"></v-text-field>
             <v-btn icon class="flex-shrink-0 flex-grow-0 delete-action-btn" @click="confirmEngineOptionRemove(key)">
               <v-icon color="grey">mdi-delete</v-icon>
             </v-btn>
           </div>
-          <v-btn color="primary" v-on:click="addEngineOption()">
-            <v-icon>mdi-add</v-icon>
-            Add engine option
-          </v-btn>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
+          <div class="action-container">
+            <v-btn color="primary"  @click="addEngineOption()">
+              <v-icon>mdi-plus</v-icon>
+              Add engine option
+            </v-btn>
+          </div>
+        </v-tab-item>
 
-      <v-expansion-panel>
-        <v-expansion-panel-header>Report</v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-tab>Report</v-tab>
+        <v-tab-item>
           <v-checkbox label="HTML report" :input-value="htmlReportEnabled" @change="updateReport('browser', $event)"></v-checkbox>
           <v-checkbox label="CI report" :input-value="ciReportEnabled" @change="updateReport('ci', $event)"></v-checkbox>
           <v-checkbox label="JSON report" :input-value="jsonReportEnabled" @change="updateReport('json', $event)"></v-checkbox>
-          <v-text-field label="Path for HTML report" :value="configuration.paths.html_report" @input="updatePathField('html_report', $event)"></v-text-field>
-          <v-text-field label="Path for CI report" :value="configuration.paths.ci_report" @input="updatePathField('ci_report', $event)"></v-text-field>
-          <v-text-field label="Path for JSON report" :value="configuration.paths.json_report" @input="updatePathField('json_report', $event)"></v-text-field>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
+          <v-text-field outlined dense label="Path for HTML report" :value="configuration.paths.html_report" @input="updatePathField('html_report', $event)"></v-text-field>
+          <v-text-field outlined dense label="Path for CI report" :value="configuration.paths.ci_report" @input="updatePathField('ci_report', $event)"></v-text-field>
+          <v-text-field outlined dense label="Path for JSON report" :value="configuration.paths.json_report" @input="updatePathField('json_report', $event)"></v-text-field>
+        </v-tab-item>
 
-      <v-expansion-panel>
-        <v-expansion-panel-header>Perfomance</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <v-text-field type="number" label="Maximum parallel captures (asyncCaptureLimit)" :value="configuration.asyncCaptureLimit" 
+        <v-tab>Perfomance</v-tab>
+        <v-tab-item>
+          <v-text-field outlined dense type="number" label="Maximum parallel captures (asyncCaptureLimit)" :value="configuration.asyncCaptureLimit" 
             @input="updateField('asyncCaptureLimit', Number.parseInt($event))"></v-text-field>
-          <v-text-field type="number" label="Maximum parallel screen comparison (asyncCompareLimit)" :value="configuration.asyncCompareLimit" 
+          <v-text-field outlined dense type="number" label="Maximum parallel screen comparison (asyncCompareLimit)" :value="configuration.asyncCompareLimit" 
             @input="updateField('asyncCompareLimit', Number.parseInt($event))"></v-text-field>
           <v-checkbox label="Debug window" :input-value="configuration.debugWindow" @change="updateField('debugWindow', $event)"></v-checkbox>
           <v-checkbox label="Debug output" :input-value="configuration.debug" @change="updateField('debug', $event)"></v-checkbox>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+        </v-tab-item>
+      </v-tabs>
+    </v-card-text>
   </v-card>
 </template>
 
 <style scoped>
-  .delete-action-btn {
-    align-self: center;
-  }
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.header {
+  border-bottom: 1px solid rgba(0,0,0,0.18);
+}
+
+.delete-action-btn {
+  align-self: auto;
+}
+
+.content {
+  overflow:auto;
+  padding: 0;
+}
+
+.content >>> .v-tabs {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+.content >>> .v-tabs .v-tabs-bar {
+  margin: 0 16px;
+  flex-shrink: 0;
+}
+
+.content >>> .v-tabs .v-tabs-items {
+  flex: 1;
+  overflow: auto;
+  padding: 16px 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.action-container {
+  text-align: right;
+}
 </style>
 
 <script lang="ts">

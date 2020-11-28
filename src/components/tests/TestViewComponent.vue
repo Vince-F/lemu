@@ -110,8 +110,7 @@
 }
 
 .content >>> .v-tabs .v-tabs-bar {
-  margin: 16px;
-  margin-bottom: 0;
+  margin: 0 16px;
   flex-shrink: 0;
 }
 
