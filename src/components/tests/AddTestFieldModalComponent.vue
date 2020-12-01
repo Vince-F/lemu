@@ -6,58 +6,34 @@
     <v-card>
       <v-card-title class="headline">Add field</v-card-title>
       <v-card-text>
-        <v-form
-          v-model="valid"
-          ref="form">
-          <v-select
-            :items="modes"
-            label="Mode"
-            v-model="currentMode"
-          ></v-select>
+        <v-form v-model="valid" ref="form">
+          <v-select outlined dense
+            :items="modes" label="Mode" v-model="currentMode" />
           <div v-if="currentMode === 'custom'">
-            <v-text-field
-              label="Field name"
-              v-model="fieldName"
-              :rules="fieldNameRules"
-              ></v-text-field>
-            <v-select
-              :items="types"
-              label="Type"
-              v-model="fieldType"
-              @change="updateNewValueType"
-              :rules="typeRules"
-            ></v-select>
+            <v-text-field outlined dense
+              label="Field name" v-model="fieldName" :rules="fieldNameRules" />
+            <v-select outlined dense
+              :items="types" label="Type" v-model="fieldType"
+              @change="updateNewValueType" :rules="typeRules" />
           </div>
           <div v-else-if="currentMode === 'pre-defined'">
-            <v-select
-              :items="predefinedFields"
-              label="Predefined field"
-              v-model="selectedField"
-              item-text="name"
-              :messages="helpMessage"
-              return-object
-              @change="updateNewValueTypeWithPredefinedField"
-              :rules="predefinedFieldRules"
-            ></v-select>                
+            <v-select outlined dense
+              :items="predefinedFields" label="Predefined field" v-model="selectedField"
+              item-text="name" :messages="helpMessage" return-object
+              @change="updateNewValueTypeWithPredefinedField" :rules="predefinedFieldRules" />                
           </div>
-          <v-text-field
-            v-if="fieldType === 'number'" label="Value" 
-            type="number" v-model="fieldValue"
-            ></v-text-field>
+          <v-text-field outlined dense
+            v-if="fieldType === 'number'" label="Value" type="number" v-model="fieldValue" />
           <v-checkbox v-else-if="fieldType === 'boolean'" label="Value"
-            v-model="fieldValue"
-            ></v-checkbox>
-          <v-combobox v-else-if="fieldType === 'array'" multiple chips
-            label="Value" v-model="fieldValue"
-            ></v-combobox>
-          <v-select v-else-if="fieldType === 'scripts'" :items="scriptNames"
-            label="Value" multiple v-model="fieldValue"></v-select>
+            v-model="fieldValue"/>
+          <v-combobox outlined dense v-else-if="fieldType === 'array'" multiple
+            label="Value" v-model="fieldValue"/>
+          <v-select outlined dense v-else-if="fieldType === 'scripts'" :items="scriptNames"
+            label="Value" multiple v-model="fieldValue" />
           <viewports-component v-else-if="fieldType === 'viewports'" 
             :viewports="fieldValue" @addViewport="addViewport"
-            @removeViewport="removeViewport" @updateViewportField="updatedViewportField" />
-          <v-text-field v-else 
-          label="Value" v-model="fieldValue"
-          ></v-text-field>
+            @removeViewport="removeViewport" @updateViewportField="updateViewportField" />
+          <v-text-field outlined dense v-else label="Value" v-model="fieldValue" />
         </v-form>
       </v-card-text>
 
