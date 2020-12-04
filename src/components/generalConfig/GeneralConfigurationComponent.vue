@@ -26,54 +26,21 @@
 
         <v-tab>Engine</v-tab>
         <v-tab-item>
-          <v-radio-group :value="configuration.engine" @change="updateField('engine', $event)">
-            <v-radio label="Puppeteer" value="puppeteer"></v-radio>
-          </v-radio-group>
-          <div class="mb-4">
-            <strong>Engine options</strong>
-          </div>
-          <div v-for="(value, key) of configuration.engineOptions" :key="key" class="d-flex">
-            <v-combobox outlined dense v-if="Array.isArray(value)" class="flex-shrink-1 flex-grow-1" multiple
-              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"
-              ></v-combobox>
-            <v-text-field outlined dense v-else-if="typeof value === 'number'" class="flex-shrink-1 flex-grow-1" type="number"
-              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"
-              ></v-text-field>
-            <v-checkbox v-else-if="typeof value === 'boolean'" class="flex-shrink-1 flex-grow-1"
-              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: !!$event})"
-              ></v-checkbox>
-            <v-text-field outlined dense v-else class="flex-shrink-1 flex-grow-1"
-              :label="key" :value="value" @change="setConfigurationEngineOptionsField({field: key, value: $event})"></v-text-field>
-            <v-btn icon class="flex-shrink-0 flex-grow-0 delete-action-btn" @click="confirmEngineOptionRemove(key)">
-              <v-icon color="grey">mdi-delete</v-icon>
-            </v-btn>
-          </div>
-          <div class="action-container">
-            <v-btn color="primary"  @click="addEngineOption()">
-              <v-icon>mdi-plus</v-icon>
-              Add engine option
-            </v-btn>
-          </div>
+          <engine-configuration-component :configuration="configuration" 
+            @setConfigurationEngineOptionsField="setConfigurationEngineOptionsField"
+            @updateField="updateField"/>
         </v-tab-item>
 
         <v-tab>Report</v-tab>
         <v-tab-item>
-          <v-checkbox label="HTML report" :input-value="htmlReportEnabled" @change="updateReport('browser', $event)"></v-checkbox>
-          <v-checkbox label="CI report" :input-value="ciReportEnabled" @change="updateReport('ci', $event)"></v-checkbox>
-          <v-checkbox label="JSON report" :input-value="jsonReportEnabled" @change="updateReport('json', $event)"></v-checkbox>
-          <v-text-field outlined dense label="Path for HTML report" :value="configuration.paths.html_report" @input="updatePathField('html_report', $event)"></v-text-field>
-          <v-text-field outlined dense label="Path for CI report" :value="configuration.paths.ci_report" @input="updatePathField('ci_report', $event)"></v-text-field>
-          <v-text-field outlined dense label="Path for JSON report" :value="configuration.paths.json_report" @input="updatePathField('json_report', $event)"></v-text-field>
+          <report-configuration-component :configuration="configuration" @updateReport="updateReport"
+            @updatePathField="updatePathField" />
         </v-tab-item>
 
         <v-tab>Perfomance</v-tab>
         <v-tab-item>
-          <v-text-field outlined dense type="number" label="Maximum parallel captures (asyncCaptureLimit)" :value="configuration.asyncCaptureLimit" 
-            @input="updateField('asyncCaptureLimit', Number.parseInt($event))"></v-text-field>
-          <v-text-field outlined dense type="number" label="Maximum parallel screen comparison (asyncCompareLimit)" :value="configuration.asyncCompareLimit" 
-            @input="updateField('asyncCompareLimit', Number.parseInt($event))"></v-text-field>
-          <v-checkbox label="Debug window" :input-value="configuration.debugWindow" @change="updateField('debugWindow', $event)"></v-checkbox>
-          <v-checkbox label="Debug output" :input-value="configuration.debug" @change="updateField('debug', $event)"></v-checkbox>
+          <performance-configuration-component :configuration="configuration" 
+            @updateField="updateField"/>
         </v-tab-item>
       </v-tabs>
     </v-card-text>
@@ -89,10 +56,6 @@
 
 .header {
   border-bottom: 1px solid rgba(0,0,0,0.18);
-}
-
-.delete-action-btn {
-  align-self: auto;
 }
 
 .content {
@@ -117,10 +80,6 @@
   padding: 16px 24px;
   border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
-
-.action-container {
-  text-align: right;
-}
 </style>
 
 <script lang="ts">
@@ -128,14 +87,18 @@ import { EngineScript } from '@/models/engineScript';
 import { Vue, Component } from "vue-property-decorator";
 import { State, Mutation, Getter, Action } from "vuex-class";
 import { BackstopConfiguration } from "../../models/backstopConfiguration";
-import { ModalService } from '../../services/modalService';
-import AddEngineOptionModalComponent from "./AddEngineOptionModalComponent.vue";
 import ViewportsComponent from "../tests/ViewportsComponent.vue";
+import ReportConfigurationComponent from "./ReportConfigurationComponent.vue";
+import EngineConfigurationComponent from "./EngineConfigurationComponent.vue";
+import PerfomanceConfigurationComponent from "./PerfomanceConfigurationComponent.vue";
 
 @Component({
   name: "general-configuration-component",
   components: {
-    ViewportsComponent
+    ViewportsComponent,
+    ReportConfigurationComponent,
+    EngineConfigurationComponent,
+    PerfomanceConfigurationComponent
   }
 })
 export default class GeneralConfigurationComponent extends Vue {
@@ -165,18 +128,6 @@ export default class GeneralConfigurationComponent extends Vue {
   @Action("engineScriptStore/retrieveEngineScripts")
   private readonly retrieveEngineScripts!: () => Promise<void>;
 
-  private get ciReportEnabled() {
-    return this.configuration.report.indexOf("CI") > -1;
-  }
-
-  private get jsonReportEnabled() {
-    return this.configuration.report.indexOf("json") > -1;
-  }
-
-  private get htmlReportEnabled() {
-    return this.configuration.report.indexOf("browser") > -1;
-  }
-
   private get scriptNames() {
     let scriptDirectory = this.engineScriptDirectory.replace(/\\/g, "/");
     if (!scriptDirectory.endsWith("/")) {
@@ -189,16 +140,6 @@ export default class GeneralConfigurationComponent extends Vue {
 
   private created() {
     this.retrieveEngineScripts();
-  }
-
-  private addEngineOption() {
-    ModalService.launchModal(AddEngineOptionModalComponent)
-      .then((newField: {name: string, value: any, type: string}) => {
-        if (newField.type === "number") {
-          newField.value = Number.parseFloat(newField.value);
-        }
-        this.setConfigurationEngineOptionsField({field: newField.name, value: newField.value});
-      });
   }
 
   private addViewport() {

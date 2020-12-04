@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "test:unit": "vue-cli-service test:unit",
-    "test:unit:coverage": "vue-cli-service test:unit --coverage=true",
+    "test:unit:coverage": "vue-cli-service test:unit --coverage --collectCoverageFrom=src/**/*.{ts,tsx,vue}",
     "lint": "vue-cli-service lint",
     "build:all": "npm run build:render && npm run build:main && npm run build:doc",
     "build:doc": "cd ./userGuide && npm run buildAndCopy",
