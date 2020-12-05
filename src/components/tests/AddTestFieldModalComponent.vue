@@ -26,7 +26,7 @@
             v-if="fieldType === 'number'" label="Value" type="number" v-model="fieldValue" />
           <v-checkbox v-else-if="fieldType === 'boolean'" label="Value"
             v-model="fieldValue"/>
-          <v-combobox outlined dense v-else-if="fieldType === 'array'" multiple
+          <v-combobox outlined dense v-else-if="fieldType === 'array' || fieldType === 'selectors'" multiple
             label="Value" v-model="fieldValue"/>
           <v-select outlined dense v-else-if="fieldType === 'scripts'" :items="scriptNames"
             label="Value" multiple v-model="fieldValue" />
@@ -67,6 +67,7 @@ import { backstopFieldHelp } from "../../constants/backstopFieldHelp";
 import { EngineScript } from '@/models/engineScript';
 import ViewportsComponent from "./ViewportsComponent.vue";
 import { Viewport } from '@/models/viewport';
+import { backstopFieldType } from "@/models/backstopFieldType";
 
 @Component({
   components: {
@@ -83,12 +84,11 @@ export default class AddTestFieldModalComponent extends Vue {
 
   private dialogDisplayed: boolean;
   private readonly predefinedFields: Array<{name: string,
-    type: "string" | "number" | "array" | "boolean" | "scripts" | "viewports" }>;
+    type: backstopFieldType }>;
   private readonly modes: string[];
   private readonly types: string[];
   private currentMode: string;
-  private selectedField: {name: string,  type: "string" | "number" | "array" | "boolean" | 
-    "scripts" | "viewports" } | null;
+  private selectedField: {name: string, type: backstopFieldType } | null;
   private fieldName: string;
   private fieldType: string;
   private valid: boolean;
@@ -102,7 +102,7 @@ export default class AddTestFieldModalComponent extends Vue {
     this.dialogDisplayed = true;
     this.predefinedFields = backstopScenarioProperties;
     this.modes = ["pre-defined", "custom"];
-    this.types = ["number", "boolean", "array", "string"];
+    this.types = ["number", "boolean", "array", "string", "selector", "selectors"];
 
     this.currentMode = "pre-defined";
     this.fieldName = "";
@@ -147,7 +147,7 @@ export default class AddTestFieldModalComponent extends Vue {
   }
 
   private addField() {
-    (this.$refs.form as any).validate(); // this is Veutify v-form component
+    (this.$refs.form as any).validate(); // this is Vuetify v-form component
     if (this.valid) {
       this.dialogDisplayed = false;
       this.$emit("validate", {
@@ -180,6 +180,7 @@ export default class AddTestFieldModalComponent extends Vue {
       case 'array':
       case 'scripts':
       case 'viewports':
+      case 'selectors':
         this.fieldValue = [];
         break;
       case 'boolean':
