@@ -140,7 +140,6 @@ export default class TestPreviewComponent extends Vue {
 
   @Watch("selectorProperties", {deep: true})
   private updateSelectorsAfterSelectorPropertiesUpdate() {
-    console.log("detect modif on selector properties")
     this.setPreviewOnSelectors();
   }
 
@@ -171,18 +170,11 @@ export default class TestPreviewComponent extends Vue {
               selector
             );
             if (element) {
-              const boxShadowProp = "0 0 0 4px " + this.selectorProperties[key]?.color;
+              const boxShadowProp = "0 0 0 4.001px " + this.selectorProperties[key]?.color;
               if (this.selectorProperties[key]?.displayed) {
-                const exisitingBoxShadow = (element as HTMLElement).style.boxShadow;
-                (element as HTMLElement).style.boxShadow = (exisitingBoxShadow && exisitingBoxShadow !== "none" ?
-                  exisitingBoxShadow + ", " : "") + boxShadowProp;
+                (element as HTMLElement).style.boxShadow = boxShadowProp;
               } else {
-                
-                let newValue = (element as HTMLElement).style.boxShadow.replace(boxShadowProp, "");
-                if (newValue.length === 0) {
-                  newValue = "none";
-                }
-                (element as HTMLElement).style.boxShadow = newValue;
+                (element as HTMLElement).style.boxShadow = "none";
               }
             }
           });
