@@ -66,6 +66,7 @@ protocol.registerSchemesAsPrivileged([
 
 // for notification
 app.setAppUserModelId(process.execPath);
+app.commandLine.appendSwitch("disable-site-isolation-trials");
 
 app.on('ready', () => {
   registerDocProtocol();

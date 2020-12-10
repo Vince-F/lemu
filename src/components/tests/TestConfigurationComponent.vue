@@ -124,7 +124,7 @@ export default class TestConfigurationComponent extends Vue {
   @Action("engineScriptStore/retrieveEngineScripts")
   private readonly retrieveEngineScripts!: () => Promise<void>;
 
-  @Prop({required: true, type: BackstopTest})
+  @Prop({required: true, type: Object})
   private readonly testContent!: BackstopTest;
   @Prop({required: true, type: Number})
   private readonly testIndex!: number;

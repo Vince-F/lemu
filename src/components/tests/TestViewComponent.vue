@@ -85,6 +85,12 @@
           <test-configuration-component :testContent="testContent" :testIndex="testIndex"/>
         </v-tab-item>
         <v-tab>
+          Preview
+        </v-tab>
+        <v-tab-item>
+          <test-preview-component :testContent="testContent" />
+        </v-tab-item>
+        <v-tab>
           Result
         </v-tab>
         <v-tab-item>
@@ -147,12 +153,14 @@ import { BackstopConfiguration } from '../../models/backstopConfiguration';
 import { BackstopTestResult } from '../../models/backstopTestResult';
 import { ModalService } from "../../services/modalService";
 import TestConfigurationComponent from "./TestConfigurationComponent.vue";
+import TestPreviewComponent from "./TestPreviewComponent.vue";
 import TestResultComponent from "./TestResultComponent.vue";
 
 @Component({
   name: "test-view-component",
   components: {
     TestConfigurationComponent,
+    TestPreviewComponent,
     TestResultComponent
   }
 })
