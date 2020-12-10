@@ -1,5 +1,11 @@
 # Changelog
 
+## V1.20.0
+### Features
+- Improve design of general configuration
+- Improve design of test view
+- Add full screen mode for tests
+- Add context meu on test list and test view
 ## V1.19.0
 ### Features
 - Improve security and performance by updating third party libraries to last version
