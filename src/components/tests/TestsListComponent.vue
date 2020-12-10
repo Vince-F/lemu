@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="container pa-0">
-    <div class="menu">
+    <div class="menu" @contextmenu="showMainContextMenu">
       <v-navigation-drawer permanent ref="leftMenu">
         <v-list-item>
           <v-list-item-content>
@@ -71,6 +71,7 @@
               :key="index"
               link
               v-on:click="openTestDetails(index)"
+              @contextmenu="showContextMenu($event, index)"
             >
               <v-tooltip top>
                 <template v-slot:activator="{on}">
@@ -139,9 +140,57 @@
             <v-btn @click="clearFilter">Clear filter</v-btn>
           </v-list-item-group>
         </v-list>
+        <v-menu offset-y absolute v-model="contextMenuDisplayed"
+          :position-x="contextMenuX" :position-y="contextMenuY"
+          >
+          <v-list dense>
+            <v-list-item>
+              <v-list-item-title @click="runTest(tests[contextMenuTextIndex].label)">
+                <v-icon color="grey lighten-1">mdi-play</v-icon>
+                Run
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title @click="approveTest(tests[contextMenuTextIndex].label)">
+                <v-icon color="grey lighten-1">mdi-check-circle</v-icon>
+                Approve
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title @click="duplicateScenario(contextMenuTextIndex)">
+                <v-icon color="grey lighten-1">mdi-content-copy</v-icon>
+                Duplicate
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-title @click="deleteTest(contextMenuTextIndex)">
+                <v-icon color="grey lighten-1">mdi-delete</v-icon>
+                Delete
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-navigation-drawer>
     </div>
     <router-view class="content" />
+    <v-menu offset-y absolute v-model="mainContextMenuDisplayed"
+      :position-x="contextMenuX" :position-y="contextMenuY"
+      >
+      <v-list dense>
+        <v-list-item>
+          <v-list-item-title @click="addScenario">
+            <v-icon color="grey lighten-1">mdi-plus</v-icon>
+            Add test
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title v-if="!testRunning" @click="runBackstopTests">
+            <v-icon color="grey lighten-1">mdi-play</v-icon>
+            Run all tests
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-container>
 </template>
 
@@ -230,9 +279,18 @@ export default class TestsListComponent extends Vue {
   private readonly runTest!: (testLabel: string) => Promise<any>;
   @Action("testResultStore/retrieveTestsResult")
   private readonly retrieveTestsResult!: () => Promise<void>;
+  @Action("testRunnerStore/runTests")
+  private readonly runBackstopTests!: () => Promise<any>;
+  @State((state) => state.testRunnerStore.testRunning)
+  private readonly testRunning!: boolean;
 
   private filter: {testStatus: string[], name: string};
   private testStatusValues: string[];
+  private contextMenuDisplayed: boolean;
+  private contextMenuX: number;
+  private contextMenuY: number;
+  private contextMenuTextIndex: number;
+  private mainContextMenuDisplayed: boolean;
 
   constructor() {
     super(arguments);
@@ -241,6 +299,11 @@ export default class TestsListComponent extends Vue {
       testStatus: this.testStatusValues.slice(),
       name: ""
     };
+    this.contextMenuDisplayed = false;
+    this.contextMenuX = -1;
+    this.contextMenuY = -1;
+    this.contextMenuTextIndex = -1;
+    this.mainContextMenuDisplayed = false;
   }
 
   private mounted() {
@@ -321,6 +384,25 @@ export default class TestsListComponent extends Vue {
         }
       }
     }
+  }
+
+  private showContextMenu($event: MouseEvent, testIndex: number) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    this.contextMenuDisplayed = true;
+    this.mainContextMenuDisplayed = false;
+    this.contextMenuX = $event.clientX;
+    this.contextMenuY = $event.clientY;
+    this.contextMenuTextIndex = testIndex;
+  }
+
+  private showMainContextMenu($event: MouseEvent) {
+    $event.preventDefault();
+    $event.stopPropagation();
+    this.mainContextMenuDisplayed = true;
+    this.contextMenuDisplayed = false;
+    this.contextMenuX = $event.clientX;
+    this.contextMenuY = $event.clientY;
   }
 
   @Watch('resultExpired')

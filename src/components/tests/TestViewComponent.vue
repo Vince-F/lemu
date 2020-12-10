@@ -1,5 +1,6 @@
 <template>
-  <v-card class="card" v-if="testContent">
+  <v-card class="card" v-if="testContent"
+    @contextmenu="showContextMenu">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
       <div class="flex-grow-1 flex-shrink-1">
         {{testContent.label}} 
@@ -99,6 +100,36 @@
         </v-tab-item>
       </v-tabs>
     </v-card-text>
+    <v-menu offset-y absolute v-model="contextMenuDisplayed"
+      :position-x="contextMenuX" :position-y="contextMenuY"
+      >
+      <v-list dense>
+        <v-list-item>
+          <v-list-item-title :disabled="testRunning" @click="runCurrentTest">
+            <v-icon color="grey lighten-1">mdi-play</v-icon>
+            Run this test
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title :disabled="testRunning" v-on="on" @click="approveCurrentTest">
+            <v-icon color="grey lighten-1">mdi-check-circle</v-icon>
+            Approve this test
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title @click="duplicateTest">
+            <v-icon color="grey lighten-1">mdi-content-copy</v-icon>
+            Duplicate
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title :disabled="testRunning" @click="deleteTest">
+            <v-icon color="grey lighten-1">mdi-delete</v-icon>
+            Delete
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-card>
   <v-card class="card" v-else>
     <v-card-text>
@@ -191,12 +222,18 @@ export default class TestViewComponent extends Vue {
   private testContent: BackstopTest | null;
   private testIndex: number;
   private resultLoading: boolean;
+  private contextMenuDisplayed: boolean;
+  private contextMenuX: number;
+  private contextMenuY: number;
 
   constructor() {
     super(arguments);
     this.resultLoading = false;
     this.testContent = null;
     this.testIndex = -1;
+    this.contextMenuDisplayed = false;
+    this.contextMenuX = -1;
+    this.contextMenuY = -1;
   }
 
   private get isFullscreen() {
@@ -270,6 +307,13 @@ export default class TestViewComponent extends Vue {
           this.displaySnackbar({text: "Test failed, error: " + err, success: false});
         });
     }
+  }
+
+  private showContextMenu($event: MouseEvent) {
+    $event.preventDefault();
+    this.contextMenuDisplayed = true;
+    this.contextMenuY = $event.clientY;
+    this.contextMenuX = $event.clientX;
   }
 
   private toggleFullscreen() {
