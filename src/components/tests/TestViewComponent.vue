@@ -1,5 +1,6 @@
 <template>
-  <v-card class="card" v-if="testContent">
+  <v-card class="card" v-if="testContent"
+    @contextmenu="showContextMenu">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
       <div class="flex-grow-1 flex-shrink-1">
         {{testContent.label}} 
@@ -21,6 +22,19 @@
         </v-tooltip>
       </div>
       <div class="flex-grow-0 flex-shrink-0">
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon v-on="on" @click="toggleFullscreen">
+              <v-icon v-if="isFullscreen">
+                mdi-fullscreen-exit
+              </v-icon>
+              <v-icon v-else>
+                mdi-fullscreen
+              </v-icon>
+            </v-btn>
+          </template>
+          Toggle fullscreen
+        </v-tooltip>
         <v-tooltip top>
           <template v-slot:activator="{on}">
             <v-btn icon :disabled="testRunning" v-on="on" @click="runCurrentTest">
@@ -72,6 +86,12 @@
           <test-configuration-component :testContent="testContent" :testIndex="testIndex"/>
         </v-tab-item>
         <v-tab>
+          Preview
+        </v-tab>
+        <v-tab-item>
+          <test-preview-component :testContent="testContent" />
+        </v-tab-item>
+        <v-tab>
           Result
         </v-tab>
         <v-tab-item>
@@ -80,6 +100,47 @@
         </v-tab-item>
       </v-tabs>
     </v-card-text>
+    <v-menu offset-y absolute v-model="contextMenuDisplayed"
+      :position-x="contextMenuX" :position-y="contextMenuY"
+      >
+      <v-list dense>
+        <v-list-item>
+          <v-list-item-title @click="toggleFullscreen">
+            <v-icon v-if="isFullscreen">
+              mdi-fullscreen-exit
+            </v-icon>
+            <v-icon v-else>
+              mdi-fullscreen
+            </v-icon>
+            Toggle fullscreen
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title :disabled="testRunning" @click="runCurrentTest">
+            <v-icon color="grey lighten-1">mdi-play</v-icon>
+            Run this test
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title :disabled="testRunning" v-on="on" @click="approveCurrentTest">
+            <v-icon color="grey lighten-1">mdi-check-circle</v-icon>
+            Approve this test
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title @click="duplicateTest">
+            <v-icon color="grey lighten-1">mdi-content-copy</v-icon>
+            Duplicate
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title :disabled="testRunning" @click="deleteTest">
+            <v-icon color="grey lighten-1">mdi-delete</v-icon>
+            Delete
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-card>
   <v-card class="card" v-else>
     <v-card-text>
@@ -110,8 +171,7 @@
 }
 
 .content >>> .v-tabs .v-tabs-bar {
-  margin: 16px;
-  margin-bottom: 0;
+  margin: 0 16px;
   flex-shrink: 0;
 }
 
@@ -135,12 +195,14 @@ import { BackstopConfiguration } from '../../models/backstopConfiguration';
 import { BackstopTestResult } from '../../models/backstopTestResult';
 import { ModalService } from "../../services/modalService";
 import TestConfigurationComponent from "./TestConfigurationComponent.vue";
+import TestPreviewComponent from "./TestPreviewComponent.vue";
 import TestResultComponent from "./TestResultComponent.vue";
 
 @Component({
   name: "test-view-component",
   components: {
     TestConfigurationComponent,
+    TestPreviewComponent,
     TestResultComponent
   }
 })
@@ -171,12 +233,22 @@ export default class TestViewComponent extends Vue {
   private testContent: BackstopTest | null;
   private testIndex: number;
   private resultLoading: boolean;
+  private contextMenuDisplayed: boolean;
+  private contextMenuX: number;
+  private contextMenuY: number;
 
   constructor() {
     super(arguments);
     this.resultLoading = false;
     this.testContent = null;
     this.testIndex = -1;
+    this.contextMenuDisplayed = false;
+    this.contextMenuX = -1;
+    this.contextMenuY = -1;
+  }
+
+  private get isFullscreen() {
+    return this.$route.name === "test.fullscreenView";
   }
 
   private get testResult() {
@@ -245,6 +317,21 @@ export default class TestViewComponent extends Vue {
         }).catch((err) => {
           this.displaySnackbar({text: "Test failed, error: " + err, success: false});
         });
+    }
+  }
+
+  private showContextMenu($event: MouseEvent) {
+    $event.preventDefault();
+    this.contextMenuDisplayed = true;
+    this.contextMenuY = $event.clientY;
+    this.contextMenuX = $event.clientX;
+  }
+
+  private toggleFullscreen() {
+    if (this.$route.name === "test.fullscreenView") {
+      this.$router.push({ name: "tests.view", params: { index: "" + this.testIndex } });
+    } else {
+      this.$router.push({ name: "test.fullscreenView", params: { index: "" + this.testIndex } });
     }
   }
 

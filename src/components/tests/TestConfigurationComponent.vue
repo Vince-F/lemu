@@ -11,10 +11,10 @@
       </v-btn>
     </div>
     <form>
-      <v-text-field label="label" :value="testContent.label" @input="updateField('label', $event)"></v-text-field>
-      <v-text-field label="url" :value="testContent.url" @input="updateField('url', $event)"></v-text-field>
+      <v-text-field outlined dense label="label" :value="testContent.label" @input="updateField('label', $event)"></v-text-field>
+      <v-text-field outlined dense label="url" :value="testContent.url" @input="updateField('url', $event)"></v-text-field>
       <div class="d-flex" v-for="(additionnalField, index) in additionnalFields" :key="additionnalField.name">
-        <v-text-field 
+        <v-text-field outlined dense
           v-if="additionnalField.type === 'number'" :label="additionnalField.name" 
           type="number" :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, Number.parseInt($event))"
           class="flex-grow-1 flex-shrink-1"></v-text-field>
@@ -22,11 +22,11 @@
           :input-value="additionnalField.value"
           :key="index" @change="updateField(additionnalField.name, $event)"
           class="flex-grow-1 flex-shrink-1"></v-checkbox>
-        <v-combobox v-else-if="additionnalField.type === 'array'" multiple chips
+        <v-combobox outlined dense v-else-if="additionnalField.type === 'array'" multiple
           :label="additionnalField.name" :value="additionnalField.value"
           :key="index" @change="updateField(additionnalField.name, $event)"
           class="flex-grow-1 flex-shrink-1"></v-combobox>
-        <v-select v-else-if="additionnalField.type === 'scripts'" 
+        <v-select outlined dense v-else-if="additionnalField.type === 'scripts'" 
           :value="additionnalField.value" @input="updateField(additionnalField.name, $event)" 
             :items="scriptNames" :label="additionnalField.name"></v-select>
         <div v-else-if="additionnalField.type === 'viewports'" class="viewports-area">
@@ -42,27 +42,30 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </div>
-        <v-text-field 
+        <v-text-field outlined dense
           v-else :label="additionnalField.name" 
           :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, $event)"
           class="flex-grow-1 flex-shrink-1"></v-text-field>
         <v-tooltip top >
           <template v-slot:activator="{on}">
-            <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" :class="{'for-viewport': additionnalField.type === 'viewports'}" v-on="on" v-if="getHelpMessage(additionnalField.name)">
+            <v-btn icon class="flex-grow-0 flex-shrink-0" :class="{'input-action-btn': additionnalField.type === 'boolean','for-viewport': additionnalField.type === 'viewports' }"
+              v-on="on" v-if="getHelpMessage(additionnalField.name)">
               <v-icon color="grey">mdi-help-circle-outline</v-icon>
             </v-btn>
           </template>
           <span>{{getHelpMessage(additionnalField.name)}}</span>
         </v-tooltip>
-        <v-btn icon class="flex-grow-0 flex-shrink-0 input-action-btn" :class="{'for-viewport': additionnalField.type === 'viewports'}" @click="removeField(additionnalField.name)">
+        <v-btn icon class="flex-grow-0 flex-shrink-0" :class="{'input-action-btn': additionnalField.type === 'boolean', 'for-viewport': additionnalField.type === 'viewports'}" @click="removeField(additionnalField.name)">
           <v-icon color="grey">mdi-delete</v-icon>
         </v-btn>
       </div>
     </form>
-    <v-btn color="primary" v-on:click="addNewField()">
-      <v-icon>mdi-add</v-icon>
-      Add new field
-    </v-btn>
+    <div class="actions-area">
+      <v-btn color="primary" v-on:click="addNewField()">
+        <v-icon>mdi-plus</v-icon>
+        Add new field
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -79,6 +82,10 @@
 .viewports-area {
   width: 100%;
   margin-bottom: 16px;
+}
+
+.actions-area {
+  text-align: right;
 }
 </style>
 
@@ -117,7 +124,7 @@ export default class TestConfigurationComponent extends Vue {
   @Action("engineScriptStore/retrieveEngineScripts")
   private readonly retrieveEngineScripts!: () => Promise<void>;
 
-  @Prop({required: true, type: BackstopTest})
+  @Prop({required: true, type: Object})
   private readonly testContent!: BackstopTest;
   @Prop({required: true, type: Number})
   private readonly testIndex!: number;

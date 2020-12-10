@@ -53,6 +53,11 @@ const routes = [
         ]
       },
       {
+        path: "test/:index/fullscren",
+        name: "test.fullscreenView",
+        component: TestViewComponent
+      },
+      {
         path: "report",
         name: "report",
         component: ReportView
