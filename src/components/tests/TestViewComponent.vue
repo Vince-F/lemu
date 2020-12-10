@@ -105,6 +105,17 @@
       >
       <v-list dense>
         <v-list-item>
+          <v-list-item-title @click="toggleFullscreen">
+            <v-icon v-if="isFullscreen">
+              mdi-fullscreen-exit
+            </v-icon>
+            <v-icon v-else>
+              mdi-fullscreen
+            </v-icon>
+            Toggle fullscreen
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
           <v-list-item-title :disabled="testRunning" @click="runCurrentTest">
             <v-icon color="grey lighten-1">mdi-play</v-icon>
             Run this test
