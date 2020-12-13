@@ -1,6 +1,7 @@
 import { ApplicationService } from '@/services/applicationService';
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 import axios from "axios";
+import { ApplicationInfo } from '@/models/applicationInfo';
 
 @Module({
   namespaced: true
@@ -9,10 +10,7 @@ export default class ApplicationStore extends VuexModule {
   public snackbarText: string = "";
   public snackbarDisplayed: boolean = false;
   public snackbarSuccess: boolean = false;
-  public appInfos: {
-    appVersion: string,
-    backstopVersion: string
-  } | null = null;
+  public appInfos: ApplicationInfo | null = null;
 
   @Mutation
   public setSnackbarDisplayed({text, success}: {text: string, success: boolean}) {
@@ -29,7 +27,7 @@ export default class ApplicationStore extends VuexModule {
 
   @Mutation
   public fillAppInfos(appInfos: any) {
-    this.appInfos = appInfos;
+    this.appInfos = new ApplicationInfo(appInfos);
   }
 
   @Action
