@@ -26,7 +26,7 @@
       :elevation="4"
       ref="previewFrame"
       class="preview"
-      sandbox=""
+      sandbox="allow-scripts"
       :src="testContent.url"
     ></iframe>
   </div>

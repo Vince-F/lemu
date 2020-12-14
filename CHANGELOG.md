@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.20.1
+### Fixes
+- Allow JavaScript execution in test preview
+
 ## V1.20.0
 ### Features
 - Improve design of general configuration
