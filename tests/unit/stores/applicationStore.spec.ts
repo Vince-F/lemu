@@ -2,6 +2,11 @@ import { ApplicationInfo } from "@/models/applicationInfo";
 import applicationStore from "@/store/applicationStore";
 import store from "@/store/index";
 import {ActionContext, ActionHandler} from "vuex";
+import axios from "axios";
+import { mocked } from 'ts-jest/utils';
+
+jest.mock("axios");
+const mockedAxios = mocked(axios, true);
 
 describe("applicationStore", () => {
   describe("setSnackbarDisplayed", () => {
@@ -84,6 +89,29 @@ describe("applicationStore", () => {
       jest.runAllTimers();
 
       expect(commit.mock.calls[1][0]).toBe("hideSnackbar");
+    });
+  });
+
+  describe("retrieveChangelog", () => {
+    it("should retrieve the changelogs from GitHub", async () => {
+      const commit = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch: jest.fn(),
+        commit,
+        state: {},
+        getters: {},
+        rootState: {},
+        rootGetters: {}
+      };
+      const response = {data: { body: "result of request"} };
+
+      mockedAxios.get.mockImplementationOnce(() => Promise.resolve(response));
+
+      const result = (applicationStore.actions?.retrieveChangelog as ActionHandler<any, any>)
+        .call(store, context, "1.2.3");
+
+      expect(mockedAxios.get).toHaveBeenCalledWith("https://api.github.com/repos/vince-f/lemu/releases/tags/v1.2.3");
+      await expect(result).resolves.toEqual("result of request");
     });
   });
 });
