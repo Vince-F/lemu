@@ -6,7 +6,7 @@ import ReportView from "../views/ReportView.vue";
 import LogsView from "../views/LogsView.vue";
 import ScriptView from "../views/ScriptView.vue";
 
-import GeneralConfigurationComponent from "../components/generalConfig/GeneralConfigurationComponent.vue";
+import ConfigurationComponent from "../components/Config/GeneralConfigurationComponent.vue";
 import TestsListComponent from "../components/tests/TestsListComponent.vue";
 import TestViewComponent from "../components/tests/TestViewComponent.vue";
 import TestWelcomeScreenComponent from "../components/tests/TestWelcomeScreenComponent.vue";
@@ -34,7 +34,7 @@ const routes = [
       {
         path: "generalConfig",
         name: "generalConfiguration",
-        component: GeneralConfigurationComponent
+        component: ConfigurationComponent
       },
       {
         path: "list",
