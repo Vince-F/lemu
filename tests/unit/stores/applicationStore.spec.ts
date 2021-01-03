@@ -1,7 +1,7 @@
 import { ApplicationInfo } from "@/models/applicationInfo";
 import applicationStore from "@/store/applicationStore";
 import store from "@/store/index";
-import {ActionContext, ActionHandler} from "vuex";
+import { ActionContext, ActionHandler } from "vuex";
 import axios from "axios";
 import { mocked } from 'ts-jest/utils';
 
