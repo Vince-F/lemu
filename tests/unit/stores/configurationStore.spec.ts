@@ -122,7 +122,7 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
         .call(store, context);
 
-      expect(result).rejects.toEqual("Tests are running");
+      return expect(result).rejects.toEqual("Tests are running");
     });
 
     it ("should not approve and tells if there us no configuration", () => {
@@ -143,10 +143,10 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
         .call(store, context);
 
-      expect(result).rejects.toEqual("No configuration loaded");
+      return expect(result).rejects.toEqual("No configuration loaded");
     });
 
-    it ("should approve all the tests", () => {
+    it ("should approve all the tests", async () => {
       const configuration = {
         id: "test"
       };
@@ -171,7 +171,7 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
         .call(store, context);
 
-      expect(result).resolves.toEqual(undefined);
+      await expect(result).resolves.toEqual(undefined);
       expect(mockedBackstopService.approveTests).toHaveBeenCalledWith(configuration);
     });
   });
@@ -195,7 +195,7 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.approveTest as ActionHandler<any, any>)
         .call(store, context, "testLabel");
 
-      expect(result).rejects.toEqual("Tests are running");
+      return expect(result).rejects.toEqual("Tests are running");
     });
 
     it ("should not approve and tells if there us no configuration", () => {
@@ -216,10 +216,10 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.approveTest as ActionHandler<any, any>)
         .call(store, context, "testLabel");
 
-      expect(result).rejects.toEqual("No configuration loaded");
+      return expect(result).rejects.toEqual("No configuration loaded");
     });
 
-    it ("should approve all the tests", () => {
+    it ("should approve all the tests", async () => {
       const configuration = {
         id: "test"
       };
@@ -244,7 +244,7 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.approveTest as ActionHandler<any, any>)
         .call(store, context, "testLabel");
 
-      expect(result).resolves.toEqual(undefined);
+      await expect(result).resolves.toEqual(undefined);
       expect(mockedBackstopService.approveTest).toHaveBeenCalledWith(configuration, "testLabel");
     });
   });
@@ -268,7 +268,7 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
         .call(store, context, {testLabel: "testLabel", viewportLabel: "viewportLabel"});
 
-      expect(result).rejects.toEqual("Tests are running");
+      return expect(result).rejects.toEqual("Tests are running");
     });
 
     it ("should not approve and tells if there us no configuration", () => {
@@ -289,10 +289,10 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
         .call(store, context, {testLabel: "testLabel", viewportLabel: "viewportLabel"});
 
-      expect(result).rejects.toEqual("No configuration loaded");
+      return expect(result).rejects.toEqual("No configuration loaded");
     });
 
-    it ("should approve all the tests", () => {
+    it ("should approve all the tests", async () => {
       const configuration = {
         id: "test"
       };
@@ -317,8 +317,9 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
         .call(store, context, {testLabel: "testLabel", viewportLabel: "viewportLabel"});
 
-      expect(result).resolves.toEqual(undefined);
-      expect(mockedBackstopService.approveTest).toHaveBeenCalledWith(configuration, "testLabel", "viewportLabel");
+      await expect(result).resolves.toEqual(undefined);
+      return expect(mockedBackstopService.approveTest)
+        .toHaveBeenCalledWith(configuration, "testLabel", "viewportLabel");
     });
   });
 
