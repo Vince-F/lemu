@@ -2,6 +2,7 @@ import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
 import { TemplateService } from '@/services/templateService';
 import Vue from "vue";
+import { BackstopConfiguration } from '@/models/backstopConfiguration';
 
 @Module({
   namespaced: true
@@ -10,6 +11,7 @@ export default class TemplateStore extends VuexModule {
   private scripts: EngineScriptTemplate[] = [];
   private originalScriptNames: string[] = [];
   private scriptModified: boolean[] = [];
+  private configurationTemplates: BackstopConfiguration[] = [];
 
   private get getScriptByName() {
     return (scriptName: string) => this.scripts.find((script) => script.name === scriptName);
@@ -64,10 +66,31 @@ export default class TemplateStore extends VuexModule {
   }
 
   @Mutation
+  private addViewportInConfiguration(configurationIdx: number) {
+    if (this.configurationTemplates[configurationIdx]) {
+      if (!Array.isArray(this.configurationTemplates[configurationIdx].viewports)) {
+        Vue.set(this.configurationTemplates[configurationIdx], "viewports", []);
+      }
+    }
+    this.configurationTemplates[configurationIdx].viewports
+      .push({label: "newViewport", height: 0, width: 0});
+  }
+
+  @Mutation
   private removeEngineScriptTemplate(script: EngineScriptTemplate) {
     const idx = this.scripts.indexOf(script);
     if (idx > -1) {
       this.scripts.splice(idx, 1);
+    }
+  }
+
+  @Mutation
+  private removeViewportInConfiguration(configurationIdx: number, viewportIdx: number) {
+    if (this.configurationTemplates[configurationIdx]) {
+      if (Array.isArray(this.configurationTemplates[configurationIdx].viewports)) {
+        this.configurationTemplates[configurationIdx].viewports
+          .splice(viewportIdx, 1);
+      }
     }
   }
 
