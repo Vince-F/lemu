@@ -166,7 +166,7 @@ describe('ConfigurationStore', () => {
         rootGetters: {}
       };
 
-      mockedBackstopService.approveTests.mockImplementationOnce(() => Promise.resolve());
+      mockedBackstopService.approveTests.mockImplementationOnce(() => Promise.resolve("12"));
 
       const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
         .call(store, context);
@@ -327,10 +327,11 @@ describe('ConfigurationStore', () => {
   });
 
   describe("openConfiguration", () => {
-    it ("should reject when dialog is rejected (closed for instance)", () => {
+    it ("should reject when dialog is rejected (closed for instance)", async () => {
       const commit = jest.fn();
+      const dispatch = jest.fn();
       const context: ActionContext<any, any> = {
-        dispatch: jest.fn(),
+        dispatch,
         commit,
         state: {},
         getters: {},
@@ -343,14 +344,18 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.openConfiguration as ActionHandler<any, any>)
         .call(store, context);
 
-      expect(result).rejects.toEqual(undefined);
+      await expect(result).rejects.toEqual(undefined);
+
       expect(mockedDialogFileService.openFileDialog).toHaveBeenCalled();
+      expect(commit).toHaveBeenCalledTimes(0);
+      expect(dispatch).toHaveBeenCalledTimes(0);
     });
 
-    it ("should reject when opened file is not a backstop configuration", () => {
+    it ("should reject when opened file is not a backstop configuration", async () => {
       const commit = jest.fn();
+      const dispatch = jest.fn();
       const context: ActionContext<any, any> = {
-        dispatch: jest.fn(),
+        dispatch,
         commit,
         state: {},
         getters: {},
@@ -363,8 +368,11 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.openConfiguration as ActionHandler<any, any>)
         .call(store, context);
 
-      expect(result).rejects.toEqual("File doesn't look like a BackstopJS configuration");
+      await expect(result).rejects.toEqual("File doesn't look like a BackstopJS configuration");
+
       expect(mockedDialogFileService.openFileDialog).toHaveBeenCalled();
+      expect(dispatch).toHaveBeenCalledTimes(0);
+      expect(commit).toHaveBeenCalledTimes(0);
     });
 
     it ("should open configuration and set path", async () => {
@@ -389,8 +397,11 @@ describe('ConfigurationStore', () => {
       const result = (configurationStore.actions?.openConfiguration as ActionHandler<any, any>)
         .call(store, context);
 
-      expect(result).resolves.toEqual(undefined);
-      await result;
+      await expect(result).resolves.toEqual(undefined);
+
+      expect(commit).toHaveBeenCalledTimes(5);
+      expect(dispatch).toHaveBeenCalledTimes(1);
+
       expect(commit.mock.calls[0][0]).toBe("setFullConfiguration");
       expect(commit.mock.calls[0][1]).toEqual({newConfiguration: configuration});
 
