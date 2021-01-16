@@ -166,7 +166,7 @@ describe('ConfigurationStore', () => {
         rootGetters: {}
       };
 
-      mockedBackstopService.approveTests.mockImplementationOnce(() => Promise.resolve("12"));
+      mockedBackstopService.approveTests.mockImplementationOnce(() => Promise.resolve());
 
       const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
         .call(store, context);
@@ -219,7 +219,7 @@ describe('ConfigurationStore', () => {
       return expect(result).rejects.toEqual("No configuration loaded");
     });
 
-    it ("should approve all the tests", async () => {
+    it ("should approve the test for one test", async () => {
       const configuration = {
         id: "test"
       };
@@ -292,7 +292,7 @@ describe('ConfigurationStore', () => {
       return expect(result).rejects.toEqual("No configuration loaded");
     });
 
-    it ("should approve all the tests", async () => {
+    it ("should approve the test for one viewport", async () => {
       const configuration = {
         id: "test"
       };
@@ -318,7 +318,7 @@ describe('ConfigurationStore', () => {
         .call(store, context, {testLabel: "testLabel", viewportLabel: "viewportLabel"});
 
       await expect(result).resolves.toEqual(undefined);
-      return expect(mockedBackstopService.approveTest)
+      expect(mockedBackstopService.approveTest)
         .toHaveBeenCalledWith(configuration, "testLabel", "viewportLabel");
     });
   });
