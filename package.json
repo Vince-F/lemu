@@ -1,6 +1,6 @@
 {
   "name": "lemu",
-  "version": "1.20.1",
+  "version": "1.20.2",
   "private": true,
   "author": "Vincent Francolin",
   "scripts": {
@@ -64,7 +64,8 @@
     "files": [
       "dist-app/**/*",
       "userGuide/docs/.vuepress/dist/*",
-      "icon.png"
+      "icon.png",
+      "package.json"
     ]
   },
   "license": "AGPL-3.0"

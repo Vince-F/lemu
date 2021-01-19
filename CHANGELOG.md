@@ -1,5 +1,8 @@
 # Changelog
 
+## V1.20.2
+### Fixes
+- Make all images in test result zoomable by cliking on them
 ## V1.20.1
 ### Fixes
 - Allow JavaScript execution in test preview
