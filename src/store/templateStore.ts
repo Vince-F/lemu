@@ -1,4 +1,4 @@
-import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+import { VuexModule, Module, Mutation, Action, config } from 'vuex-module-decorators';
 import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
 import { TemplateService } from '@/services/templateService';
 import Vue from "vue";
@@ -74,6 +74,20 @@ export default class TemplateStore extends VuexModule {
     }
     this.configurationTemplates[configurationIdx].viewports
       .push({label: "newViewport", height: 0, width: 0});
+  }
+
+  @Mutation
+  private setFieldInConfiguration({configIdx, field, value}: {configIdx: number, field: string, value: any}) {
+    if (this.configurationTemplates[configIdx]) {
+      Vue.set(this.configurationTemplates[configIdx], field, value);
+    }
+  }
+
+  @Mutation
+  private setPathFieldInConfiguration({configIdx, field, value}: {configIdx: number, field: string, value: any}) {
+    if (this.configurationTemplates[configIdx]) {
+      Vue.set(this.configurationTemplates[configIdx].paths, field, value);
+    }
   }
 
   @Mutation

@@ -104,12 +104,13 @@ export default class ConfigurationComponent extends Vue {
   private readonly configuration!: BackstopConfiguration;
   @Mutation("templateStore/addViewportInConfiguration")
   private readonly addViewportInConfig!: (configIdx: number) => void;
-  @Mutation("configurationStore/removeViewportInConfiguration")
+  @Mutation("templateStore/removeViewportInConfiguration")
   private readonly removeViewportInConfig!: (configIdx: number, viewportId: number) => void;
-  @Mutation("configurationStore/setConfigurationField")
-  private readonly setConfigurationField!: (payload: {field: string, value: any}) => void;
-  @Mutation("configurationStore/setConfigurationPathField")
-  private readonly setConfigurationPathField!: (payload: {field: string, value: any}) => void;
+  @Mutation("templateStore/setFieldInConfiguration")
+  private readonly setConfigurationField!: (payload: {configIdx: number, field: string, value: any}) => void;
+  @Mutation("configurationStore/setPathFieldInConfiguration")
+  private readonly setConfigurationPathField!: (payload: {configIdx: number, field: string, value: any}) => void;
+  
   @Mutation("configurationStore/setConfigurationReport")
   private readonly setConfigurationReport!: (payload: {reportType: string, kept: boolean}) => void;
   @Mutation("configurationStore/setConfigurationViewportField")
