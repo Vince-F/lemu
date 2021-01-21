@@ -1,5 +1,10 @@
 # Changelog
 
+## V1.20.3
+
+### Fixes
+- Fix an issue where the app was failing to read dependencies and was displaying an error
+
 ## V1.20.2
 ### Fixes
 - Make all images in test result zoomable by cliking on them
