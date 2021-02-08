@@ -36,7 +36,7 @@
     "core-js": "^3.7.0",
     "electron": "^11.0.4",
     "electron-builder": "^22.9.1",
-    "marked": "^1.2.5",
+    "marked": "^2.0.0",
     "minisearch": "^3.0.2",
     "monaco-editor-vue": "^1.0.10",
     "monaco-editor-webpack-plugin": "^1.8.2",
