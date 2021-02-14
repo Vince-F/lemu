@@ -23,7 +23,7 @@ export class TemplateService {
   }
 
   public static createOrUpdateConfigurationTemplate(name: string, content: string) {
-    return window.ipcHandler.invoke("createOrUpdateConfiguationTemplate", name, content);
+    return window.ipcHandler.invoke("createOrUpdateConfigurationTemplate", name, content);
   }
 
   public static retrieveConfigurationTemplates(): Promise<BackstopConfiguration[]> {

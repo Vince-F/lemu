@@ -1,9 +1,21 @@
 <template>
   <v-card outlined height="100%" max-height="100%" class="card" v-if="currentConfiguration">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
-      <v-toolbar flat color="primary" dark>
-        <v-toolbar-title>{{currentConfiguration.id}}</v-toolbar-title>
-      </v-toolbar>
+      <div class="flex-grow-1 flex-shrink-1">
+        {{currentConfiguration.id}}
+      </div>
+      <!--<div class="flex-grow-0 flex-shrink-0">
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <v-btn icon @click="deleteConfiguration" v-on="on">
+              <v-icon>
+                mdi-delete
+              </v-icon>
+            </v-btn>
+          </template>
+          Delete
+        </v-tooltip>
+      </div>-->
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
       <v-tabs>
@@ -87,11 +99,11 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, Mutation } from "vuex-class";
 import { BackstopConfiguration } from "../../../models/backstopConfiguration";
 import { ModalService } from "../../../services/modalService";
-import ViewportsComponent from "../tests/ViewportsComponent.vue";
-import ReportConfigurationComponent from "./ReportConfigurationComponent.vue";
-import EngineConfigurationComponent from "./EngineConfigurationComponent.vue";
-import PerfomanceConfigurationComponent from "./PerfomanceConfigurationComponent.vue";
-import GeneralConfigurationComponent from "./GeneralConfigurationComponent.vue";
+import ViewportsComponent from "../../tests/ViewportsComponent.vue";
+import ReportConfigurationComponent from "../../generalConfig/ReportConfigurationComponent.vue";
+import EngineConfigurationComponent from "../../generalConfig/EngineConfigurationComponent.vue";
+import PerfomanceConfigurationComponent from "../../generalConfig/PerformanceConfigurationComponent.vue";
+import GeneralConfigurationComponent from "../../generalConfig/GeneralConfigurationComponent.vue";
 
 @Component({
   name: "configuration-component",
@@ -173,6 +185,10 @@ export default class ConfigurationComponent extends Vue {
 
   private updateViewportField(viewportIndex: number, field: string, value: any) {
     this.setConfigurationViewportField({configIdx: this.currentIndex, viewportIndex, field, value});
+  }
+
+  private deleteConfiguration() {
+    //
   }
 }
 </script>

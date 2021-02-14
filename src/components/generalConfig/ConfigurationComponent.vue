@@ -85,7 +85,7 @@ import { ModalService } from "../../services/modalService";
 import ViewportsComponent from "../tests/ViewportsComponent.vue";
 import ReportConfigurationComponent from "./ReportConfigurationComponent.vue";
 import EngineConfigurationComponent from "./EngineConfigurationComponent.vue";
-import PerfomanceConfigurationComponent from "./PerfomanceConfigurationComponent.vue";
+import PerfomanceConfigurationComponent from "./PerformanceConfigurationComponent.vue";
 import GeneralConfigurationComponent from "./GeneralConfigurationComponent.vue";
 
 @Component({

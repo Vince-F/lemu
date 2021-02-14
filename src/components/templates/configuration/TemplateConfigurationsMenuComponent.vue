@@ -5,7 +5,7 @@
         <v-list-item-title class="title-with-action">
           CONFIGURATIONS
           <v-spacer />
-          <v-btn color="primary" @click="addConfigurationTemplate">
+          <v-btn color="primary" @click="addNewConfigurationTemplate">
             <v-icon>mdi-plus</v-icon>Add
           </v-btn>
         </v-list-item-title>

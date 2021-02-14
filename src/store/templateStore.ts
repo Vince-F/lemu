@@ -11,9 +11,11 @@ export default class TemplateStore extends VuexModule {
   private scripts: EngineScriptTemplate[] = [];
   private originalScriptNames: string[] = [];
   private scriptModified: boolean[] = [];
+  private scriptLoaded: boolean = false;
   private configurationTemplates: BackstopConfiguration[] = [];
   private originalConfigurationNames: string[] = [];
   private configurationsModified: boolean[] = [];
+  private configurationLoaded: boolean = false;
 
   private get getScriptByName() {
     return (scriptName: string) => this.scripts.find((script) => script.name === scriptName);
@@ -43,10 +45,15 @@ export default class TemplateStore extends VuexModule {
 
   @Action
   public retrieveConfigurationTemplates() {
-    return TemplateService.retrieveConfigurationTemplates()
-      .then((configurationTemplates) => {
-        this.context.commit("setConfigurationTemplates", configurationTemplates);
-      });
+    if (this.configurationLoaded) {
+      return Promise.resolve();
+    } else {
+      return TemplateService.retrieveConfigurationTemplates()
+        .then((configurationTemplates) => {
+          this.context.commit("setConfigurationTemplates", configurationTemplates);
+          this.context.commit("setConfigurationLoaded");
+        });
+    }
   }
 
   @Action({rawError: true})
@@ -64,10 +71,15 @@ export default class TemplateStore extends VuexModule {
 
   @Action
   public retrieveEngineScriptTemplates() {
-    return TemplateService.retrieveScriptTemplates()
-      .then((scriptTemplates) => {
-        this.context.commit("setEngineScriptTemplates", scriptTemplates);
-      });
+    if (this.scriptLoaded) {
+      return Promise.resolve();
+    } else {
+      return TemplateService.retrieveScriptTemplates()
+        .then((scriptTemplates) => {
+          this.context.commit("setEngineScriptTemplates", scriptTemplates);
+          this.context.commit("setScriptLoaded");
+        });
+    }
   }
 
   @Action({rawError: true})
@@ -95,6 +107,12 @@ export default class TemplateStore extends VuexModule {
       .then(() => {
         this.context.commit("setOriginalScripts", this.scripts.map((script) => script.name));
       });
+  }
+
+  @Mutation
+  private addConfigurationTemplate(configuration: BackstopConfiguration) {
+    this.configurationTemplates.push(configuration);
+    this.originalConfigurationNames.push(configuration.id);
   }
 
   @Mutation
@@ -226,5 +244,15 @@ export default class TemplateStore extends VuexModule {
       this.scripts[scriptIdx].name = newName;
       Vue.set(this.scriptModified, scriptIdx, true);
     }
+  }
+
+  @Mutation
+  private setConfigurationLoaded() {
+    this.configurationLoaded = true;
+  }
+
+  @Mutation
+  private setScriptLoaded() {
+    this.scriptLoaded = true;
   }
 }
