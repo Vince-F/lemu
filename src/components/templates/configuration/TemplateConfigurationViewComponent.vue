@@ -1,43 +1,48 @@
 <template>
-  <v-card outlined height="100%" max-height="100%" class="card">
+  <v-card outlined height="100%" max-height="100%" class="card" v-if="currentConfiguration">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
       <v-toolbar flat color="primary" dark>
-        <v-toolbar-title>{{configuration.id}}</v-toolbar-title>
+        <v-toolbar-title>{{currentConfiguration.id}}</v-toolbar-title>
       </v-toolbar>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
       <v-tabs>
         <v-tab>General</v-tab>
         <v-tab-item>
-          <general-configuration-component :configuration="configuration"
+          <general-configuration-component :configuration="currentConfiguration"
             @updateField="updateField" @updatePathField="updatePathField" />
         </v-tab-item>
 
-        <v-tab>Viewports ({{configuration.viewports.length || 0}})</v-tab>
+        <v-tab>Viewports ({{currentConfiguration.viewports.length || 0}})</v-tab>
         <v-tab-item>
-          <viewports-component :viewports="configuration.viewports" @addViewport="addViewport"
+          <viewports-component :viewports="currentConfiguration.viewports" @addViewport="addViewport"
             @removeViewport="removeViewport" @updateViewportField="updateViewportField"/>
         </v-tab-item>
 
         <v-tab>Engine</v-tab>
         <v-tab-item>
-          <engine-configuration-component :configuration="configuration" 
+          <engine-configuration-component :configuration="currentConfiguration" 
             @setConfigurationEngineOptionsField="setConfigurationEngineOptionsField"
             @updateField="updateField"/>
         </v-tab-item>
 
         <v-tab>Report</v-tab>
         <v-tab-item>
-          <report-configuration-component :configuration="configuration" @updateReport="updateReport"
+          <report-configuration-component :configuration="currentConfiguration" @updateReport="updateReport"
             @updatePathField="updatePathField" />
         </v-tab-item>
 
         <v-tab>Perfomance</v-tab>
         <v-tab-item>
-          <performance-configuration-component :configuration="configuration" 
+          <performance-configuration-component :configuration="currentConfiguration" 
             @updateField="updateField"/>
         </v-tab-item>
       </v-tabs>
+    </v-card-text>
+  </v-card>
+  <v-card class="card" v-else>
+    <v-card-text>
+      This configuration doesn't exist
     </v-card-text>
   </v-card>
 </template>
@@ -78,9 +83,8 @@
 </style>
 
 <script lang="ts">
-import { EngineScript } from '@/models/engineScript';
-import { Vue, Component } from "vue-property-decorator";
-import { State, Mutation, Getter, Action } from "vuex-class";
+import { Vue, Component, Watch } from "vue-property-decorator";
+import { State, Mutation } from "vuex-class";
 import { BackstopConfiguration } from "../../../models/backstopConfiguration";
 import { ModalService } from "../../../services/modalService";
 import ViewportsComponent from "../tests/ViewportsComponent.vue";
@@ -100,35 +104,39 @@ import GeneralConfigurationComponent from "./GeneralConfigurationComponent.vue";
   }
 })
 export default class ConfigurationComponent extends Vue {
-  @State((state) => state.configurationStore.currentConfiguration)
-  private readonly configuration!: BackstopConfiguration;
+  @State((state) => state.templateStore.configurationTemplates)
+  private readonly configurationTemplates!: BackstopConfiguration[];
   @Mutation("templateStore/addViewportInConfiguration")
   private readonly addViewportInConfig!: (configIdx: number) => void;
   @Mutation("templateStore/removeViewportInConfiguration")
-  private readonly removeViewportInConfig!: (configIdx: number, viewportId: number) => void;
+  private readonly removeViewportInConfig!: (payload: {configIdx: number, viewportId: number}) => void;
   @Mutation("templateStore/setFieldInConfiguration")
   private readonly setConfigurationField!: (payload: {configIdx: number, field: string, value: any}) => void;
-  @Mutation("configurationStore/setPathFieldInConfiguration")
+  @Mutation("templateStore/setPathFieldInConfiguration")
   private readonly setConfigurationPathField!: (payload: {configIdx: number, field: string, value: any}) => void;
-  
-  @Mutation("configurationStore/setConfigurationReport")
-  private readonly setConfigurationReport!: (payload: {reportType: string, kept: boolean}) => void;
-  @Mutation("configurationStore/setConfigurationViewportField")
+  @Mutation("templateStore/setReportInConfiguration")
+  private readonly setConfigurationReport!: (payload: {configIdx: number, reportType: string, kept: boolean}) => void;
+  @Mutation("templateStore/setViewportFieldInConfiguration")
   private readonly setConfigurationViewportField!:
-    (payload: {viewportIndex: number, field: string, value: any}) => void;
-  @Mutation("configurationStore/setConfigurationEngineOptionsField")
-  private readonly setConfigurationEngineOptionsField!: (payload: {field: string, value: any}) => void;
-  @Mutation("configurationStore/removeEngineOption")
+    (payload: {configIdx: number, viewportIndex: number, field: string, value: any}) => void;
+  @Mutation("templateStore/setEngineOptionInConfiguration")
+  private readonly setConfigurationEngineOptionsField!: (payload: {configIdx: number,
+    field: string, value: any}) => void;
+  @Mutation("templateStore/removeEngineOptionInConfiguration")
   private readonly removeEngineOption!: (fieldName: string) => void;
-  @Action("engineScriptStore/retrieveEngineScripts")
-  private readonly retrieveEngineScripts!: () => Promise<void>;
 
-  private created() {
-    this.retrieveEngineScripts();
+  private currentIndex: number;
+  private currentConfiguration: BackstopConfiguration | null;
+
+  constructor() {
+    super(arguments);
+    this.currentConfiguration = null;
+    this.currentIndex = -1;
   }
 
+
   private addViewport() {
-    this.addViewportInConfig();
+    this.addViewportInConfig(this.currentIndex);
   }
 
   private confirmEngineOptionRemove(fieldName: string) {
@@ -138,24 +146,33 @@ export default class ConfigurationComponent extends Vue {
       });
   }
 
+  @Watch("$route", {immediate: true})
+  private loadTemplateConfiguraion() {
+    const index = Number(this.$route.params.index);
+    if (index >= 0) {
+      this.currentIndex = index;
+      this.currentConfiguration = this.configurationTemplates[index] ?? null;
+    }
+  }
+
   private removeViewport(index: number) {
-    this.removeViewportInConfig(index);
+    this.removeViewportInConfig({configIdx: this.currentIndex, viewportId: index});
   }
 
   private updateField(field: string, value: any) {
-    this.setConfigurationField({field, value});
+    this.setConfigurationField({configIdx: this.currentIndex, field, value});
   }
 
   private updatePathField(field: string, value: any) {
-    this.setConfigurationPathField({field, value});
+    this.setConfigurationPathField({configIdx: this.currentIndex, field, value});
   }
 
   private updateReport(reportType: string, kept: boolean) {
-    this.setConfigurationReport({reportType, kept});
+    this.setConfigurationReport({configIdx: this.currentIndex, reportType, kept});
   }
 
   private updateViewportField(viewportIndex: number, field: string, value: any) {
-    this.setConfigurationViewportField({viewportIndex, field, value});
+    this.setConfigurationViewportField({configIdx: this.currentIndex, viewportIndex, field, value});
   }
 }
 </script>

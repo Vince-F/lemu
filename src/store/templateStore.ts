@@ -12,6 +12,8 @@ export default class TemplateStore extends VuexModule {
   private originalScriptNames: string[] = [];
   private scriptModified: boolean[] = [];
   private configurationTemplates: BackstopConfiguration[] = [];
+  private originalConfigurationNames: string[] = [];
+  private configurationsModified: boolean[] = [];
 
   private get getScriptByName() {
     return (scriptName: string) => this.scripts.find((script) => script.name === scriptName);
@@ -19,6 +21,32 @@ export default class TemplateStore extends VuexModule {
 
   public get hasScriptBeenModified() {
     return (idx: number) => !!this.scriptModified[idx];
+  }
+
+  public get hasConfigurationBeenModified() {
+    return (idx: number) => !!this.configurationsModified[idx];
+  }
+
+  @Action({rawError: true})
+  public createConfigurationTemplate(configuration: BackstopConfiguration) {
+    const hasNameDuplicate = !!this.configurationTemplates.find(
+      (existingConfig) => configuration.id === existingConfig.id);
+    if (hasNameDuplicate) {
+      return Promise.reject("duplicateName");
+    } else {
+      return TemplateService.createConfigurationTemplate(configuration.id, JSON.stringify(configuration))
+        .then(() => {
+          this.context.commit("addConfigurationTemplate", configuration);
+        });
+    }
+  }
+
+  @Action
+  public retrieveConfigurationTemplates() {
+    return TemplateService.retrieveConfigurationTemplates()
+      .then((configurationTemplates) => {
+        this.context.commit("setConfigurationTemplates", configurationTemplates);
+      });
   }
 
   @Action({rawError: true})
@@ -48,11 +76,21 @@ export default class TemplateStore extends VuexModule {
     const scriptNamesToDelete = this.originalScriptNames.filter((scriptName) => {
       return !scriptNames.includes(scriptName);
     });
+    const configNames = this.configurationTemplates.map((configuration) => configuration.id);
+    const configNamesToDelete = this.originalConfigurationNames.filter((configName) => {
+      return !configNames.includes(configName);
+    });
 
-    const savePromises = this.scripts.map((script) => TemplateService.createOrUpdateScriptTemplate(script));
-    const deletionPromises = scriptNamesToDelete.map((name) => TemplateService.deleteScriptTemplate(name));
+    const saveScriptPromises = this.scripts.map((script) => TemplateService.createOrUpdateScriptTemplate(script));
+    const deletionScriptPromises = scriptNamesToDelete.map((name) => TemplateService.deleteScriptTemplate(name));
 
-    const allPromises = [...savePromises, ...deletionPromises];
+    const saveConfigPromises = this.configurationTemplates
+      .map((configuration) => TemplateService.
+        createOrUpdateConfigurationTemplate(configuration.id, JSON.stringify(configuration)));
+    const deletionConfigPromises = configNamesToDelete.map((name) => TemplateService.deleteConfigurationTemplate(name));
+
+    const allPromises = [...saveScriptPromises, ...deletionScriptPromises,
+      ...saveConfigPromises, ...deletionConfigPromises];
     return Promise.all(allPromises)
       .then(() => {
         this.context.commit("setOriginalScripts", this.scripts.map((script) => script.name));
@@ -71,15 +109,17 @@ export default class TemplateStore extends VuexModule {
       if (!Array.isArray(this.configurationTemplates[configurationIdx].viewports)) {
         Vue.set(this.configurationTemplates[configurationIdx], "viewports", []);
       }
+      this.configurationTemplates[configurationIdx].viewports
+        .push({label: "newViewport", height: 0, width: 0});
+      Vue.set(this.configurationsModified, configurationIdx, true);
     }
-    this.configurationTemplates[configurationIdx].viewports
-      .push({label: "newViewport", height: 0, width: 0});
   }
 
   @Mutation
   private setFieldInConfiguration({configIdx, field, value}: {configIdx: number, field: string, value: any}) {
     if (this.configurationTemplates[configIdx]) {
       Vue.set(this.configurationTemplates[configIdx], field, value);
+      Vue.set(this.configurationsModified, configIdx, true);
     }
   }
 
@@ -87,6 +127,39 @@ export default class TemplateStore extends VuexModule {
   private setPathFieldInConfiguration({configIdx, field, value}: {configIdx: number, field: string, value: any}) {
     if (this.configurationTemplates[configIdx]) {
       Vue.set(this.configurationTemplates[configIdx].paths, field, value);
+      Vue.set(this.configurationsModified, configIdx, true);
+    }
+  }
+
+  @Mutation
+  private setReportInConfiguration({configIdx, reportType, kept}:
+      {configIdx: number, reportType: string, kept: boolean}) {
+    if (this.configurationTemplates[configIdx]) {
+      Vue.set(this.configurationTemplates[configIdx].paths, reportType, kept);
+      Vue.set(this.configurationsModified, configIdx, true);
+    }
+  }
+
+  @Mutation
+  private setViewportFieldInConfiguration({configIdx, viewportIndex, field, value}:
+      {configIdx: number, viewportIndex: number, field: string, value: any}) {
+    if (this.configurationTemplates[configIdx]) {
+      if (!Array.isArray(this.configurationTemplates[configIdx].viewports)) {
+        this.configurationTemplates[configIdx].viewports = [];
+      }
+      Vue.set(this.configurationTemplates[configIdx].viewports[viewportIndex],
+        field, value);
+      Vue.set(this.configurationsModified, configIdx, true);
+    }
+  }
+
+  @Mutation
+  private setEngineOptionInConfiguration({configIdx, field, value}:
+      {configIdx: number, viewportIndex: number, field: string, value: any}) {
+    if (this.configurationTemplates[configIdx]) {
+      Vue.set(this.configurationTemplates[configIdx].engineOptions,
+        field, value);
+      Vue.set(this.configurationsModified, configIdx, true);
     }
   }
 
@@ -104,8 +177,23 @@ export default class TemplateStore extends VuexModule {
       if (Array.isArray(this.configurationTemplates[configurationIdx].viewports)) {
         this.configurationTemplates[configurationIdx].viewports
           .splice(viewportIdx, 1);
+        Vue.set(this.configurationsModified, configurationIdx, true);
       }
     }
+  }
+
+  @Mutation
+  private removeEngineOptionInConfiguration({configIdx, fieldName}: {configIdx: number, fieldName: string}) {
+    if (this.configurationTemplates[configIdx]) {
+      Vue.delete(this.configurationTemplates[configIdx].engineOptions, fieldName);
+      Vue.set(this.configurationsModified, configIdx, true);
+    }
+  }
+
+  @Mutation
+  private setConfigurationTemplates(configurations: BackstopConfiguration[]) {
+    this.configurationTemplates = configurations;
+    this.originalConfigurationNames = this.configurationTemplates.map((configuration) => configuration.id);
   }
 
   @Mutation

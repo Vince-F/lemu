@@ -87,7 +87,7 @@ export default class AddTestFieldModalComponent extends Vue {
   private readonly modes: string[];
   private readonly types: string[];
   private currentMode: string;
-  private selectedField: {name: string,  type: "string" | "number" | "array" | "boolean" | 
+  private selectedField: {name: string,  type: "string" | "number" | "array" | "boolean" |
     "scripts" | "viewports" } | null;
   private fieldName: string;
   private fieldType: string;

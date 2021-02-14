@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import { BackstopConfiguration } from "@/models/backstopConfiguration";
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { ModalService } from '../../services/modalService';
 import AddEngineOptionModalComponent from "./AddEngineOptionModalComponent.vue";
 

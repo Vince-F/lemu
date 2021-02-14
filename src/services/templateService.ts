@@ -1,3 +1,4 @@
+import { BackstopConfiguration } from '@/models/backstopConfiguration';
 import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
 
 export class TemplateService {
@@ -15,5 +16,21 @@ export class TemplateService {
 
   public static deleteScriptTemplate(name: string) {
     return window.ipcHandler.invoke("deleteScriptTemplate", name);
+  }
+
+  public static createConfigurationTemplate(name: string, content: string) {
+    return window.ipcHandler.invoke("createConfigurationTemplate", name, content);
+  }
+
+  public static createOrUpdateConfigurationTemplate(name: string, content: string) {
+    return window.ipcHandler.invoke("createOrUpdateConfiguationTemplate", name, content);
+  }
+
+  public static retrieveConfigurationTemplates(): Promise<BackstopConfiguration[]> {
+    return window.ipcHandler.invoke("retrieveConfigurationTemplates");
+  }
+
+  public static deleteConfigurationTemplate(name: string) {
+    return window.ipcHandler.invoke("deleteConfigurationTemplate", name);
   }
 }

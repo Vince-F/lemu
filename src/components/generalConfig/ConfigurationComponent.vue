@@ -78,9 +78,8 @@
 </style>
 
 <script lang="ts">
-import { EngineScript } from '@/models/engineScript';
 import { Vue, Component } from "vue-property-decorator";
-import { State, Mutation, Getter, Action } from "vuex-class";
+import { State, Mutation, Action } from "vuex-class";
 import { BackstopConfiguration } from "../../models/backstopConfiguration";
 import { ModalService } from "../../services/modalService";
 import ViewportsComponent from "../tests/ViewportsComponent.vue";
