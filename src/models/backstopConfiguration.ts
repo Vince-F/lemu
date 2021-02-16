@@ -28,15 +28,13 @@ export class BackstopConfiguration {
         this.id = data?.id ?? "";
         this.viewports = [];
         if (Array.isArray(data?.viewports)) {
-          this.viewports = data.viewports.forEach((viewport: any) => new Viewport(viewport));
+          this.viewports = data.viewports.map((viewport: unknown) => new Viewport(viewport));
         }
         this.onBeforeScript = data?.onBeforeScript ?? "";
         this.onReadyScript = data?.onReadyScript ?? "";
         this.scenarios = [];
-        if (data && Array.isArray(data.scenarios)) {
-          this.scenarios = data.scenarios.map((scenario: any) => {
-            return new BackstopTest(scenario);
-          });
+        if (Array.isArray(data?.scenarios)) {
+          this.scenarios = data.scenarios.map((scenario: unknown) => new BackstopTest(scenario));
         }
         this.paths = data?.paths ?? {};
         this.report = data?.report ?? [];

@@ -27,7 +27,10 @@ export class TemplateService {
   }
 
   public static retrieveConfigurationTemplates(): Promise<BackstopConfiguration[]> {
-    return window.ipcHandler.invoke("retrieveConfigurationTemplates");
+    return window.ipcHandler.invoke("retrieveConfigurationTemplates")
+      .then((templates: Array<{name: string, content: string}>) => {
+        return templates.map((entry) => new BackstopConfiguration(JSON.parse(entry.content)));
+      });
   }
 
   public static deleteConfigurationTemplate(name: string) {

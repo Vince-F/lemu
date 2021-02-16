@@ -46,7 +46,7 @@
 
         <v-tab>Perfomance</v-tab>
         <v-tab-item>
-          <performance-configuration-component :configuration="currentConfiguration" 
+          <perfomance-configuration-component :configuration="currentConfiguration" 
             @updateField="updateField"/>
         </v-tab-item>
       </v-tabs>
