@@ -125,6 +125,7 @@ import { BackstopConfiguration } from "@/models/backstopConfiguration";
 import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, Action, State } from "vuex-class";
 import { ModalService } from "../../../services/modalService";
+import { backstopConfigDefault } from "../../../constants/backstopConfigDefault";
 
 @Component({
   name: "template-configurations-menu-component",
@@ -155,7 +156,8 @@ export default class TemplateConfigurationsMenuComponent extends Vue {
   }
 
   private addNewConfigurationTemplate() {
-    const newConfiguration = new BackstopConfiguration({ id: "configuration_" + this.configurations.length });
+    const newConfiguration = new BackstopConfiguration(backstopConfigDefault);
+    newConfiguration.id = "configuration_" + this.configurations.length;
     this.addConfigurationTemplate(newConfiguration);
   }
 

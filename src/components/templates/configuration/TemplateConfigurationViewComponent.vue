@@ -136,6 +136,8 @@ export default class ConfigurationComponent extends Vue {
     field: string, value: any}) => void;
   @Mutation("templateStore/removeEngineOptionInConfiguration")
   private readonly removeEngineOption!: (fieldName: string) => void;
+  @Mutation("templateStore/removeConfigurationTemplate")
+  private readonly removeConfigurationTemplate!: (index: number) => void;
 
   private currentIndex: number;
   private currentConfiguration: BackstopConfiguration | null;
@@ -188,7 +190,8 @@ export default class ConfigurationComponent extends Vue {
   }
 
   private deleteConfiguration() {
-    //
+    this.removeConfigurationTemplate(this.currentIndex);
+    this.$router.push({name: "configurationTemplates.welcome"});
   }
 }
 </script>

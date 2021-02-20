@@ -285,22 +285,28 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Action
-  public initConfig() {
-    return DialogFileService.selectDirectory()
-      .then((path) => {
-        return BackstopService.initTests(path)
-          .then(() => {
-            return DialogFileService.openAndParseFile(path + "/backstop.json")
+  public initConfig({template, directory}: {template: BackstopConfiguration, directory: string}) {
+    const path = FileService.resolvePath([directory, "backstop.json"]);
+    return BackstopService.initTests(directory)
+        .then(() => {
+          if (template.id === "default") {
+            return DialogFileService.openAndParseFile(path)
               .then((content) => {
                 this.context.commit("setFullConfiguration", {
                   newConfiguration: content
                 });
-                this.context.commit("setPath", path + "/backstop.json");
-                this.context.commit("testLogStore/resetLogs", null, { root: true });
-                this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
               });
-          });
-      });
+          } else {
+            this.context.commit("setFullConfiguration", {
+              newConfiguration: template
+            });
+            return this.context.dispatch("saveConfiguration");
+          }
+        }).then(() => {
+          this.context.commit("setPath", path);
+          this.context.commit("testLogStore/resetLogs", null, { root: true });
+          this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
+        });
   }
 
   @Action({rawError: true})

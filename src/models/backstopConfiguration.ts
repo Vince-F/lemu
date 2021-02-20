@@ -1,7 +1,5 @@
 import { BackstopTest } from './backstopTest';
 import { Viewport } from './viewport';
-
-
 export class BackstopConfiguration {
     public id: string;
     public viewports: Viewport[];

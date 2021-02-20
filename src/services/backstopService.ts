@@ -76,16 +76,7 @@ export class BackstopService {
   }
 
   public static initTests(path: string) {
-    return new Promise((resolve, reject) => {
-      window.ipcHandler.receiveOnce("initFinished", (event: any, success: boolean, payload: any) => {
-        if (success) {
-          resolve(payload);
-        } else {
-          reject();
-        }
-      });
-      window.ipcHandler.send("initTest", path);
-    });
+    return window.ipcHandler.invoke("initTest", path);
   }
 
   public static retrieveEngineScripts(path: string): Promise<string[]> {

@@ -14,10 +14,7 @@ export const eventNames = Object.freeze({
     REQUEST: "approveTest",
     REPLY: "approvalFinished"
   },
-  INIT_TEST: {
-    REQUEST: "initTest",
-    REPLY: "initFinished"
-  },
+  INIT_TEST: "initTest",
   RETRIEVE_TEST_RESULT: {
     REQUEST: "retrieveTestsResult",
     REPLY: "testsResult"

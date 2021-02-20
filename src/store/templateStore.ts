@@ -182,6 +182,13 @@ export default class TemplateStore extends VuexModule {
   }
 
   @Mutation
+  private removeConfigurationTemplate(index: number) {
+    if (index > -1) {
+      this.configurationTemplates.splice(index, 1);
+    }
+  }
+
+  @Mutation
   private removeEngineScriptTemplate(script: EngineScriptTemplate) {
     const idx = this.scripts.indexOf(script);
     if (idx > -1) {
