@@ -18,5 +18,3 @@ parentPort.on("message", (msg) => {
       });
     });
 });
-
-

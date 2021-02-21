@@ -26,13 +26,8 @@ electron.ipcMain.on(eventNames.APPROVE_TEST.REQUEST, (event, config, scenarioLab
     });
 });
 
-electron.ipcMain.on(eventNames.INIT_TEST.REQUEST, (event, path) => {
-  BackstopTestRunner.initTest(path)
-    .then(() => {
-      event.reply(eventNames.INIT_TEST.REPLY, true);
-    }).catch((error) => {
-      event.reply(eventNames.INIT_TEST.REPLY, false, error);
-    });
+electron.ipcMain.handle(eventNames.INIT_TEST, (event, path) => {
+  return BackstopTestRunner.initTest(path);
 });
 
 electron.ipcMain.on(eventNames.RETRIEVE_TEST_RESULT.REQUEST, (event, path) => {

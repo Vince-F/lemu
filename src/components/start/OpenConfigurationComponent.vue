@@ -43,9 +43,12 @@
 </template>
 
 <script lang="ts">
+import { BackstopConfiguration } from "@/models/backstopConfiguration";
+import { ModalService } from "@/services/modalService";
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation } from "vuex-class";
 import {DialogFileService} from "../../services/dialogFileService";
+import NewConfigModalComponent from "./NewConfigModalComponent.vue";
 
 @Component({
     name: "open-configuration-component"
@@ -56,7 +59,7 @@ export default class OpenConfigurationComponent extends Vue {
   @Action("configurationStore/openConfigurationFromPath")
   private readonly openConfigurationFromPath!: (path: string) => Promise<any>;
   @Action("configurationStore/initConfig")
-  private readonly initTests!: () => Promise<void>;
+  private readonly initTests!: (payload: {template: BackstopConfiguration, directory: string}) => Promise<void>;
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
@@ -64,7 +67,6 @@ export default class OpenConfigurationComponent extends Vue {
 
   constructor() {
     super(arguments);
-
     this.recentlyOpened = [];
   }
 
@@ -77,13 +79,16 @@ export default class OpenConfigurationComponent extends Vue {
   }
 
   private createNewConfig() {
-    this.initTests()
-      .then(() => {
-        this.$router.push("/tests/generalConfig");
-      }).catch((error) => {
-        if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
-          this.displaySnackbar({text: "Failed to open file. " + error, success: false});
-        }
+    ModalService.launchModal(NewConfigModalComponent)
+      .then((payload: {template: BackstopConfiguration, directory: string}) => {
+        this.initTests(payload)
+          .then(() => {
+            this.$router.push("/tests/generalConfig");
+          }).catch((error) => {
+            if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
+              this.displaySnackbar({text: "Failed to open file. " + error, success: false});
+            }
+          });
       });
   }
 

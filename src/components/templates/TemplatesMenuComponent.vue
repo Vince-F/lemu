@@ -22,6 +22,11 @@ export default class TemplatesMenuComponent extends Vue {
         title: "Engine scripts",
         icon: "mdi-script",
         path: "/templates/script/",
+      },
+      {
+        title: "Configurations",
+        icon: "mdi-file-document",
+        path: "/templates/configuration/"
       }
     ];
   }
