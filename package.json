@@ -18,7 +18,7 @@
   },
   "main": "dist-app/electron-main/main.js",
   "dependencies": {
-    "backstopjs": "^5.0.6",
+    "backstopjs": "^5.1.0",
     "electron-updater": "^4.3.5",
     "fs-extra": "^9.0.1",
     "v8-compile-cache": "^2.2.0"
