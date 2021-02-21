@@ -58,14 +58,14 @@
               </div>
               <div class="flex-grow-1 flex-shrink-1 image-container">
                 <p><strong>Reference</strong></p>
-                <img :src="getReferenceImagePath(result)" />
+                <ZoomableImageComponent :imgSrc="getReferenceImagePath(result)" />
               </div>
               <div
                 class="flex-grow-1 flex-shrink-1 image-container"
                 v-if="result.status === 'fail' && result.pair.diffImage"
               >
                 <p><strong>Diff</strong></p>
-                <img :src="getDiffImagePath(result)" />
+                <ZoomableImageComponent :imgSrc="getDiffImagePath(result)" />
               </div>
             </div>
           </v-expansion-panel-content>

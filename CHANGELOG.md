@@ -1,5 +1,23 @@
 # Changelog
 
+## V1.20.3
+
+### Fixes
+- Fix an issue where the app was failing to read dependencies and was displaying an error
+
+## V1.20.2
+### Fixes
+- Make all images in test result zoomable by cliking on them
+## V1.20.1
+### Fixes
+- Allow JavaScript execution in test preview
+
+## V1.20.0
+### Features
+- Improve design of general configuration
+- Improve design of test view
+- Add full screen mode for tests
+- Add context meu on test list and test view
 ## V1.19.0
 ### Features
 - Improve security and performance by updating third party libraries to last version

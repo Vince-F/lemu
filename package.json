@@ -1,6 +1,6 @@
 {
   "name": "lemu",
-  "version": "1.19.0",
+  "version": "1.20.3",
   "private": true,
   "author": "Vincent Francolin",
   "scripts": {
@@ -34,7 +34,7 @@
     "@vue/test-utils": "^1.1.1",
     "axios": "^0.21.0",
     "core-js": "^3.7.0",
-    "electron": "^11.0.2",
+    "electron": "^11.0.4",
     "electron-builder": "^22.9.1",
     "marked": "^1.2.5",
     "minisearch": "^3.0.2",
@@ -64,7 +64,8 @@
     "files": [
       "dist-app/**/*",
       "userGuide/docs/.vuepress/dist/*",
-      "icon.png"
+      "icon.png",
+      "package.json"
     ]
   },
   "license": "AGPL-3.0"
