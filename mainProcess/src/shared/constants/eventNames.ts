@@ -55,7 +55,7 @@ export const eventNames = Object.freeze({
   CREATE_OR_UPDATE_SCRIPT_TEMPLATE: "createOrUpdateScriptTemplate",
   RETRIEVE_SCRIPT_TEMPLATES: "retrieveScriptTemplates",
   DELETE_SCRIPT_TEMPLATE: "deleteScriptTemplate",
-  CREATE_CONFIGURATION_TEMPLATE: "creareConfigurationTemplate",
+  CREATE_CONFIGURATION_TEMPLATE: "createConfigurationTemplate",
   CREATE_OR_UPDATE_CONFIGURATION_TEMPLATE: "createOrUpdateConfigurationTemplate",
   RETRIEVE_CONFIGURATION_TEMPLATES: "retrieveConfigurationTemplates",
   DELETE_CONFIGURATION_TEMPLATE: "deleteConfigurationTemplate"

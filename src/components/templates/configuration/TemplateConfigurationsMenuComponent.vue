@@ -140,10 +140,10 @@ export default class TemplateConfigurationsMenuComponent extends Vue {
   private readonly removeConfigurationTemplate!: (
     script: BackstopConfiguration
   ) => void;
-  @Mutation("templateStore/addConfigurationTemplate")
-  private readonly addConfigurationTemplate!: (
-    script: BackstopConfiguration
-  ) => void;
+  @Action("templateStore/createConfigurationTemplate")
+  private readonly createConfigurationTemplate!: (
+    config: BackstopConfiguration
+  ) => Promise<void>;
   @Getter("templateStore/hasConfigurationBeenModified")
   private hasConfigurationBeenModified!: (idx: number) => boolean;
 
@@ -158,14 +158,14 @@ export default class TemplateConfigurationsMenuComponent extends Vue {
   private addNewConfigurationTemplate() {
     const newConfiguration = new BackstopConfiguration(backstopConfigDefault);
     newConfiguration.id = "configuration_" + this.configurations.length;
-    this.addConfigurationTemplate(newConfiguration);
+    this.createConfigurationTemplate(newConfiguration);
   }
 
   private duplicateConfiguration(configuration: BackstopConfiguration) {
     const newConfiguration = new BackstopConfiguration(
       {id: configuration.id + "_copy"}
     );
-    this.addConfigurationTemplate(newConfiguration);
+    this.createConfigurationTemplate(newConfiguration);
   }
 
   private deleteConfiguration(config: BackstopConfiguration) {
