@@ -34,7 +34,7 @@
 
         <v-tab>Perfomance</v-tab>
         <v-tab-item>
-          <performance-configuration-component :configuration="configuration" 
+          <perfomance-configuration-component :configuration="configuration" 
             @updateField="updateField"/>
         </v-tab-item>
       </v-tabs>
