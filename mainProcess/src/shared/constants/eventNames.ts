@@ -14,10 +14,7 @@ export const eventNames = Object.freeze({
     REQUEST: "approveTest",
     REPLY: "approvalFinished"
   },
-  INIT_TEST: {
-    REQUEST: "initTest",
-    REPLY: "initFinished"
-  },
+  INIT_TEST: "initTest",
   RETRIEVE_TEST_RESULT: {
     REQUEST: "retrieveTestsResult",
     REPLY: "testsResult"
@@ -53,8 +50,13 @@ export const eventNames = Object.freeze({
   READ_FILE: "readFile",
   RESOLVE_PATH: "resolvePath",
   WRITE_FILE: "writeFile",
+
   CREATE_SCRIPT_TEMPLATE: "createScriptTemplate",
   CREATE_OR_UPDATE_SCRIPT_TEMPLATE: "createOrUpdateScriptTemplate",
   RETRIEVE_SCRIPT_TEMPLATES: "retrieveScriptTemplates",
-  DELETE_SCRIPT_TEMPLATE: "deleteScriptTemplate"
+  DELETE_SCRIPT_TEMPLATE: "deleteScriptTemplate",
+  CREATE_CONFIGURATION_TEMPLATE: "createConfigurationTemplate",
+  CREATE_OR_UPDATE_CONFIGURATION_TEMPLATE: "createOrUpdateConfigurationTemplate",
+  RETRIEVE_CONFIGURATION_TEMPLATES: "retrieveConfigurationTemplates",
+  DELETE_CONFIGURATION_TEMPLATE: "deleteConfigurationTemplate"
 });

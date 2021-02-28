@@ -1,7 +1,5 @@
 import { BackstopTest } from './backstopTest';
 import { Viewport } from './viewport';
-
-
 export class BackstopConfiguration {
     public id: string;
     public viewports: Viewport[];
@@ -25,26 +23,24 @@ export class BackstopConfiguration {
     public debugWindow: boolean | null;
 
     constructor(data: any) {
-        this.id = data && data.id || "";
+        this.id = data?.id ?? "";
         this.viewports = [];
         if (Array.isArray(data?.viewports)) {
-          this.viewports = data.viewports.forEach((viewport: any) => new Viewport(viewport));
+          this.viewports = data.viewports.map((viewport: unknown) => new Viewport(viewport));
         }
-        this.onBeforeScript = data && data.onBeforeScript || "";
-        this.onReadyScript = data && data.onReadyScript || "";
+        this.onBeforeScript = data?.onBeforeScript ?? "";
+        this.onReadyScript = data?.onReadyScript ?? "";
         this.scenarios = [];
-        if (data && Array.isArray(data.scenarios)) {
-          this.scenarios = data.scenarios.map((scenario: any) => {
-            return new BackstopTest(scenario);
-          });
+        if (Array.isArray(data?.scenarios)) {
+          this.scenarios = data.scenarios.map((scenario: unknown) => new BackstopTest(scenario));
         }
-        this.paths = data && data.paths || {};
-        this.report = data && data.report || [];
-        this.engine = data && data.engine || "";
-        this.engineOptions = data && data.engineOptions;
-        this.asyncCaptureLimit = data && !isNaN(data.asyncCaptureLimit) ? data.asyncCaptureLimit : null;
-        this.asyncCompareLimit = data && !isNaN(data.asyncCompareLimit) ? data.asyncCompareLimit : null;
-        this.debug = data && data.debug !== undefined ? data.debug : null;
-        this.debugWindow = data && data.debugWindow !== undefined ? data.debugWindow : null;
+        this.paths = data?.paths ?? {};
+        this.report = data?.report ?? [];
+        this.engine = data?.engine ?? "";
+        this.engineOptions = data?.engineOptions;
+        this.asyncCaptureLimit = !isNaN(data?.asyncCaptureLimit) ? data.asyncCaptureLimit : null;
+        this.asyncCompareLimit = !isNaN(data?.asyncCompareLimit) ? data.asyncCompareLimit : null;
+        this.debug = data?.debug ?? null;
+        this.debugWindow = data?.debugWindow ?? null;
     }
 }

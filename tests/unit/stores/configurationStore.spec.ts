@@ -2,6 +2,7 @@ import configurationStore from '@/store/configurationStore';
 import { BackstopTest } from '@/models/backstopTest';
 
 describe('ConfigurationStore', () => {
+  /* mutations */
   describe("addViewport", () => {
     it("should add empty viewport even if none existed before and says configuration is modified", () => {
       const state = {
@@ -88,6 +89,82 @@ describe('ConfigurationStore', () => {
       };
       configurationStore.mutations?.setSavingState(state, false);
       expect(state.isSaving).toBeFalsy();
+    });
+  });
+
+  /* getters */
+  describe("tests", () => {
+    it("should get the scenarios from the current configuration", () => {
+      const scenarios = [{label: "test", url: "someUrl"}];
+      const state = { currentConfiguration: {
+        scenarios
+      }};
+
+      const result = configurationStore.getters?.tests(state, {}, {}, {});
+      expect(result).toEqual(scenarios);
+    });
+
+    it("should return an empty array is not config is loaded", () => {
+      const state = {};
+
+      const result = configurationStore.getters?.tests(state, {}, {}, {});
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe("hasConfiguration", () => {
+    it("should return true when there is a config loaded", () => {
+      const state = {
+        currentConfiguration: {}
+      };
+
+      const result = configurationStore.getters?.hasConfiguration(state, {}, {}, {});
+      expect(result).toBeTruthy();
+    });
+
+    it("should return false when there is no config", () => {
+      const state = {};
+
+      const result = configurationStore.getters?.hasConfiguration(state, {}, {}, {});
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe("hasTestBeenModified", () => {
+    it("should say the test is not modified by default", () => {
+      const state = {
+        testsModified: []
+      };
+
+      const result = configurationStore.getters?.hasTestBeenModified(state, {}, {}, {})(0);
+      expect(result).toBeFalsy();
+    });
+
+    it ("should say the test is modified if it is mark as modified", () => {
+      const state = {
+        testsModified: [true]
+      };
+
+      const result = configurationStore.getters?.hasTestBeenModified(state, {}, {}, {})(0);
+      expect(result).toBeTruthy();
+    });
+  });
+
+  describe("hasConfigurationBeenModified", () => {
+    it("should return configuration is not modified by default", () => {
+      const state = {};
+
+      const result = configurationStore.getters?.hasConfigurationBeenModified(state, {}, {}, {});
+      expect(result).toBeFalsy();
+    });
+
+    it("should return configuration is modified if it has been modified", () => {
+      const state = {
+        configurationModified: true
+      };
+
+      const result = configurationStore.getters?.hasConfigurationBeenModified(state, {}, {}, {});
+      expect(result).toBeTruthy();
     });
   });
 });

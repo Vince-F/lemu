@@ -7,13 +7,18 @@ export class BackstopTestRunner {
     return puppeteer;
   }
 
+  private static get backstop() {
+    const backstop = require("backstopjs");
+    return backstop;
+  }
+
   public static setWorkingDir(workingPath: string) {
     process.chdir(workingPath);
   }
 
   public static initTest(workingPath: string) {
     process.chdir(workingPath);
-    return BackstopWorkerManager.executeCommand("init");
+    return this.backstop("init");
   }
 
   public static runTest(config: any, scenarioLabel?: string): Promise<any> {
