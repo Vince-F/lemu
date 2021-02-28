@@ -140,10 +140,10 @@ export default class TemplateScriptsMenuComponent extends Vue {
   private readonly removeEngineScriptTemplate!: (
     script: EngineScriptTemplate
   ) => void;
-  @Mutation("templateStore/addEngineScriptTemplate")
-  private readonly addEngineScriptTemplate!: (
+  @Action("templateStore/createEngineScriptTemplate")
+  private readonly createEngineScriptTemplate!: (
     script: EngineScriptTemplate
-  ) => void;
+  ) => Promise<void>;
   @Getter("templateStore/hasScriptBeenModified")
   private hasScriptBeenModified!: (idx: number) => boolean;
 
@@ -157,7 +157,7 @@ export default class TemplateScriptsMenuComponent extends Vue {
 
   private addScriptTemplate() {
     const newScript = new EngineScriptTemplate("scriptTemplate_" + this.scripts.length, "");
-    this.addEngineScriptTemplate(newScript);
+    this.createEngineScriptTemplate(newScript);
   }
 
   private duplicateScript(script: EngineScriptTemplate) {
@@ -165,7 +165,7 @@ export default class TemplateScriptsMenuComponent extends Vue {
       script.name + "_copy",
       script.content
     );
-    this.addEngineScriptTemplate(newScript);
+    this.createEngineScriptTemplate(newScript);
   }
 
   private deleteScript(script: EngineScriptTemplate) {

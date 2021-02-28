@@ -21,7 +21,7 @@
       <v-tabs>
         <v-tab>General</v-tab>
         <v-tab-item>
-          <general-configuration-component :configuration="currentConfiguration"
+          <general-configuration-component templateView :configuration="currentConfiguration"
             @updateField="updateField" @updatePathField="updatePathField" />
         </v-tab-item>
 

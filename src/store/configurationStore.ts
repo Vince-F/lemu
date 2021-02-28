@@ -300,6 +300,7 @@ export default class ConfigurationStore extends VuexModule {
             this.context.commit("setFullConfiguration", {
               newConfiguration: template
             });
+            this.context.commit("setPath", path);
             return this.context.dispatch("saveConfiguration");
           }
         }).then(() => {
