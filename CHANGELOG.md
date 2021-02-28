@@ -1,5 +1,13 @@
 # Changelog
 
+## V1.21.0
+### Features
+- Add "test configuration" templates
+- New view for creating a "test configuration" from template
+
+### Fixes
+- Fix a path issue when adding a new engine script in a configuration
+
 ## V1.20.3
 
 ### Fixes
