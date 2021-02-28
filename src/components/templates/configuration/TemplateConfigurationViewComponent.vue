@@ -4,7 +4,7 @@
       <div class="flex-grow-1 flex-shrink-1">
         {{currentConfiguration.id}}
       </div>
-      <!--<div class="flex-grow-0 flex-shrink-0">
+      <div class="flex-grow-0 flex-shrink-0">
         <v-tooltip top>
           <template v-slot:activator="{on}">
             <v-btn icon @click="deleteConfiguration" v-on="on">
@@ -15,7 +15,7 @@
           </template>
           Delete
         </v-tooltip>
-      </div>-->
+      </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
       <v-tabs>
@@ -46,7 +46,7 @@
 
         <v-tab>Perfomance</v-tab>
         <v-tab-item>
-          <perfomance-configuration-component :configuration="currentConfiguration" 
+          <performance-configuration-component :configuration="currentConfiguration" 
             @updateField="updateField"/>
         </v-tab-item>
       </v-tabs>
@@ -102,7 +102,7 @@ import { ModalService } from "../../../services/modalService";
 import ViewportsComponent from "../../tests/ViewportsComponent.vue";
 import ReportConfigurationComponent from "../../generalConfig/ReportConfigurationComponent.vue";
 import EngineConfigurationComponent from "../../generalConfig/EngineConfigurationComponent.vue";
-import PerfomanceConfigurationComponent from "../../generalConfig/PerformanceConfigurationComponent.vue";
+import PerformanceConfigurationComponent from "../../generalConfig/PerformanceConfigurationComponent.vue";
 import GeneralConfigurationComponent from "../../generalConfig/GeneralConfigurationComponent.vue";
 
 @Component({
@@ -111,7 +111,7 @@ import GeneralConfigurationComponent from "../../generalConfig/GeneralConfigurat
     ViewportsComponent,
     ReportConfigurationComponent,
     EngineConfigurationComponent,
-    PerfomanceConfigurationComponent,
+    PerformanceConfigurationComponent,
     GeneralConfigurationComponent
   }
 })
