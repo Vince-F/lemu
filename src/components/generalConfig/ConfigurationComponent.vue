@@ -34,7 +34,7 @@
 
         <v-tab>Perfomance</v-tab>
         <v-tab-item>
-          <perfomance-configuration-component :configuration="configuration" 
+          <performance-configuration-component :configuration="configuration" 
             @updateField="updateField"/>
         </v-tab-item>
       </v-tabs>
@@ -85,7 +85,7 @@ import { ModalService } from "../../services/modalService";
 import ViewportsComponent from "../tests/ViewportsComponent.vue";
 import ReportConfigurationComponent from "./ReportConfigurationComponent.vue";
 import EngineConfigurationComponent from "./EngineConfigurationComponent.vue";
-import PerfomanceConfigurationComponent from "./PerformanceConfigurationComponent.vue";
+import PerformanceConfigurationComponent from "./PerformanceConfigurationComponent.vue";
 import GeneralConfigurationComponent from "./GeneralConfigurationComponent.vue";
 
 @Component({
@@ -94,7 +94,7 @@ import GeneralConfigurationComponent from "./GeneralConfigurationComponent.vue";
     ViewportsComponent,
     ReportConfigurationComponent,
     EngineConfigurationComponent,
-    PerfomanceConfigurationComponent,
+    PerformanceConfigurationComponent,
     GeneralConfigurationComponent
   }
 })
