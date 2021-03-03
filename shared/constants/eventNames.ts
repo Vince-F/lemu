@@ -1,31 +1,14 @@
 export const eventNames = Object.freeze({
-  APP_INFOS: {
-    REQUEST: "retrieveAppInfos",
-    REPLY: "appInfos"
-  },
-  WORKING_DIR: {
-    REQUEST: "setWorkingDir"
-  },
-  RUN_TEST: {
-    REQUEST: "runTest",
-    REPLY: "testFinished"
-  },
-  APPROVE_TEST: {
-    REQUEST: "approveTest",
-    REPLY: "approvalFinished"
-  },
+  APP_INFOS: "appInfos",
+  WORKING_DIR: "setWorkingDir",
+  RUN_TEST: "runTest",
+  APPROVE_TEST: "approveTest",
   INIT_TEST: "initTest",
-  RETRIEVE_TEST_RESULT: {
-    REQUEST: "retrieveTestsResult",
-    REPLY: "testsResult"
-  },
+  RETRIEVE_TEST_RESULT: "retrieveTestsResult",
   TEST_LOG: {
     REPLY: "testLog"
   },
-  RETRIEVE_CUSTOM_SCRIPTS: {
-    REQUEST: "retrieveEngineScripts",
-    REPLY: "engineScripts"
-  },
+  RETRIEVE_ENGINE_SCRIPTS: "retrieveEngineScripts",
   TEST_RESULT_CHANGED: {
     REQUEST: "watchTestResultsChange",
     REPLY: "testResultsChanged",

@@ -15,7 +15,7 @@ export class BrowserWindowManager {
   }
 
   public static createHelpWindow() {
-    let helpWindow = new BrowserWindow({
+    let helpWindow: BrowserWindow | null = new BrowserWindow({
       width: 0,
       height: 0,
       icon: path.join(__dirname, "../../../icon.png"),
@@ -23,7 +23,6 @@ export class BrowserWindowManager {
     });
     helpWindow.maximize();
 
-    //helpWindow.loadFile('./dist-app/docs/index.html');
     helpWindow.loadURL("doc://-");
 
     helpWindow.on('closed', () => {

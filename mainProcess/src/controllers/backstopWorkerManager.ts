@@ -1,7 +1,7 @@
 import {Worker} from "worker_threads";
 import path = require("path");
 import fs = require("fs");
-import { eventNames } from "../shared/constants/eventNames";
+import { eventNames } from "../../../shared/constants/eventNames";
 import { BrowserWindowManager } from "./browserWindowManager";
 
 export class BackstopWorkerManager {

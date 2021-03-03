@@ -13,7 +13,7 @@ try {
   console.log("Fail to check for updates");
 }
 
-let mainWindow: Electron.BrowserWindow = null;
+let mainWindow: Electron.BrowserWindow | null = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({

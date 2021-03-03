@@ -1,12 +1,12 @@
 import fs = require("fs");
 import path = require("path");
-import { eventNames } from "../shared/constants/eventNames";
+import { eventNames } from "../../../shared/constants/eventNames";
 import { BrowserWindowManager } from "./browserWindowManager";
 
 export class BackstopFileService {
-  public static async retrieveEngineScripts(path: string) {
-    const files = await this.retrieveEngineScriptsName(path);
-    return Promise.all(files.map((filePath) => this.createEngineScript(filePath)));
+  public static async retrieveEngineScripts(dirPath: string): Promise<Array<{dirPath: string, content: string}>> {
+    const files = await this.retrieveEngineScriptsName(dirPath);
+    return Promise.all(files.map((filePath) => this.readEngineScript(filePath)));
   }
 
   public static watchConfigurationFile(configPath: string) {
@@ -33,20 +33,20 @@ export class BackstopFileService {
 
   private static configFileWatcher: fs.FSWatcher;
 
-  private static createEngineScript(path: string) {
+  private static readEngineScript(dirPath: string): Promise<{dirPath: string, content: string}> {
     return new Promise((resolve, reject) => {
-      fs.readFile(path, {encoding: "utf-8"}, (err, content) => {
+      fs.readFile(dirPath, {encoding: "utf-8"}, (err, content) => {
         if (err) {
           reject(err.message);
         } else {
-          resolve({path, content});
+          resolve({dirPath, content});
         }
       });
     });
   }
 
-  private static retrieveEngineScriptsName(path: string) {
-    return this.getFilesInDirectories(path)
+  private static retrieveEngineScriptsName(dirPath: string): Promise<string[]> {
+    return this.getFilesInDirectories(dirPath)
       .then((files: string[]) => {
         return files.filter((file) => {
           return file.endsWith(".js");
@@ -54,14 +54,14 @@ export class BackstopFileService {
       });
   }
 
-  private static getFilesInDirectories(path: string) {
+  private static getFilesInDirectories(dirPath: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      fs.readdir(path, { withFileTypes: true }, (err, files) => {
+      fs.readdir(dirPath, { withFileTypes: true }, (err, files) => {
         if (err) {
           reject(err.message);
         } else {
-          const allFiles = [];
-          const directoryPromises = [];
+          const allFiles: string[] = [];
+          const directoryPromises: Array<Promise<string[]>> = [];
           files.forEach((file) => {
             if (file.isDirectory()) {
               directoryPromises.push(this.getFilesInDirectories(path + "/" + file.name));
