@@ -307,6 +307,7 @@ export default class ConfigurationStore extends VuexModule {
           this.context.commit("setPath", path);
           this.context.commit("testLogStore/resetLogs", null, { root: true });
           this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
+          this.context.dispatch("engineScriptStore/retrieveEngineScripts");
         });
   }
 
@@ -327,6 +328,7 @@ export default class ConfigurationStore extends VuexModule {
         this.context.commit("testLogStore/resetLogs", null, { root: true });
         this.context.commit("testResultStore/expireTestsResult", undefined, { root: true });
         this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
+        this.context.dispatch("engineScriptStore/retrieveEngineScripts");
         BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
         return Promise.resolve();
       });
@@ -350,6 +352,7 @@ export default class ConfigurationStore extends VuexModule {
         this.context.commit("testResultStore/expireTestsResult", undefined, { root: true });
         BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
         this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
+        this.context.dispatch("engineScriptStore/retrieveEngineScripts");
         return Promise.resolve();
       });
   }

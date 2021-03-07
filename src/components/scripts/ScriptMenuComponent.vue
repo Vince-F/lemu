@@ -1,77 +1,51 @@
 <template>
-  <v-container fluid class="container pa-0">
-    <div class="menu">
-      <v-navigation-drawer permanent ref="leftMenu">
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>
-              ENGINE SCRIPTS
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-          
-        <v-divider></v-divider>
-        <v-treeview :items="items"
-          activatable
-          @update:active="selectScript"
-          open-on-click>
-          <template v-slot:prepend="{ item, open }">
-            <v-icon v-if="!item.isScript">
-              {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
-            </v-icon>
-            <v-icon v-else>
-              mdi-nodejs
-            </v-icon>
+  <div>
+    <v-list-item>
+      <v-list-item-content>
+        <v-list-item-title>
+          ENGINE SCRIPTS
+        </v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+      
+    <v-divider></v-divider>
+    <v-treeview :items="items"
+      activatable
+      @update:active="selectScript"
+      open-on-click>
+      <template v-slot:prepend="{ item, open }">
+        <v-icon v-if="!item.isScript">
+          {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
+        </v-icon>
+        <v-icon v-else>
+          mdi-nodejs
+        </v-icon>
+      </template>
+      <template v-slot:label="{item}">
+        <v-tooltip top>
+          <template v-slot:activator="{on}">
+            <span v-on="on">{{item.name}}</span>
           </template>
-          <template v-slot:label="{item}">
-            <v-tooltip top>
-              <template v-slot:activator="{on}">
-                <span v-on="on">{{item.name}}</span>
-              </template>
-              {{item.name}}
-            </v-tooltip>
-          </template>
-          <template v-slot:append="{ item }">
-            <v-btn icon v-if="item.isScript" @click="deleteScript(item.id)">
-              <v-icon color="grey lighten-1">
-                mdi-delete
-              </v-icon>
-            </v-btn>
-            <v-btn icon v-else @click="createScript(item.id)">
-              <v-icon color="grey lighten-1">
-                mdi-plus
-              </v-icon>
-            </v-btn>
-          </template>
-        </v-treeview>
-      </v-navigation-drawer>
-    </div>
-    <router-view class="content" />
-  </v-container>
+          {{item.name}}
+        </v-tooltip>
+      </template>
+      <template v-slot:append="{ item }">
+        <v-btn icon v-if="item.isScript" @click="deleteScript(item.id)">
+          <v-icon color="grey lighten-1">
+            mdi-delete
+          </v-icon>
+        </v-btn>
+        <v-btn icon v-else @click="createScript(item.id)">
+          <v-icon color="grey lighten-1">
+            mdi-plus
+          </v-icon>
+        </v-btn>
+      </template>
+    </v-treeview>
+  </div>
 </template>
 
 <style scoped>
-.container {
-  display: flex;
-  height: 100%;
-}
-
-.menu {
-  flex: 0;
-  height: 100%;
-  border-right: 1px solid rgba(0, 0, 0, 0.12);
-  flex-basis: 250px;
-  max-width: 250px;
-  width: 250px;
-  background: white;  
-}
-
-.content {
-  flex: 1;
-  height: 100%;
-  max-height: 100%;
-  overflow: auto;
-}
 </style>
 
 <script lang="ts">
