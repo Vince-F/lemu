@@ -100,6 +100,7 @@ import { backstopScenarioProperties } from '@/constants/backstopScenarioProperti
 import { EngineScript } from '@/models/engineScript';
 import ViewportsComponent from "./ViewportsComponent.vue";
 import { Viewport } from '@/models/viewport';
+import { EngineScriptHelper } from "../../controllers/EngineScriptHelper";
 
 @Component({
   components: {
@@ -121,17 +122,11 @@ export default class TestConfigurationComponent extends Vue {
   private readonly scripts!: EngineScript[];
   @Getter("configurationStore/engineScriptDirectory")
   private readonly engineScriptDirectory!: string;
-  @Action("engineScriptStore/retrieveEngineScripts")
-  private readonly retrieveEngineScripts!: () => Promise<void>;
 
   @Prop({required: true, type: Object})
   private readonly testContent!: BackstopTest;
   @Prop({required: true, type: Number})
   private readonly testIndex!: number;
-
-  private created() {
-    this.retrieveEngineScripts();
-  }
 
   private get additionnalFields(): Array<{name: string, value: string | number | boolean, type: string}> {
     const result = [];
@@ -155,13 +150,7 @@ export default class TestConfigurationComponent extends Vue {
   }
 
   private get scriptNames() {
-    let scriptDirectory = this.engineScriptDirectory.replace(/\\/g, "/");
-    if (!scriptDirectory.endsWith("/")) {
-      scriptDirectory += "/";
-    }
-    return this.scripts.map((script) => {
-      return script.path.replace(scriptDirectory, "");
-    });
+    return EngineScriptHelper.getScriptsName(this.scripts, this.engineScriptDirectory);
   }
 
   private addNewField() {
@@ -191,7 +180,7 @@ export default class TestConfigurationComponent extends Vue {
       });
   }
 
-  private removeViewport(fieldValue: any, index: number) {
+  private removeViewport(fieldValue: unknown, index: number) {
     if (Array.isArray(fieldValue)) {
       fieldValue.splice(index, 1);
     }
@@ -208,17 +197,17 @@ export default class TestConfigurationComponent extends Vue {
     }
   }
 
-  private updateField(field: string, value: any) {
+  private updateField(field: string, value: unknown) {
     this.setScenarioField({scenarioIndex: this.testIndex, field, value});
   }
 
-  private updateViewportField(fieldValue: any, index: number, field: string, value: any) {
+  private updateViewportField(fieldValue: unknown, index: number, field: string, value: any) {
     if (Array.isArray(fieldValue)) {
       Vue.set(fieldValue[index], field, value);
     }
   }
 
-  private validateField(newField: {name: string, value: any, type: string}) {
+  private validateField(newField: {name: string, value: unknown, type: string}) {
     if (newField.name !== null) {
       if (newField.type === 'number' && typeof newField.value === "string") {
         newField.value = Number.parseFloat(newField.value);

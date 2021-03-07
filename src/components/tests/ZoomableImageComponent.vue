@@ -56,6 +56,7 @@ import { Vue, Prop, Component } from "vue-property-decorator";
 export default class ZoomableImageComponent extends Vue {
   @Prop({required: true, type: String})
   private readonly imgSrc!: string;
+
   private zoomed: boolean;
   private loading: boolean;
 

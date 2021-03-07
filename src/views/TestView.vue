@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import TestsMenuComponent from "../components/tests/TestsMenuComponent.vue";
-import MenuAndContentComponent from "../components/MenuAndContentComponent.vue";
+import MenuAndContentComponent from "../components/layout/MenuAndContentComponent.vue";
 
 @Component({
   components: {

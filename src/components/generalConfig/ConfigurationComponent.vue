@@ -118,12 +118,6 @@ export default class ConfigurationComponent extends Vue {
   private readonly setConfigurationEngineOptionsField!: (payload: {field: string, value: any}) => void;
   @Mutation("configurationStore/removeEngineOption")
   private readonly removeEngineOption!: (fieldName: string) => void;
-  @Action("engineScriptStore/retrieveEngineScripts")
-  private readonly retrieveEngineScripts!: () => Promise<void>;
-
-  private created() {
-    this.retrieveEngineScripts();
-  }
 
   private addViewport() {
     this.addViewportInConfig();

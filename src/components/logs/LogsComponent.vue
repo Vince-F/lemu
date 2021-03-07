@@ -5,16 +5,8 @@
         Logs 
       </div>
       <div class="flex-grow-0 flex-shrink-0">
-        <v-tooltip top>
-          <template v-slot:activator="{on}">
-            <v-btn icon @click="resetLogs" v-on="on">
-              <v-icon>
-                mdi-delete
-              </v-icon>
-            </v-btn>
-          </template>
-          Reset logs
-        </v-tooltip>
+        <entity-menu-bar-action-component iconName="mdi-delete" tooltipContent="Reset logs"
+          @click="resetLogs"/>
       </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1" ref="container">
@@ -67,8 +59,13 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { State, Mutation } from "vuex-class";
+import EntityMenuBarActionComponent from "../layout/EntityMenuBarActionComponent.vue";
 
-@Component
+@Component({
+  components: {
+    EntityMenuBarActionComponent
+  }
+})
 export default class LogsComponent extends Vue {
   @State((state) => state.testLogStore.logs)
   private readonly logs!: Array<{message: string, level: string, time: Date}>;

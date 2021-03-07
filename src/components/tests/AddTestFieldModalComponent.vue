@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import { State, Getter, Action } from "vuex-class";
 import { backstopScenarioProperties } from '../../constants/backstopScenarioProperties';
 import { backstopFieldHelp } from "../../constants/backstopFieldHelp";
@@ -68,6 +68,7 @@ import { EngineScript } from '@/models/engineScript';
 import ViewportsComponent from "./ViewportsComponent.vue";
 import { Viewport } from '@/models/viewport';
 import { backstopFieldType } from "@/models/backstopFieldType";
+import { EngineScriptHelper } from "../../controllers/EngineScriptHelper";
 
 @Component({
   components: {
@@ -79,8 +80,6 @@ export default class AddTestFieldModalComponent extends Vue {
   private readonly scripts!: EngineScript[];
   @Getter("configurationStore/engineScriptDirectory")
   private readonly engineScriptDirectory!: string;
-  @Action("engineScriptStore/retrieveEngineScripts")
-  private readonly retrieveEngineScripts!: () => Promise<void>;
 
   private dialogDisplayed: boolean;
   private readonly predefinedFields: Array<{name: string,
@@ -94,8 +93,8 @@ export default class AddTestFieldModalComponent extends Vue {
   private valid: boolean;
   private fieldValue: number | boolean | string | string[] | Viewport[];
   private fieldNameRules: Array<(value: string) => boolean | string>;
-  private typeRules: Array<(value: any) => boolean | string>;
-  private predefinedFieldRules: Array<(value: any) => boolean | string>;
+  private typeRules: Array<(value: unknown) => boolean | string>;
+  private predefinedFieldRules: Array<(value: unknown) => boolean | string>;
 
   constructor() {
     super(arguments);
@@ -117,16 +116,12 @@ export default class AddTestFieldModalComponent extends Vue {
     ];
 
     this.typeRules = [
-      (value: any) => !!value || "You must choose a type"
+      (value: unknown) => !!value || "You must choose a type"
     ];
 
     this.predefinedFieldRules = [
-      (value: any) => !!value || "You must choose a field"
+      (value: unknown) => !!value || "You must choose a field"
     ];
-  }
-
-  private created() {
-    this.retrieveEngineScripts();
   }
 
   private get helpMessage() {
@@ -137,13 +132,7 @@ export default class AddTestFieldModalComponent extends Vue {
   }
 
   private get scriptNames() {
-    let scriptDirectory = this.engineScriptDirectory.replace(/\\/g, "/");
-    if (!scriptDirectory.endsWith("/")) {
-      scriptDirectory += "/";
-    }
-    return this.scripts.map((script) => {
-      return script.path.replace(scriptDirectory, "");
-    });
+    return EngineScriptHelper.getScriptsName(this.scripts, this.engineScriptDirectory);
   }
 
   private addField() {

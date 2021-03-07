@@ -16,7 +16,7 @@
 import { Vue, Component } from "vue-property-decorator";
 import { Action, Mutation } from "vuex-class";
 import ScriptMenuComponent from "../components/scripts/ScriptMenuComponent.vue";
-import MenuAndContentComponent from "../components/MenuAndContentComponent.vue";
+import MenuAndContentComponent from "../components/layout/MenuAndContentComponent.vue";
 
 @Component({
   components: {

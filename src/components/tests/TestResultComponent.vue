@@ -104,8 +104,8 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { State, Action, Mutation, Getter } from "vuex-class";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { State, Action, Getter } from "vuex-class";
 import { FileService } from "../../services/fileService";
 import { BackstopTest } from "../../models/backstopTest";
 import { BackstopTestResult } from "../../models/backstopTestResult";
