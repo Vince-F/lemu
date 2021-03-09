@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { eventNames } from "../shared/constants/eventNames";
+import { eventNames } from "../../../shared/constants/eventNames";
 import { TemplateManager } from "../controllers/templateManager";
 
 ipcMain.handle(eventNames.CREATE_SCRIPT_TEMPLATE, (event, name: string, content: string) => {

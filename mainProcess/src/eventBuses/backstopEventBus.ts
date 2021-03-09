@@ -1,28 +1,38 @@
 import electron = require("electron");
 import { BackstopTestRunner } from "../controllers/backstopTestRunner";
 import { BackstopTestResultReader } from "../controllers/backstopTestResultReader";
-import { eventNames } from "../shared/constants/eventNames";
+import { eventNames } from "../../../shared/constants/eventNames";
 import { BackstopFileService } from "../controllers/backstopFileService";
 
-electron.ipcMain.on(eventNames.WORKING_DIR.REQUEST, (event, path) => {
+electron.ipcMain.on(eventNames.WORKING_DIR, (event, path) => {
   BackstopTestRunner.setWorkingDir(path);
 });
 
-electron.ipcMain.on(eventNames.RUN_TEST.REQUEST, (event, config, scenarioLabel) => {
-  BackstopTestRunner.runTest(config, scenarioLabel)
+electron.ipcMain.handle(eventNames.RUN_TEST, (event, config, scenarioLabel) => {
+  return BackstopTestRunner.runTest(config, scenarioLabel)
     .then((result) => {
-      event.reply(eventNames.RUN_TEST.REPLY, true, result);
+      return {
+        success: true,
+        content: result
+      };
     }).catch((error) => {
-      event.reply(eventNames.RUN_TEST.REPLY, false, error.message);
+      return {
+        success: false,
+        content: error.message
+      };
     });
 });
 
-electron.ipcMain.on(eventNames.APPROVE_TEST.REQUEST, (event, config, scenarioLabel, viewportLabel) => {
-  BackstopTestRunner.approveTests(config, scenarioLabel, viewportLabel)
+electron.ipcMain.handle(eventNames.APPROVE_TEST, (event, config, scenarioLabel, viewportLabel) => {
+  return BackstopTestRunner.approveTests(config, scenarioLabel, viewportLabel)
     .then(() => {
-      event.reply(eventNames.APPROVE_TEST.REPLY, true);
+      return {
+        success: true
+      };
     }).catch((error) => {
-      event.reply(eventNames.APPROVE_TEST.REPLY, false);
+      return {
+        success: false
+      };
     });
 });
 
@@ -30,22 +40,33 @@ electron.ipcMain.handle(eventNames.INIT_TEST, (event, path) => {
   return BackstopTestRunner.initTest(path);
 });
 
-electron.ipcMain.on(eventNames.RETRIEVE_TEST_RESULT.REQUEST, (event, path) => {
-  BackstopTestResultReader.retrieveReportResult(path)
-    .then((result) => {
-      event.reply(eventNames.RETRIEVE_TEST_RESULT.REPLY, true, result);
+electron.ipcMain.handle(eventNames.RETRIEVE_ENGINE_SCRIPTS, (event, path) => {
+  return BackstopFileService.retrieveEngineScripts(path)
+    .then((files: Array<{dirPath: string, content: string}>) => {
+      return {
+        success: true,
+        content: files
+      };
     }).catch((error) => {
-      event.reply(eventNames.RETRIEVE_TEST_RESULT.REPLY, false, error);
+      return {
+        success: false,
+        content: error
+      };
     });
 });
 
-electron.ipcMain.on(eventNames.RETRIEVE_CUSTOM_SCRIPTS.REQUEST, (event, path) => {
-  BackstopFileService.retrieveEngineScripts(path)
-    .then((files: string[]) => {
-      event.reply(eventNames.RETRIEVE_CUSTOM_SCRIPTS.REPLY, true, files);
+electron.ipcMain.handle(eventNames.RETRIEVE_TEST_RESULT, (event, path) => {
+  return BackstopTestResultReader.retrieveReportResult(path)
+    .then((result) => {
+      return {
+        success: true,
+        content: result
+      };
     }).catch((error) => {
-      console.log(error);
-      event.reply(eventNames.RETRIEVE_CUSTOM_SCRIPTS.REPLY, false, error);
+      return {
+        success: false,
+        content: error
+      };
     });
 });
 
