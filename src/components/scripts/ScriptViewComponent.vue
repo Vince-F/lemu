@@ -5,26 +5,10 @@
         {{scriptName}}
       </div>
       <div class="flex-grow-0 flex-shrink-0">
-        <v-tooltip top>
-          <template v-slot:activator="{on}">
-            <v-btn icon @click="saveAsTemplate" v-on="on">
-              <v-icon>
-                mdi-archive-arrow-up 
-              </v-icon>
-            </v-btn>
-          </template>
-          Save as a template
-        </v-tooltip>
-        <v-tooltip top>
-          <template v-slot:activator="{on}">
-            <v-btn icon @click="deleteScript" v-on="on">
-              <v-icon>
-                mdi-delete
-              </v-icon>
-            </v-btn>
-          </template>
-          Delete
-        </v-tooltip>
+        <entity-menu-bar-action-component iconName="mdi-archive-arrow-up" tooltipContent="Save as a template"
+          @click="saveAsTemplate"/>
+        <entity-menu-bar-action-component iconName="mdi-delete" tooltipContent="Delete"
+          @click="deleteScript" />
       </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
@@ -72,10 +56,12 @@ import { EngineScript } from '../../models/engineScript';
 import MonacoEditor from 'monaco-editor-vue';
 import { ModalService } from '@/services/modalService';
 import SaveAsScriptTemplateModalComponent from "./SaveAsScriptTemplateModalComponent.vue";
+import EntityMenuBarActionComponent from "../layout/EntityMenuBarActionComponent.vue";
 
 @Component({
   components: {
-    MonacoEditor
+    MonacoEditor,
+    EntityMenuBarActionComponent
   }
 })
 export default class ScriptViewComponent extends Vue {

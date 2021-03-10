@@ -5,6 +5,7 @@ import TestsConfigurationView from "../views/TestsConfigurationView.vue";
 import ReportView from "../views/ReportView.vue";
 import LogsView from "../views/LogsView.vue";
 import ScriptView from "../views/ScriptView.vue";
+import TestView from "../views/TestView.vue";
 
 import ConfigurationComponent from "../components/generalConfig/ConfigurationComponent.vue";
 import TestsListComponent from "../components/tests/TestsListComponent.vue";
@@ -42,7 +43,7 @@ const routes = [
       },
       {
         path: "list",
-        component: TestsListComponent,
+        component: TestView,
         children: [
           {
             path: "",

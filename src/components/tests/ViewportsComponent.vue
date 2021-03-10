@@ -49,7 +49,7 @@ export default class ViewportsComponent extends Vue {
     this.$emit("removeViewport", index);
   }
 
-  private updateViewportField(index: number, field: string, value: any) {
+  private updateViewportField(index: number, field: string, value: unknown) {
     this.$emit("updateViewportField", index, field, value);
   }
 }
