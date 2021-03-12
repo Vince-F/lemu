@@ -24,17 +24,21 @@ function createWindow() {
       nodeIntegration: false,
       webSecurity: false,
       contextIsolation: true,
+      enableRemoteModule: true,
       preload: path.join(__dirname, "preload.js")
     },
-    backgroundColor: "#fafafa"
+    backgroundColor: "#fafafa",
+    //titleBarStyle: "hidden",
+    frame: false
   });
   mainWindow.maximize();
   BrowserWindowManager.setInstance(mainWindow);
+  Menu.setApplicationMenu(null);
   if (app.isPackaged) {
     mainWindow.loadFile('./dist-app/index.html');
-    Menu.setApplicationMenu(null);
   } else {
     mainWindow.loadURL("http://localhost:8080");
+    mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on('closed', () => {

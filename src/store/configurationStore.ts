@@ -17,6 +17,10 @@ export default class ConfigurationStore extends VuexModule {
   public configurationModified: boolean = false;
   public isSaving: boolean = false;
 
+  public get configName() {
+    return this.currentConfiguration?.id ?? "";
+  }
+
   public get tests() {
     return this.currentConfiguration ? this.currentConfiguration.scenarios : [];
   }
@@ -291,7 +295,7 @@ export default class ConfigurationStore extends VuexModule {
     this.context.commit("testLogStore/resetLogs", null, { root: true });
     this.context.commit("testResultStore/expireTestsResult", undefined, { root: true });
     this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
-    this.context.dispatch("engineScriptStore/retrieveEngineScripts");
+    this.context.dispatch("engineScriptStore/retrieveEngineScripts", null, { root: true });
     BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
   }
 

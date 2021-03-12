@@ -1,6 +1,6 @@
 <template>
-  <v-app>
-    <app-toolbar-component></app-toolbar-component>
+  <v-app class="app">
+    <app-toolbar-component class="sub-toolbar"></app-toolbar-component>
     <v-main>
       <router-view />
     </v-main>
@@ -26,14 +26,21 @@
 </template>
 
 <style scoped>
+  .sub-toolbar {
+    top: 30px;
+  }
   .app-title {
     font-weight: 400;
+  }
+
+  .app >>> .v-application--wrap {
+    min-height: calc(100vh - 30px);
   }
 </style>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import {Action, Mutation, State} from "vuex-class";
+import { Action, Mutation, State } from "vuex-class";
 import AppToolbarComponent from "./components/app/AppToolbarComponent.vue";
 import { ModalService } from "./services/modalService";
 import ReleaseInfoModalComponent from "./components/app/ReleaseInfoModalComponent.vue";
@@ -59,7 +66,9 @@ export default class App extends Vue {
   @Action("testLogStore/initializeLogListener")
   private readonly initializeLogListener!: () => Promise<void>;
 
+
   private mounted() {
+    window.ipcHandler.createTitleBar();
     this.initializeLogListener();
     this.retrieveAppInfos()
       .then(() => {

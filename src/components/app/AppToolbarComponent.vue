@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app color="primary" dark>
-    <div class="d-flex align-center">
+    <div class="d-flex align-center left-content">
       <v-img
         alt="Lemu Logo"
         class="shrink mr-2"
@@ -9,21 +9,25 @@
         transition="scale-transition"
         width="40"
       />
-
-      <h1 class="app-title">LEMU</h1>
+      <template v-if="applicationTitle">
+        {{applicationTitle}}
+      </template>
+      <template v-else>
+        LEMU
+      </template>
     </div>
 
-    <v-spacer></v-spacer>
-    <div class="search-container" v-if="hasConfiguration">
-      <v-autocomplete
-        v-model="selectedTest"
-        :items="foundTests"
-        @update:search-input="updateTestSearchInput"
-        @change="goToTest"
-        label="Search in tests"
-      ></v-autocomplete>
+    <div class="flex-grow-1 flex-shrink-1">
+      <div class="search-container" v-if="hasConfiguration">
+        <v-autocomplete
+          v-model="selectedTest"
+          :items="foundTests"
+          @update:search-input="updateTestSearchInput"
+          @change="goToTest"
+          label="Search in tests"
+        ></v-autocomplete>
+      </div>
     </div>
-    <v-spacer></v-spacer>
 
     <v-btn
       text
@@ -82,15 +86,21 @@
 <style scoped>
 .search-container {
   margin-top: 24px;
+  width: 18rem;
+  padding: 0 2rem;
 }
 
 .v-btn .v-icon {
   margin-right: 8px;
 }
+
+.left-content {
+  flex: 1;
+}
 </style>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
 import { ModalService } from "../../services/modalService";
 import AboutModalComponent from "./AboutModalComponent.vue";
@@ -123,6 +133,8 @@ export default class AppToolbarComponent extends Vue {
   private openConfiguration!: () => Promise<any>;
   @Action("templateStore/saveTemplates")
   private saveTemplates!: () => Promise<void>;
+  @Getter("applicationStore/applicationTitle")
+  private readonly applicationTitle!: string;
 
   private selectedTest: number | null;
   private foundTests: any[];
@@ -237,6 +249,11 @@ export default class AppToolbarComponent extends Vue {
           success: false,
         });
       });
+  }
+
+  @Watch("applicationTitle")
+  private updateTitle() {
+    window.ipcHandler.updateTitleBarTitle(this.applicationTitle);
   }
 
   private updateTestSearchInput(searchTerm: string) {
