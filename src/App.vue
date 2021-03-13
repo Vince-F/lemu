@@ -5,7 +5,7 @@
       <router-view />
     </v-main>
 
-    <v-snackbar :value="snackbarDisplayed" top>
+    <v-snackbar :value="snackbarDisplayed" left top>
       <v-icon color="green" v-if="snackbarSuccess">
         mdi-check-circle
       </v-icon>
@@ -29,8 +29,14 @@
   .sub-toolbar {
     top: 30px;
   }
+  
   .app-title {
     font-weight: 400;
+  }
+  
+  .app {
+    position: absolute;
+    inset: 0;
   }
 
   .app >>> .v-application--wrap {

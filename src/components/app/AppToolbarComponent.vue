@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app color="primary" dark>
-    <div class="d-flex align-center left-content">
+    <div class="d-flex align-center flex-grow-1 flex-shrink-1">
       <v-img
         alt="Lemu Logo"
         class="shrink mr-2"
@@ -17,7 +17,7 @@
       </template>
     </div>
 
-    <div class="flex-grow-1 flex-shrink-1">
+    <div class="flex-grow-0 flex-shrink-0">
       <div class="search-container" v-if="hasConfiguration">
         <v-autocomplete
           v-model="selectedTest"
@@ -29,57 +29,59 @@
       </div>
     </div>
 
-    <v-btn
-      text
-      v-on:click="runTests"
-      v-if="hasConfiguration"
-      :disabled="testRunning"
-    >
-      <template v-if="!testRunning">
-        <v-icon>mdi-play</v-icon>
-        Run tests
-      </template>
-      <template v-else>
-        <v-progress-circular indeterminate color="white"></v-progress-circular>
-        Tests running
-      </template>
-    </v-btn>
+    <div class="flex-grow-1 flex-shrink-1 button-container">
+      <v-btn
+        text
+        v-on:click="runTests"
+        v-if="hasConfiguration"
+        :disabled="testRunning"
+      >
+        <template v-if="!testRunning">
+          <v-icon>mdi-play</v-icon>
+          Run tests
+        </template>
+        <template v-else>
+          <v-progress-circular indeterminate color="white"></v-progress-circular>
+          Tests running
+        </template>
+      </v-btn>
 
-    <v-btn text v-on:click="openConfig">
-      <v-icon>mdi-folder-open</v-icon>
-      Open...
-    </v-btn>
+      <v-btn text v-on:click="openConfig">
+        <v-icon>mdi-folder-open</v-icon>
+        Open...
+      </v-btn>
 
-    <v-btn text v-on:click="save" v-if="hasConfiguration || isInTemplate">
-      <v-icon>mdi-content-save</v-icon>
-      Save
-    </v-btn>
-    <v-btn text v-on:click="close" v-if="hasConfiguration || isInTemplate">
-      <v-icon>mdi-exit-to-app</v-icon>
-      Close
-    </v-btn>
-    <v-menu offset-y>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn text v-bind="attrs" v-on="on">
-          <v-icon>mdi-dots-vertical</v-icon>
-          More
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item @click="displayAbout">
-          <v-list-item-icon>
-            <v-icon>mdi-information</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>About</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="displayHelp">
-          <v-list-item-icon>
-            <v-icon>mdi-help</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Help</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+      <v-btn text v-on:click="save" v-if="hasConfiguration || isInTemplate">
+        <v-icon>mdi-content-save</v-icon>
+        Save
+      </v-btn>
+      <v-btn text v-on:click="close" v-if="hasConfiguration || isInTemplate">
+        <v-icon>mdi-exit-to-app</v-icon>
+        Close
+      </v-btn>
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn text v-bind="attrs" v-on="on">
+            <v-icon>mdi-dots-vertical</v-icon>
+            More
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item @click="displayAbout">
+            <v-list-item-icon>
+              <v-icon>mdi-information</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>About</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="displayHelp">
+            <v-list-item-icon>
+              <v-icon>mdi-help</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Help</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
   </v-app-bar>
 </template>
 
@@ -94,8 +96,8 @@
   margin-right: 8px;
 }
 
-.left-content {
-  flex: 1;
+.button-container {
+  text-align: right;
 }
 </style>
 
@@ -104,9 +106,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
 import { ModalService } from "../../services/modalService";
 import AboutModalComponent from "./AboutModalComponent.vue";
-import { BackstopTest } from "../../models/backstopTest";
 import { SearchService } from "../../services/searchService";
-import { BackstopService } from "../../services/backstopService";
 
 @Component({})
 export default class AppToolbarComponent extends Vue {

@@ -1,5 +1,4 @@
 import fs = require("fs");
-import path = require("path");
 import { eventNames } from "../../../shared/constants/eventNames";
 import { BrowserWindowManager } from "./browserWindowManager";
 
@@ -64,9 +63,9 @@ export class BackstopFileService {
           const directoryPromises: Array<Promise<string[]>> = [];
           files.forEach((file) => {
             if (file.isDirectory()) {
-              directoryPromises.push(this.getFilesInDirectories(path + "/" + file.name));
+              directoryPromises.push(this.getFilesInDirectories(dirPath + "/" + file.name));
             } else {
-              allFiles.push(path + "/" + file.name);
+              allFiles.push(dirPath + "/" + file.name);
             }
           });
           Promise.all(directoryPromises)
