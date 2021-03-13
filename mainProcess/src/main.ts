@@ -17,8 +17,8 @@ let mainWindow: Electron.BrowserWindow | null = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 0,
-    height: 0,
+    width: 800,
+    height: 600,
     icon: path.join(__dirname, "../../icon.png"),
     webPreferences: {
       nodeIntegration: false,
@@ -28,7 +28,6 @@ function createWindow() {
       preload: path.join(__dirname, "preload.js")
     },
     backgroundColor: "#fafafa",
-    //titleBarStyle: "hidden",
     frame: false
   });
   mainWindow.maximize();

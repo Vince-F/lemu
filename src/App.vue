@@ -2,7 +2,9 @@
   <v-app class="app">
     <app-toolbar-component class="sub-toolbar"></app-toolbar-component>
     <v-main>
-      <router-view />
+      <div class="content-container">
+        <router-view />
+      </div>
     </v-main>
 
     <v-snackbar :value="snackbarDisplayed" left top>
@@ -14,11 +16,7 @@
       </v-icon>
       {{ snackbarText }}
       <v-spacer />
-      <v-btn
-        color="white"
-        text
-        @click="hideSnackbar"
-      >
+      <v-btn color="white" text @click="hideSnackbar">
         Close
       </v-btn>
     </v-snackbar>
@@ -41,6 +39,11 @@
 
   .app >>> .v-application--wrap {
     min-height: calc(100vh - 30px);
+  }
+
+  .content-container {
+    height: 100%;
+    overflow: auto;
   }
 </style>
 
