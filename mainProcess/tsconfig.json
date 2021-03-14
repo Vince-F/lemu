@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
-    "outDir": "../dist-app/electron-main/",
+    "composite": true,
     "target": "ES2017",
     "module": "commonjs",
     "forceConsistentCasingInFileNames": true,
     "removeComments": true,
     "strict": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "rootDir": "./src",
+    "outDir": "../dist-app/electron-main/"
   },
   "include": [
     "src/**/*.ts",
-    "shared/**/*.ts"
+    "../shared/**/*.ts"
   ],
   "references": [
     { "path": "../"}

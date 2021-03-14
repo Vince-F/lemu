@@ -5,7 +5,9 @@
         <slot name="menu"/>
       </v-navigation-drawer>
     </div>
-    <slot name="view" class="content" />
+    <div class="content">
+      <slot name="view" />
+    </div>
   </v-container>
 </template>
 
@@ -25,6 +27,10 @@
   height: 100%;
   max-height: 100%;
   overflow: auto;
+}
+
+.content > * {
+  min-height: 100%;
 }
 </style>
 

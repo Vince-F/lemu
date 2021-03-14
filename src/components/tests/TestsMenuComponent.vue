@@ -261,7 +261,7 @@ export default class TestsMenuComponent extends Vue {
   }
 
   private openTestDetails(testIndex: number) {
-    this.$router.push({ name: "tests", params: { index: "" + testIndex }});
+    this.$router.push({ name: "tests.view", params: { index: "" + testIndex }});
   }
 
   private showContextMenu($event: MouseEvent, testIndex: number) {

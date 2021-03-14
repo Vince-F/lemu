@@ -2,7 +2,7 @@ import fs = require("fs");
 import vm = require("vm");
 import path = require("path");
 import { BrowserWindowManager } from "./browserWindowManager";
-import { eventNames } from "../shared/constants/eventNames";
+import { eventNames } from "../../../shared/constants/eventNames";
 
 export class BackstopTestResultReader {
   public static retrieveReportResult(reportPath: string) {
