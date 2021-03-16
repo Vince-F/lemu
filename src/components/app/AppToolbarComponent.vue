@@ -170,7 +170,7 @@ export default class AppToolbarComponent extends Vue {
 
   private dismissAndGoToStartScreen() {
     this.dismissCurrentConfiguration();
-    this.$router.push("/");
+    this.$router.push({ name: "startScreen" });
   }
 
   private displayAbout() {
@@ -182,7 +182,7 @@ export default class AppToolbarComponent extends Vue {
   }
 
   private goToTest() {
-    this.$router.push(`/tests/list/test/${this.selectedTest}`);
+    this.$router.push({ name: "tests.view", params: { index: "" + this.selectedTest}});
   }
 
   private openConfig() {
@@ -206,8 +206,8 @@ export default class AppToolbarComponent extends Vue {
 
   private openConfigAndGoToTestView() {
     this.openConfiguration()
-      .then((fileContent) => {
-        this.$router.push("/tests/generalConfig");
+      .then(() => {
+        this.$router.push({ name: "generalConfiguration" });
       })
       .catch((error) => {
         if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
@@ -221,10 +221,10 @@ export default class AppToolbarComponent extends Vue {
 
   private runTests() {
     this.runBackstopTests()
-      .then((result) => {
+      .then(() => {
         this.displaySnackbar({ text: "Tests successful", success: true });
       })
-      .catch((error) => {
+      .catch(() => {
         this.displaySnackbar({
           text: "Tests failed. Open the logs to see more details.",
           success: false,

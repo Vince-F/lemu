@@ -5,20 +5,33 @@
       <v-card class="elevation-8">
         <v-card-title>Welcome to LEMU!</v-card-title>
         <v-card-text class="open-file-starter">
-          <div>
+          <div class="open-section">
+            <h1 class="v-card__title no-left-padding">Manage your configuration</h1>
             <p>
-            To start open a BackstopJS tests configuration file ("backstop.json")
+              To start open a BackstopJS tests configuration file ("backstop.json")
             </p>
-            <v-btn large color="primary" v-on:click="openSearchFileModal">
-            Open backstop.json file...
-            </v-btn>
-            Or
-            <v-btn large color="primary" @click="createNewConfig">
-              Create new config...
-            </v-btn> 
+            <p>
+              <v-btn large color="primary" v-on:click="openSearchFileModal">
+                Open backstop.json file...
+              </v-btn>
+            </p>
+            <p>
+              <v-btn large color="primary" @click="createNewConfig">
+                Create new config...
+              </v-btn> 
+            </p>
           </div>
-          <v-divider class="my-3" />
-          <div>
+          <div class="open-recent-section">
+            <h1 class="v-card__title no-left-padding">Recently opened</h1>
+            <p v-if="recentlyOpened.length === 0">
+              No config opened recently.
+            </p>
+            <p v-for="path in recentlyOpened" :key="path">
+              <a href="#" @click="openSpecificConfig(path)">{{path}}</a>
+            </p>
+          </div>
+          <div class="template-section">
+            <h1 class="v-card__title no-left-padding">Manage your templates</h1>
             <p>
               Manage your templates to ease reuse accross projects.
             </p>
@@ -26,14 +39,13 @@
               Manage templates
             </v-btn> 
           </div>
-          <v-divider class="my-3" />
-          <div>
-            <h1 class="v-card__title">Recently opened</h1>
-            <p v-if="recentlyOpened.length === 0">
-              No config opened recently.
+          <div class="general-section">
+            <h1 class="v-card__title no-left-padding">Help</h1>
+            <p>
+              <a href="#" @click="openUserGuide">Open user guide...</a>
             </p>
-            <p v-for="path in recentlyOpened" :key="path">
-              <a href="#" @click="openSpecificConfig(path)">{{path}}</a>
+            <p>
+              <a href="#" @click="openVersionChangelog">Open version changelog...</a>
             </p>
           </div>
         </v-card-text>
@@ -42,13 +54,50 @@
   </v-container>
 </template>
 
+<style scoped>
+.open-file-starter {
+  display: grid;
+}
+
+.open-section {
+  grid-column: 1;
+  grid-row: 1;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 16px;
+}
+
+.open-recent-section {
+  grid-column: 1;
+  grid-row: 2;
+  padding: 16px;
+  width: 30rem;
+}
+
+.template-section {
+  grid-column: 2;
+  grid-row: 1;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 16px;
+}
+
+.general-section {
+  grid-column: 2;
+  grid-row: 2;
+  padding: 16px;
+}
+
+.no-left-padding {
+  padding-left: 0;
+}
+</style>
+
 <script lang="ts">
 import { BackstopConfiguration } from "@/models/backstopConfiguration";
 import { ModalService } from "@/services/modalService";
 import { Vue, Component } from "vue-property-decorator";
-import { Action, Mutation } from "vuex-class";
-import {DialogFileService} from "../../services/dialogFileService";
+import { Action } from "vuex-class";
 import NewConfigModalComponent from "./NewConfigModalComponent.vue";
+import ReleaseInfoModalComponent from "../app/ReleaseInfoModalComponent.vue";
 
 @Component({
     name: "open-configuration-component"
@@ -83,7 +132,7 @@ export default class OpenConfigurationComponent extends Vue {
       .then((payload: {template: BackstopConfiguration, directory: string}) => {
         this.initTests(payload)
           .then(() => {
-            this.$router.push("/tests/generalConfig");
+            this.$router.push({ name: "generalConfiguration" });
           }).catch((error) => {
             if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
               this.displaySnackbar({text: "Failed to open file. " + error, success: false});
@@ -98,8 +147,8 @@ export default class OpenConfigurationComponent extends Vue {
 
   private openSearchFileModal() {
     this.openConfiguration()
-      .then((fileContent) => {
-        this.$router.push("/tests/generalConfig");
+      .then(() => {
+        this.$router.push({ name: "generalConfiguration" });
       }).catch((error) => {
         if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
           this.displaySnackbar({text: "Failed to open file. " + error, success: false});
@@ -109,13 +158,21 @@ export default class OpenConfigurationComponent extends Vue {
 
   private openSpecificConfig(path: string) {
     this.openConfigurationFromPath(path)
-      .then((fileContent) => {
-        this.$router.push("/tests/generalConfig");
+      .then(() => {
+        this.$router.push({ name: "generalConfiguration" });
       }).catch((error) => {
         if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
           this.displaySnackbar({text: "Failed to open file. " + error, success: false});
         }
       });
+  }
+
+  private openUserGuide() {
+    window.ipcHandler.send("helpWindow");
+  }
+
+  private openVersionChangelog() {
+    ModalService.launchModal(ReleaseInfoModalComponent);
   }
 }
 </script>
