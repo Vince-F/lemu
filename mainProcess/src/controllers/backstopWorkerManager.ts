@@ -1,11 +1,11 @@
-import {Worker} from "worker_threads";
+import { Worker } from "worker_threads";
 import path = require("path");
 import fs = require("fs");
 import { eventNames } from "../../../shared/constants/eventNames";
 import { BrowserWindowManager } from "./browserWindowManager";
 
 export class BackstopWorkerManager {
-  public static executeCommand(command: string, options?: any) {
+  public static executeCommand(workingPath: string, command: string, options?: any) {
     return new Promise((resolve, reject) => {
       fs.readFile(path.join(__dirname, "./backstopWorker.js"), {encoding: "utf-8"}, (err, fileContent) => {
         if (err) {
@@ -16,7 +16,7 @@ export class BackstopWorkerManager {
             stderr: true,
             stdout: true
           });
-          worker.once("message", (result) => {
+          worker.on("message", (result) => {
             if (result.success) {
               resolve(result.arguments[0]);
             } else {
@@ -28,9 +28,11 @@ export class BackstopWorkerManager {
             level: "divider",
             message: ""
           });
+
           worker.postMessage({
             command,
-            options
+            options,
+            workingPath
           });
 
           worker.stdout.on("data", (data: Buffer) => {

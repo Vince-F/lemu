@@ -5,7 +5,7 @@
       <div class="flex-grow-1 flex-shrink-1">
         {{testContent.label}} 
         <v-tooltip top>
-          <template v-slot:activator="{on}">
+          <template v-slot:activator="{ on }">
             <v-icon v-on="on" color="green" class="icon-offset" v-if="testStatus === 'pass'">
               mdi-check-circle
             </v-icon>
@@ -79,7 +79,7 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title :disabled="testRunning" v-on="on" @click="approveCurrentTest">
+          <v-list-item-title :disabled="testRunning" @click="approveCurrentTest">
             <v-icon color="grey lighten-1">mdi-check-circle</v-icon>
             Approve this test
           </v-list-item-title>
