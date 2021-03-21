@@ -252,7 +252,7 @@ export default class ConfigurationStore extends VuexModule {
     this.isSaving = savingState;
   }
 
-  @Action
+  @Action({rawError: true})
   public approveTests() {
     if (this.context.rootState.testRunnerStore.testRunning) {
       return Promise.reject("Tests are running");
@@ -264,7 +264,7 @@ export default class ConfigurationStore extends VuexModule {
     }
   }
 
-  @Action
+  @Action({rawError: true})
   public approveTest(testLabel: string) {
     if (this.context.rootState.testRunnerStore.testRunning) {
       return Promise.reject("Tests are running");
@@ -276,7 +276,7 @@ export default class ConfigurationStore extends VuexModule {
     }
   }
 
-  @Action
+  @Action({rawError: true})
   public approveTestViewport(payload: {testLabel: string, viewportLabel: string}) {
     if (this.context.rootState.testRunnerStore.testRunning) {
       return Promise.reject("Tests are running");
@@ -299,7 +299,7 @@ export default class ConfigurationStore extends VuexModule {
     BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
   }
 
-  @Action
+  @Action({rawError: true})
   public initConfig({template, directory}: {template: BackstopConfiguration, directory: string}): Promise<void> {
     const path = FileService.resolvePath([directory, "backstop.json"]);
     return BackstopService.initTests(directory)
@@ -347,7 +347,7 @@ export default class ConfigurationStore extends VuexModule {
       });
   }
 
-  @Action
+  @Action({rawError: true})
   public saveConfiguration() {
     this.context.commit("setSavingState", true);
     const content = JSON.stringify(this.currentConfiguration, null, 4);
