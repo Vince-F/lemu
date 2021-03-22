@@ -53,12 +53,12 @@
             <hr class="panel-separator" />
             <div class="d-flex">
               <div class="flex-grow-1 flex-shrink-1 image-container">
-                <p><strong>Test</strong></p>
-                <ZoomableImageComponent :imgSrc="getTestImagePath(result)" />
-              </div>
-              <div class="flex-grow-1 flex-shrink-1 image-container">
                 <p><strong>Reference</strong></p>
                 <ZoomableImageComponent :imgSrc="getReferenceImagePath(result)" />
+              </div>
+              <div class="flex-grow-1 flex-shrink-1 image-container">
+                <p><strong>Test</strong></p>
+                <ZoomableImageComponent :imgSrc="getTestImagePath(result)" />
               </div>
               <div
                 class="flex-grow-1 flex-shrink-1 image-container"
