@@ -5,16 +5,8 @@
         {{script.name}}
       </div>
       <div class="flex-grow-0 flex-shrink-0">
-        <v-tooltip top>
-          <template v-slot:activator="{on}">
-            <v-btn icon @click="deleteScript" v-on="on">
-              <v-icon>
-                mdi-delete
-              </v-icon>
-            </v-btn>
-          </template>
-          Delete
-        </v-tooltip>
+        <entity-menu-bar-action-component iconName="mdi-delete" tooltipContent="Delete"
+          @click="deleteScript"/>
       </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
@@ -61,10 +53,12 @@ import { Getter, Mutation, Action } from "vuex-class";
 import MonacoEditor from 'monaco-editor-vue';
 import { ModalService } from '@/services/modalService';
 import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
+import EntityMenuBarActionComponent from "../../layout/EntityMenuBarActionComponent.vue";
 
 @Component({
   components: {
-    MonacoEditor
+    MonacoEditor,
+    EntityMenuBarActionComponent
   }
 })
 export default class TemplateScriptViewComponent extends Vue {

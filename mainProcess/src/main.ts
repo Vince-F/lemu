@@ -13,28 +13,31 @@ try {
   console.log("Fail to check for updates");
 }
 
-let mainWindow: Electron.BrowserWindow = null;
+let mainWindow: Electron.BrowserWindow | null = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 0,
-    height: 0,
+    width: 800,
+    height: 600,
     icon: path.join(__dirname, "../../icon.png"),
     webPreferences: {
       nodeIntegration: false,
       webSecurity: false,
       contextIsolation: true,
+      enableRemoteModule: true,
       preload: path.join(__dirname, "preload.js")
     },
-    backgroundColor: "#fafafa"
+    backgroundColor: "#fafafa",
+    frame: false
   });
   mainWindow.maximize();
   BrowserWindowManager.setInstance(mainWindow);
+  Menu.setApplicationMenu(null);
   if (app.isPackaged) {
     mainWindow.loadFile('./dist-app/index.html');
-    Menu.setApplicationMenu(null);
   } else {
     mainWindow.loadURL("http://localhost:8080");
+    mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on('closed', () => {

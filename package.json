@@ -1,6 +1,6 @@
 {
   "name": "lemu",
-  "version": "1.21.0",
+  "version": "1.22.0",
   "private": true,
   "author": "Vincent Francolin",
   "scripts": {
@@ -19,6 +19,7 @@
   "main": "dist-app/electron-main/main.js",
   "dependencies": {
     "backstopjs": "^5.1.0",
+    "custom-electron-titlebar": "^3.2.6",
     "electron-updater": "^4.3.5",
     "fs-extra": "^9.0.1",
     "v8-compile-cache": "^2.2.0"

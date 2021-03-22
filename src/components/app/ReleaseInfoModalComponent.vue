@@ -1,8 +1,5 @@
 <template>
-  <v-dialog
-      v-model="dialogDisplayed"
-      max-width="400"
-    >
+  <v-dialog v-model="dialogDisplayed" max-width="400">
     <v-card>
       <v-progress-circular
           indeterminate
@@ -39,8 +36,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import {State, Action} from "vuex-class";
+import { Vue, Component } from "vue-property-decorator";
+import { State, Action } from "vuex-class";
 import marked from "marked";
 
 @Component({})

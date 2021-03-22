@@ -53,12 +53,12 @@
             <hr class="panel-separator" />
             <div class="d-flex">
               <div class="flex-grow-1 flex-shrink-1 image-container">
-                <p><strong>Test</strong></p>
-                <ZoomableImageComponent :imgSrc="getTestImagePath(result)" />
-              </div>
-              <div class="flex-grow-1 flex-shrink-1 image-container">
                 <p><strong>Reference</strong></p>
                 <ZoomableImageComponent :imgSrc="getReferenceImagePath(result)" />
+              </div>
+              <div class="flex-grow-1 flex-shrink-1 image-container">
+                <p><strong>Test</strong></p>
+                <ZoomableImageComponent :imgSrc="getTestImagePath(result)" />
               </div>
               <div
                 class="flex-grow-1 flex-shrink-1 image-container"
@@ -104,8 +104,8 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import { State, Action, Mutation, Getter } from "vuex-class";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { State, Action, Getter } from "vuex-class";
 import { FileService } from "../../services/fileService";
 import { BackstopTest } from "../../models/backstopTest";
 import { BackstopTestResult } from "../../models/backstopTestResult";

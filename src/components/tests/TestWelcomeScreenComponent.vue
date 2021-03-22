@@ -23,6 +23,5 @@ import { Mutation } from "vuex-class";
 export default class TestWelcomeScreenComponent extends Vue {
   @Mutation("configurationStore/addScenario")
   private addScenario!: () => void;
-
 }
 </script>

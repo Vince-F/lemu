@@ -1,11 +1,13 @@
 <template>
-  <v-app>
-    <app-toolbar-component></app-toolbar-component>
+  <v-app class="app">
+    <app-toolbar-component class="sub-toolbar"></app-toolbar-component>
     <v-main>
-      <router-view />
+      <div class="content-container">
+        <router-view />
+      </div>
     </v-main>
 
-    <v-snackbar :value="snackbarDisplayed" top>
+    <v-snackbar :value="snackbarDisplayed" left top>
       <v-icon color="green" v-if="snackbarSuccess">
         mdi-check-circle
       </v-icon>
@@ -14,11 +16,7 @@
       </v-icon>
       {{ snackbarText }}
       <v-spacer />
-      <v-btn
-        color="white"
-        text
-        @click="hideSnackbar"
-      >
+      <v-btn color="white" text @click="hideSnackbar">
         Close
       </v-btn>
     </v-snackbar>
@@ -26,14 +24,32 @@
 </template>
 
 <style scoped>
+  .sub-toolbar {
+    top: 30px;
+  }
+  
   .app-title {
     font-weight: 400;
+  }
+  
+  .app {
+    position: absolute;
+    inset: 0;
+  }
+
+  .app >>> .v-application--wrap {
+    min-height: calc(100vh - 30px);
+  }
+
+  .content-container {
+    height: 100%;
+    overflow: auto;
   }
 </style>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import {Action, Mutation, State} from "vuex-class";
+import { Action, Mutation, State } from "vuex-class";
 import AppToolbarComponent from "./components/app/AppToolbarComponent.vue";
 import { ModalService } from "./services/modalService";
 import ReleaseInfoModalComponent from "./components/app/ReleaseInfoModalComponent.vue";
@@ -59,7 +75,9 @@ export default class App extends Vue {
   @Action("testLogStore/initializeLogListener")
   private readonly initializeLogListener!: () => Promise<void>;
 
+
   private mounted() {
+    window.ipcHandler.createTitleBar();
     this.initializeLogListener();
     this.retrieveAppInfos()
       .then(() => {

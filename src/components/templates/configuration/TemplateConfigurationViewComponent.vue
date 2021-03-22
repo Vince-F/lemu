@@ -5,16 +5,8 @@
         {{currentConfiguration.id}}
       </div>
       <div class="flex-grow-0 flex-shrink-0">
-        <v-tooltip top>
-          <template v-slot:activator="{on}">
-            <v-btn icon @click="deleteConfiguration" v-on="on">
-              <v-icon>
-                mdi-delete
-              </v-icon>
-            </v-btn>
-          </template>
-          Delete
-        </v-tooltip>
+        <entity-menu-bar-action-component iconName="mdi-delete" tooltipContent="Delete"
+          @click="deleteConfiguration" />
       </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
@@ -104,6 +96,7 @@ import ReportConfigurationComponent from "../../generalConfig/ReportConfiguratio
 import EngineConfigurationComponent from "../../generalConfig/EngineConfigurationComponent.vue";
 import PerformanceConfigurationComponent from "../../generalConfig/PerformanceConfigurationComponent.vue";
 import GeneralConfigurationComponent from "../../generalConfig/GeneralConfigurationComponent.vue";
+import EntityMenuBarActionComponent from "../../layout/EntityMenuBarActionComponent.vue";
 
 @Component({
   name: "configuration-component",
@@ -112,7 +105,8 @@ import GeneralConfigurationComponent from "../../generalConfig/GeneralConfigurat
     ReportConfigurationComponent,
     EngineConfigurationComponent,
     PerformanceConfigurationComponent,
-    GeneralConfigurationComponent
+    GeneralConfigurationComponent,
+    EntityMenuBarActionComponent
   }
 })
 export default class ConfigurationComponent extends Vue {
@@ -160,7 +154,7 @@ export default class ConfigurationComponent extends Vue {
       });
   }
 
-  @Watch("$route", {immediate: true})
+  @Watch("$route", { immediate: true })
   private loadTemplateConfiguraion() {
     const index = Number(this.$route.params.index);
     if (index >= 0) {

@@ -5,7 +5,7 @@
       <div class="flex-grow-1 flex-shrink-1">
         {{testContent.label}} 
         <v-tooltip top>
-          <template v-slot:activator="{on}">
+          <template v-slot:activator="{ on }">
             <v-icon v-on="on" color="green" class="icon-offset" v-if="testStatus === 'pass'">
               mdi-check-circle
             </v-icon>
@@ -22,59 +22,16 @@
         </v-tooltip>
       </div>
       <div class="flex-grow-0 flex-shrink-0">
-        <v-tooltip top>
-          <template v-slot:activator="{on}">
-            <v-btn icon v-on="on" @click="toggleFullscreen">
-              <v-icon v-if="isFullscreen">
-                mdi-fullscreen-exit
-              </v-icon>
-              <v-icon v-else>
-                mdi-fullscreen
-              </v-icon>
-            </v-btn>
-          </template>
-          Toggle fullscreen
-        </v-tooltip>
-        <v-tooltip top>
-          <template v-slot:activator="{on}">
-            <v-btn icon :disabled="testRunning" v-on="on" @click="runCurrentTest">
-              <v-icon>
-                mdi-play
-              </v-icon>
-            </v-btn>
-          </template>
-          Run this test
-        </v-tooltip>
-        <v-tooltip top>
-          <template v-slot:activator="{on}">
-            <v-btn icon :disabled="testRunning" v-on="on" @click="approveCurrentTest">
-              <v-icon>
-                mdi-check-circle
-              </v-icon>
-            </v-btn>
-          </template>
-          Approve this test
-        </v-tooltip>
-        <v-tooltip top>
-          <template v-slot:activator="{on}">
-            <v-btn icon :disabled="testRunning" v-on="on" @click="duplicateTest">
-              <v-icon>
-                mdi-content-copy
-              </v-icon>
-            </v-btn>
-          </template>
-          Duplicate
-        </v-tooltip>
-        <v-tooltip top>
-          <template v-slot:activator="{on}">
-            <v-btn icon v-on="on" :disabled="testRunning" @click="deleteTest">
-              <v-icon>
-                mdi-delete
-              </v-icon>
-            </v-btn>
-          </template>
-          Delete this test
-        </v-tooltip>
+        <entity-menu-bar-action-component :iconName="isFullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen'"
+          tooltipContent="Toggle fullscreen" @click="toggleFullscreen" />
+        <entity-menu-bar-action-component iconName="mdi-play" tooltipContent="Run this test"
+          :disabled="testRunning" @click="runCurrentTest" />
+        <entity-menu-bar-action-component iconName="mdi-check-circle" tooltipContent="Approve this test"
+          :disabled="testRunning" @click="approveCurrentTest"/>
+        <entity-menu-bar-action-component iconName="mdi-content-copy" tooltipContent="Duplicate"
+          :disabled="testRunning" @click="duplicateTest"/>
+        <entity-menu-bar-action-component iconName="mdi-delete" tooltipContent="Delete this test"
+          :disabled="testRunning" @click="deleteTest"/>
       </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
@@ -122,7 +79,7 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item>
-          <v-list-item-title :disabled="testRunning" v-on="on" @click="approveCurrentTest">
+          <v-list-item-title :disabled="testRunning" @click="approveCurrentTest">
             <v-icon color="grey lighten-1">mdi-check-circle</v-icon>
             Approve this test
           </v-list-item-title>
@@ -188,7 +145,7 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { Action, Mutation, State, Getter } from "vuex-class";
 import { BackstopTest } from '../../models/backstopTest';
 import { BackstopConfiguration } from '../../models/backstopConfiguration';
@@ -197,13 +154,15 @@ import { ModalService } from "../../services/modalService";
 import TestConfigurationComponent from "./TestConfigurationComponent.vue";
 import TestPreviewComponent from "./TestPreviewComponent.vue";
 import TestResultComponent from "./TestResultComponent.vue";
+import EntityMenuBarActionComponent from "../layout/EntityMenuBarActionComponent.vue";
 
 @Component({
   name: "test-view-component",
   components: {
     TestConfigurationComponent,
     TestPreviewComponent,
-    TestResultComponent
+    TestResultComponent,
+    EntityMenuBarActionComponent
   }
 })
 export default class TestViewComponent extends Vue {

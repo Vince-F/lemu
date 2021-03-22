@@ -19,6 +19,8 @@ declare global {
       receive: (channel: string, callback: (...args: any[]) => void) => void;
       receiveOnce: (channel: string, callback: (...args: any[]) => void) => void;
       invoke: (channel: string, ...args: any[]) => Promise<any>;
+      createTitleBar: () => void;
+      updateTitleBarTitle: (newTitle: string) => void;
     };
   }
 }

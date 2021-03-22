@@ -14,6 +14,18 @@ export default class ApplicationStore extends VuexModule {
     backstopVersion: string
   } | null = null;
 
+  public get applicationTitle() {
+    const configName = this.context.rootGetters["configurationStore/configName"];
+    if (configName) {
+      const modified = this.context.rootGetters["configurationStore/hasConfigurationBeenModified"] ||
+        this.context.rootState.configurationStore.scriptsModified;
+
+      const saveText = modified ? "Unsaved" : "Saved";
+      return `${configName} - ${saveText}`;
+    }
+    return "";
+  }
+
   @Mutation
   public setSnackbarDisplayed({text, success}: {text: string, success: boolean}) {
     this.snackbarDisplayed = false;

@@ -1,5 +1,15 @@
 # Changelog
 
+## V1.22.0
+### Features
+- Redesign welcome screen
+- Redesign app toolbar
+- Set "reference" first in test result
+- Update report after approval
+
+### Fixes
+- Fixes an issue where the backstop related command were not working
+
 ## V1.21.0
 ### Features
 - Add "test configuration" templates
