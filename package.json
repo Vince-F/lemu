@@ -63,6 +63,7 @@
       "github"
     ],
     "files": [
+      "shared/**/*.js",
       "dist-app/**/*",
       "userGuide/docs/.vuepress/dist/*",
       "icon.png",
