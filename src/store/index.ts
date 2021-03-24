@@ -10,6 +10,7 @@ import testRunnerStore from "./testRunnerStore";
 import testLogStore from "./testLogStore";
 import engineScriptStore from "./engineScriptStore";
 import templateStore from "./templateStore";
+import settingsStore from "./settingsStore";
 
 export default new Vuex.Store({
   state: {
@@ -25,6 +26,7 @@ export default new Vuex.Store({
     testRunnerStore,
     testLogStore,
     engineScriptStore,
-    templateStore
+    templateStore,
+    settingsStore
   },
 });

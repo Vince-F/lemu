@@ -2,7 +2,6 @@
   <v-dialog v-model="dialogDisplayed" max-width="400">
     <v-card>
       <v-card-title class="headline">
-        <v-icon>mdi-information</v-icon>
         About Lemu
       </v-card-title>
 

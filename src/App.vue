@@ -48,7 +48,7 @@
 </style>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import { Action, Mutation, State } from "vuex-class";
 import AppToolbarComponent from "./components/app/AppToolbarComponent.vue";
 import { ModalService } from "./services/modalService";
@@ -68,13 +68,14 @@ export default class App extends Vue {
   private readonly snackbarSuccess!: boolean;
   @State((state) => state.applicationStore.appInfos)
   private readonly appInfos!: {appVersion: string, backstopVersion: string} | null;
+  @State((state) => state.settingsStore.darkModeEnabled)
+  private readonly darkModeEnabled!: boolean;
   @Mutation("applicationStore/hideSnackbar")
   private readonly hideSnackbar!: () => void;
   @Action("applicationStore/retrieveAppInfos")
   private readonly retrieveAppInfos!: () => Promise<void>;
   @Action("testLogStore/initializeLogListener")
   private readonly initializeLogListener!: () => Promise<void>;
-
 
   private mounted() {
     window.ipcHandler.createTitleBar();
@@ -88,6 +89,11 @@ export default class App extends Vue {
           }
         }
       });
+  }
+
+  @Watch('darkModeEnabled', { immediate: true })
+  private updateDarkMode() {
+    this.$vuetify.theme.dark = this.darkModeEnabled;
   }
 }
 </script>
