@@ -76,10 +76,13 @@ export default class App extends Vue {
   private readonly retrieveAppInfos!: () => Promise<void>;
   @Action("testLogStore/initializeLogListener")
   private readonly initializeLogListener!: () => Promise<void>;
+  @Action("settingsStore/loadSettings")
+  private readonly loadSettings!: () => Promise<void>;
 
   private mounted() {
     window.ipcHandler.createTitleBar();
     this.initializeLogListener();
+    this.loadSettings();
     this.retrieveAppInfos()
       .then(() => {
         if (this.appInfos) {
