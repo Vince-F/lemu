@@ -1,14 +1,12 @@
 <template>
   <v-dialog v-model="dialogDisplayed" max-width="400">
-    <v-card class="modal-content">
+    <v-card>
       <v-card-title class="headline">
         Settings
       </v-card-title>
-        <v-switch :input-value="darkModeEnabled" @change="updateDarkMode($event)" label="Dark mode"/>
       <v-card-text>
-        
+        <v-switch :input-value="darkModeEnabled" @change="updateDarkMode($event)" label="Dark mode"/>
       </v-card-text>
-
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="grey darken-1" text @click="dismiss"> Close </v-btn>
@@ -17,11 +15,6 @@
   </v-dialog>
 </template>
 
-<style scoped>
-.modal-content {
-  padding: 1.5rem;
-}
-</style>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
