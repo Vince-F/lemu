@@ -7,7 +7,6 @@ import vuetify from './plugins/vuetify';
 Vue.config.productionTip = false;
 
 import "./styles/font.css";
-import "@mdi/font/css/materialdesignicons.min.css";
 import "./styles/main.css";
 
 declare global {
