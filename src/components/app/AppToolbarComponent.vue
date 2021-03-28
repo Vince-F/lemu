@@ -67,6 +67,12 @@
           </v-btn>
         </template>
         <v-list>
+        <v-list-item @click="displaySettings">
+            <v-list-item-icon>
+              <v-icon>mdi-cog</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Settings</v-list-item-title>
+          </v-list-item>
           <v-list-item @click="displayAbout">
             <v-list-item-icon>
               <v-icon>mdi-information</v-icon>
@@ -106,6 +112,7 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 import { Action, Mutation, Getter, State } from "vuex-class";
 import { ModalService } from "../../services/modalService";
 import AboutModalComponent from "./AboutModalComponent.vue";
+import SettingsModalComponent from "./SettingsModalComponent.vue";
 import { SearchService } from "../../services/searchService";
 
 @Component({})
@@ -171,6 +178,10 @@ export default class AppToolbarComponent extends Vue {
   private dismissAndGoToStartScreen() {
     this.dismissCurrentConfiguration();
     this.$router.push({ name: "startScreen" });
+  }
+
+  private displaySettings() {
+    ModalService.launchModal(SettingsModalComponent);
   }
 
   private displayAbout() {
