@@ -1,7 +1,7 @@
 import { BackstopWorkerManager } from "./backstopWorkerManager";
+import logger from "electron-log";
 
 export class BackstopTestRunner {
-
   /* set import in getter to avoid loading them at launch time */
   private static get puppeteer() {
     const puppeteer = require("puppeteer");
@@ -27,7 +27,7 @@ export class BackstopTestRunner {
     if (scenarioLabel && scenarioLabel.length) {
       filterRegex = "^" + scenarioLabel + "$";
     }
-    console.log("Test filtered with ", filterRegex);
+    logger.silly("Test filtered with ", filterRegex);
     config = this.setPuppeteerExecutablePath(config);
     return BackstopWorkerManager.executeCommand(this.workingPath, "test", {
       filter: filterRegex,
