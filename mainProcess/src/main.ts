@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu, protocol } from 'electron';
 import { autoUpdater } from "electron-updater";
+import logger from "electron-log";
 
 import path = require("path");
 import "v8-compile-cache";
@@ -10,31 +11,34 @@ import { BrowserWindowManager } from './controllers/browserWindowManager';
 try {
   autoUpdater.checkForUpdatesAndNotify();
 } catch (e) {
-  console.log("Fail to check for updates");
+  logger.warn("Fail to check for updates");
 }
 
-let mainWindow: Electron.BrowserWindow = null;
+let mainWindow: Electron.BrowserWindow | null = null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 0,
-    height: 0,
+    width: 800,
+    height: 600,
     icon: path.join(__dirname, "../../icon.png"),
     webPreferences: {
       nodeIntegration: false,
       webSecurity: false,
       contextIsolation: true,
+      enableRemoteModule: true,
       preload: path.join(__dirname, "preload.js")
     },
-    backgroundColor: "#fafafa"
+    backgroundColor: "#fafafa",
+    frame: false
   });
   mainWindow.maximize();
   BrowserWindowManager.setInstance(mainWindow);
+  Menu.setApplicationMenu(null);
   if (app.isPackaged) {
     mainWindow.loadFile('./dist-app/index.html');
-    Menu.setApplicationMenu(null);
   } else {
     mainWindow.loadURL("http://localhost:8080");
+    mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on('closed', () => {
@@ -52,11 +56,10 @@ function registerDocProtocol() {
     if (url.endsWith("/") || url === "") {
       url += "index.html";
     }
-    console.log("request url from doc is", url);
     callback({ path: path.normalize(`./dist-app/docs/${url}`) });
   });
   if (!successfull) {
-    console.error("Fail to register doc protocol");
+    logger.error("Fail to register doc protocol");
   }
 }
 

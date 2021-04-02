@@ -102,6 +102,14 @@ module.exports = {
           children: [
             'logs'
           ]
+        },
+        {
+          title: 'Templates',
+          collapsable: false,
+          children: [
+            'engine-script-template',
+            'configuration-template'
+          ]
         }
       ]
     }

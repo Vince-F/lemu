@@ -5,8 +5,9 @@ import TestsConfigurationView from "../views/TestsConfigurationView.vue";
 import ReportView from "../views/ReportView.vue";
 import LogsView from "../views/LogsView.vue";
 import ScriptView from "../views/ScriptView.vue";
+import TestView from "../views/TestView.vue";
 
-import GeneralConfigurationComponent from "../components/generalConfig/GeneralConfigurationComponent.vue";
+import ConfigurationComponent from "../components/generalConfig/ConfigurationComponent.vue";
 import TestsListComponent from "../components/tests/TestsListComponent.vue";
 import TestViewComponent from "../components/tests/TestViewComponent.vue";
 import TestWelcomeScreenComponent from "../components/tests/TestWelcomeScreenComponent.vue";
@@ -17,6 +18,10 @@ import TemplateContentView from "../views/TemplateContentView.vue";
 import TemplateScriptsMenuComponent from "../components/templates/scripts/TemplateScriptsMenuComponent.vue";
 import TemplateScriptViewComponent from "../components/templates/scripts/TemplateScriptViewComponent.vue";
 import TemplateScriptWelcomeComponent from "../components/templates/scripts/TemplateScriptWelcomeComponent.vue";
+import TemplateConfigurationsMenuComponent from "../components/templates/configuration/TemplateConfigurationsMenuComponent.vue";
+import TemplateConfigurationViewComponent from "../components/templates/configuration/TemplateConfigurationViewComponent.vue";
+import TemplateConfigurationWelcomeComponent from "../components/templates/configuration/TemplateConfigurationWelcomeComponent.vue";
+
 
 Vue.use(VueRouter);
 
@@ -34,11 +39,11 @@ const routes = [
       {
         path: "generalConfig",
         name: "generalConfiguration",
-        component: GeneralConfigurationComponent
+        component: ConfigurationComponent
       },
       {
         path: "list",
-        component: TestsListComponent,
+        component: TestView,
         children: [
           {
             path: "",
@@ -107,7 +112,29 @@ const routes = [
             }
           }
         ]
-      }
+      },
+      {
+        path: "configuration",
+        component: TemplateContentView,
+        children: [
+          {
+            path: "",
+            name: "configurationTemplates.welcome",
+            components: {
+              menu: TemplateConfigurationsMenuComponent,
+              view: TemplateConfigurationWelcomeComponent
+            }
+          },
+          {
+            path: ":index",
+            name: "configurationTemplates.view",
+            components: {
+              menu: TemplateConfigurationsMenuComponent,
+              view: TemplateConfigurationViewComponent
+            }
+          }
+        ]
+      },
     ]
   }
 ];

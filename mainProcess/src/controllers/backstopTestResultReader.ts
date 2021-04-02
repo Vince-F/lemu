@@ -2,7 +2,8 @@ import fs = require("fs");
 import vm = require("vm");
 import path = require("path");
 import { BrowserWindowManager } from "./browserWindowManager";
-import { eventNames } from "../shared/constants/eventNames";
+import { eventNames } from "../../../shared/constants/eventNames";
+import logger = require("electron-log");
 
 export class BackstopTestResultReader {
   public static retrieveReportResult(reportPath: string) {
@@ -16,7 +17,7 @@ export class BackstopTestResultReader {
     if (fs.existsSync(path.join(reportPath, "config.js"))) {
       this.resultFileWatcher = fs.watch(path.join(reportPath, "config.js"));
 
-      this.resultFileWatcher.on("change", (eventType) => {
+      this.resultFileWatcher.on("change", () => {
         BrowserWindowManager.sendEvent(eventNames.TEST_RESULT_CHANGED.REPLY);
       });
     } else {
@@ -34,9 +35,10 @@ export class BackstopTestResultReader {
 
   private static openReportResult(reportPath: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      fs.readFile(path.join(reportPath, "config.js"), {encoding: "utf-8"}, (error, data) => {
+      const configPath = path.join(reportPath, "config.js");
+      fs.readFile(configPath, {encoding: "utf-8"}, (error, data) => {
         if (error) {
-          console.error("Fail to open config file, path was", path.join(reportPath, "config.js"), " error is ", error);
+          logger.error("Fail to open config file, path was", configPath, " error is ", error);
           reject(error);
         } else {
           resolve(data);

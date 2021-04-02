@@ -17,6 +17,10 @@ export default class ConfigurationStore extends VuexModule {
   public configurationModified: boolean = false;
   public isSaving: boolean = false;
 
+  public get configName() {
+    return this.currentConfiguration?.id ?? "";
+  }
+
   public get tests() {
     return this.currentConfiguration ? this.currentConfiguration.scenarios : [];
   }
@@ -104,7 +108,7 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Mutation
-  public setFullConfiguration({ newConfiguration }: any) {
+  public setFullConfiguration(newConfiguration: BackstopConfiguration) {
     this.currentConfiguration = newConfiguration;
     this.testsModified = [];
     if (this.currentConfiguration && Array.isArray(this.currentConfiguration.scenarios)) {
@@ -233,7 +237,7 @@ export default class ConfigurationStore extends VuexModule {
     try {
       recentPaths = JSON.parse(localStorage.getItem("recentlyOpened") || "");
     } catch (e) {
-      console.log("fail to open recent path");
+      window.ipcHandler.logger.warn("fail to open recent path");
     }
     const idx = recentPaths.indexOf(path);
     if (idx > -1) {
@@ -285,47 +289,51 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public initConfig() {
-    return DialogFileService.selectDirectory()
-      .then((path) => {
-        return BackstopService.initTests(path)
-          .then(() => {
-            return DialogFileService.openAndParseFile(path + "/backstop.json")
-              .then((content) => {
-                this.context.commit("setFullConfiguration", {
-                  newConfiguration: content
-                });
-                this.context.commit("setPath", path + "/backstop.json");
-                this.context.commit("testLogStore/resetLogs", null, { root: true });
-                this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
-              });
-          });
-      });
+  public setContextAfterConfigLoaded(path: string) {
+    this.context.commit("setPath", path);
+    this.context.commit("updateRecently", path);
+    this.context.commit("testLogStore/resetLogs", null, { root: true });
+    this.context.commit("testResultStore/expireTestsResult", undefined, { root: true });
+    this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
+    this.context.dispatch("engineScriptStore/retrieveEngineScripts", null, { root: true });
+    BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
   }
 
   @Action({rawError: true})
-  public openConfiguration() {
+  public initConfig({template, directory}: {template: BackstopConfiguration, directory: string}): Promise<void> {
+    const path = FileService.resolvePath([directory, "backstop.json"]);
+    return BackstopService.initTests(directory)
+        .then(() => {
+          if (template.id === "default") {
+            return DialogFileService.openAndParseFile(path)
+              .then((content) => {
+                this.context.commit("setFullConfiguration", content);
+              });
+          } else {
+            this.context.commit("setFullConfiguration", template);
+            this.context.commit("setPath", path);
+            return this.context.dispatch("saveConfiguration");
+          }
+        }).then(() => {
+          return this.context.dispatch("setContextAfterConfigLoaded", path);
+        });
+  }
+
+  @Action({rawError: true})
+  public openConfiguration(): Promise<void> {
     return DialogFileService.openFileDialog()
       .then(({ path, content }) => {
         if (typeof content.id !== "string" ||
             !Array.isArray(content.scenarios)) {
           return Promise.reject("File doesn't look like a BackstopJS configuration");
         }
-        this.context.commit("setFullConfiguration", {
-          newConfiguration: content
-        });
-        this.context.commit("setPath", path);
-        this.context.commit("updateRecently", path);
-        this.context.commit("testLogStore/resetLogs", null, { root: true });
-        this.context.commit("testResultStore/expireTestsResult", undefined, { root: true });
-        this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
-        BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
-        return Promise.resolve();
+        this.context.commit("setFullConfiguration", content);
+        this.context.dispatch("setContextAfterConfigLoaded", path);
       });
   }
 
   @Action({rawError: true})
-  public openConfigurationFromPath(path: string) {
+  public openConfigurationFromPath(path: string): Promise<void> {
     return DialogFileService.openAndParseFile(path)
       .then((content) => {
         if (typeof content.id !== "string" ||
@@ -333,16 +341,8 @@ export default class ConfigurationStore extends VuexModule {
             !Array.isArray(content.scenarios)) {
           return Promise.reject("File doesn't look like a BackstopJS configuration");
         }
-        this.context.commit("setFullConfiguration", {
-          newConfiguration: content
-        });
-        this.context.commit("setPath", path);
-        this.context.commit("updateRecently", path);
-        this.context.commit("testLogStore/resetLogs", null, { root: true });
-        this.context.commit("testResultStore/expireTestsResult", undefined, { root: true });
-        BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
-        this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
-        return Promise.resolve();
+        this.context.commit("setFullConfiguration", content);
+        this.context.dispatch("setContextAfterConfigLoaded", path);
       });
   }
 

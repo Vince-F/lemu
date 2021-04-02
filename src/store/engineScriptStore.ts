@@ -21,6 +21,7 @@ export default class EngineScriptStore extends VuexModule {
 
   @Mutation
   public addScript({scriptPath, content}: {scriptPath: string, content: string}) {
+    scriptPath = scriptPath.replaceAll("\\", "/");
     const newScript = new EngineScript(scriptPath, content);
     this.scripts.push(newScript);
     this.scriptsModified = true;

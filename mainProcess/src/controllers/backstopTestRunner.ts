@@ -1,4 +1,5 @@
 import { BackstopWorkerManager } from "./backstopWorkerManager";
+import logger from "electron-log";
 
 export class BackstopTestRunner {
   /* set import in getter to avoid loading them at launch time */
@@ -8,12 +9,11 @@ export class BackstopTestRunner {
   }
 
   public static setWorkingDir(workingPath: string) {
-    process.chdir(workingPath);
+    this.workingPath = workingPath;
   }
 
   public static initTest(workingPath: string) {
-    process.chdir(workingPath);
-    return BackstopWorkerManager.executeCommand("init");
+    return BackstopWorkerManager.executeCommand(workingPath, "init");
   }
 
   public static runTest(config: any, scenarioLabel?: string): Promise<any> {
@@ -27,9 +27,9 @@ export class BackstopTestRunner {
     if (scenarioLabel && scenarioLabel.length) {
       filterRegex = "^" + scenarioLabel + "$";
     }
-    console.log("Test filtered with ", filterRegex);
+    logger.silly("Test filtered with ", filterRegex);
     config = this.setPuppeteerExecutablePath(config);
-    return BackstopWorkerManager.executeCommand("test", {
+    return BackstopWorkerManager.executeCommand(this.workingPath, "test", {
       filter: filterRegex,
       config
     });
@@ -44,11 +44,13 @@ export class BackstopTestRunner {
         filterRegex += "_.+_" + this.cleanFilename(viewportLabel);
       }
     }
-    return BackstopWorkerManager.executeCommand('approve', {
+    return BackstopWorkerManager.executeCommand(this.workingPath, 'approve', {
       config,
       filter: filterRegex
     });
   }
+
+  private static workingPath: string = "";
 
   private static setPuppeteerExecutablePath(config: any) {
     if (!config.engineOptions) {

@@ -1,5 +1,35 @@
 # Changelog
 
+## V1.22.0
+### Features
+- Redesign welcome screen
+- Redesign app toolbar
+- Set "reference" first in test result
+- Update report after approval
+
+### Fixes
+- Fixes an issue where the backstop related command were not working
+
+## V1.21.0
+### Features
+- Add "test configuration" templates
+- New view for creating a "test configuration" from template
+
+### Fixes
+- Fix a path issue when adding a new engine script in a configuration
+
+## V1.20.3
+
+### Fixes
+- Fix an issue where the app was failing to read dependencies and was displaying an error
+
+## V1.20.2
+### Fixes
+- Make all images in test result zoomable by cliking on them
+## V1.20.1
+### Fixes
+- Allow JavaScript execution in test preview
+
 ## V1.20.0
 ### Features
 - Improve design of general configuration

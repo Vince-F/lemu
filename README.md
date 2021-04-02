@@ -1,10 +1,10 @@
 # LEMU
 
 ## What is it?
-Lemu is a desktop application to easily configure your BackstopJS tests in a graphical application.
+Lemu is a desktop application to easily configure your [BackstopJS](https://github.com/garris/BackstopJS) tests in a graphical application.
 
 ## How to get it?
-You can see the releases in the 'releases' tab of GitHub. Builds are only available for Windows currently, but will be available soon for Linux and MacOS.
+You can see the releases in the 'releases' tab of GitHub. [Builds](https://github.com/Vince-F/lemu/releases) are available for Windows, Linux and MacOS.
 
 ## Changelog
 See [changelog here](CHANGELOG.md)

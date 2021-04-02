@@ -1,11 +1,13 @@
-import {Worker} from "worker_threads";
+import { Worker } from "worker_threads";
 import path = require("path");
 import fs = require("fs");
-import { eventNames } from "../shared/constants/eventNames";
+import { eventNames } from "../../../shared/constants/eventNames";
 import { BrowserWindowManager } from "./browserWindowManager";
+import { BackstopTestResultReader } from "./backstopTestResultReader";
+import logger from "electron-log";
 
 export class BackstopWorkerManager {
-  public static executeCommand(command: string, options?: any) {
+  public static executeCommand(workingPath: string, command: string, options?: unknown) {
     return new Promise((resolve, reject) => {
       fs.readFile(path.join(__dirname, "./backstopWorker.js"), {encoding: "utf-8"}, (err, fileContent) => {
         if (err) {
@@ -16,7 +18,7 @@ export class BackstopWorkerManager {
             stderr: true,
             stdout: true
           });
-          worker.once("message", (result) => {
+          worker.on("message", (result) => {
             if (result.success) {
               resolve(result.arguments[0]);
             } else {
@@ -28,21 +30,34 @@ export class BackstopWorkerManager {
             level: "divider",
             message: ""
           });
+
           worker.postMessage({
             command,
-            options
+            options,
+            workingPath
           });
 
           worker.stdout.on("data", (data: Buffer) => {
-            console.log(data.toString());
+            const message = data.toString();
+            if (message.includes(this.approveEndSentence)) {
+              this.recordApprovalEnabled = false;
+              this.updateApprovalResult(workingPath);
+            } else if (message.includes(this.approveStartSentence)) {
+              this.recordApprovalEnabled = true;
+              this.fileToUpdateInReport = [];
+            } else if (this.recordApprovalEnabled) {
+              this.addApprovalResultToUpdate(message);
+            }
+
+            logger.log(message);
             BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
               level: "info",
-              message: data.toString()
+              message
             });
           });
 
           worker.stderr.on("data", (data: Buffer) => {
-            console.error(data.toString());
+            logger.warn(data.toString());
             BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
               level: "error",
               message: data.toString()
@@ -51,5 +66,38 @@ export class BackstopWorkerManager {
         }
       });
     });
+  }
+
+  private static readonly approveStartSentence: string = "The following files will be promoted to reference...";
+  private static readonly approveEndSentence: string = "COMMAND | Command \"approve\" successfully executed";
+  private static recordApprovalEnabled: boolean = false;
+  private static fileToUpdateInReport: string[] = [];
+
+  private static addApprovalResultToUpdate(message: string) {
+    const filename = message.replace(">  ", "").replace("\n", "");
+    this.fileToUpdateInReport.push(filename);
+  }
+
+  private static updateApprovalResult(workingPath: string) {
+    // TODO: this is false if the config is custom
+    const reportPath = path.join(workingPath, "backstop_data/html_report/");
+    BackstopTestResultReader.retrieveReportResult(reportPath)
+      .then((reportContent: any) => {
+        if (Array.isArray(reportContent?.tests)) {
+          reportContent?.tests.forEach((entry: any) => {
+            if (this.fileToUpdateInReport.includes(entry?.pair?.fileName)) {
+              entry.status = "pass";
+            }
+          });
+        }
+        const content = "report(" + JSON.stringify(reportContent) + ");";
+        fs.writeFile(path.join(reportPath, "config.js"), content, { encoding: "utf-8" }, (err) => {
+          if (err) {
+            logger.error("Failed to update report:", err.message);
+          } else {
+            logger.log("Report successfully updated");
+          }
+        });
+      });
   }
 }

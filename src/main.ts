@@ -7,7 +7,6 @@ import vuetify from './plugins/vuetify';
 Vue.config.productionTip = false;
 
 import "./styles/font.css";
-import "@mdi/font/css/materialdesignicons.min.css";
 import "./styles/main.css";
 
 declare global {
@@ -19,6 +18,14 @@ declare global {
       receive: (channel: string, callback: (...args: any[]) => void) => void;
       receiveOnce: (channel: string, callback: (...args: any[]) => void) => void;
       invoke: (channel: string, ...args: any[]) => Promise<any>;
+      createTitleBar: () => void;
+      updateTitleBarTitle: (newTitle: string) => void;
+      logger: {
+        silly(...args: string[]): void;
+        info(...args: string[]): void;
+        warn(...args: string[]): void;
+        error(...args: string[]): void;
+      };
     };
   }
 }
