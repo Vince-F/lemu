@@ -45,14 +45,14 @@ export default class ConfigurationStore extends VuexModule {
     const reportPath = this.currentConfiguration?.paths?.html_report ?? "";
     const prefixPath = this.configurationPath.substr(0, this.configurationPath.length - "backstop.json".length);
     return reportPath &&
-          FileService.resolvePath([prefixPath, reportPath]) || "";
+      FileService.resolvePath([prefixPath, reportPath]) || "";
   }
 
   public get engineScriptDirectory() {
     const engineScriptPath = this.currentConfiguration?.paths?.engine_scripts ?? "";
     const prefixPath = this.configurationPath.substr(0, this.configurationPath.length - "backstop.json".length);
     return engineScriptPath &&
-          FileService.resolvePath([prefixPath, engineScriptPath]) || "";
+      FileService.resolvePath([prefixPath, engineScriptPath]) || "";
   }
 
   @Mutation
@@ -61,7 +61,7 @@ export default class ConfigurationStore extends VuexModule {
       if (!Array.isArray(this.currentConfiguration.viewports)) {
         this.currentConfiguration.viewports = [];
       }
-      this.currentConfiguration.viewports.push({label: "", width: 0, height: 0});
+      this.currentConfiguration.viewports.push({ label: "", width: 0, height: 0 });
       this.configurationModified = true;
     }
   }
@@ -150,7 +150,7 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Mutation
-  public setConfigurationReport({reportType, kept}: {reportType: "browser" | "CI" | "json", kept: boolean}) {
+  public setConfigurationReport({ reportType, kept }: { reportType: "browser" | "CI" | "json", kept: boolean }) {
     if (this.currentConfiguration) {
       const idx = this.currentConfiguration.report.indexOf(reportType);
       if (kept && idx === -1) {
@@ -175,7 +175,7 @@ export default class ConfigurationStore extends VuexModule {
 
   @Mutation
   public setScenarioField(
-    {scenarioIndex, field, value}: {scenarioIndex: number, field: string, value: any}
+    { scenarioIndex, field, value }: { scenarioIndex: number, field: string, value: any }
   ) {
     if (this.currentConfiguration?.scenarios) {
       Vue.set(this.currentConfiguration.scenarios[scenarioIndex], field, value);
@@ -202,7 +202,7 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Mutation
-  public removeScenarioField({index, fieldName}: { index: number, fieldName: string}) {
+  public removeScenarioField({ index, fieldName }: { index: number, fieldName: string }) {
     if (this.currentConfiguration?.scenarios) {
       Vue.delete(this.currentConfiguration.scenarios[index], fieldName);
       Vue.set(this.testsModified, index, true);
@@ -252,8 +252,8 @@ export default class ConfigurationStore extends VuexModule {
     this.isSaving = savingState;
   }
 
-  @Action({rawError: true})
-  public approveTests() {
+  @Action({ rawError: true })
+  public approveTests(): Promise<void> {
     if (this.context.rootState.testRunnerStore.testRunning) {
       return Promise.reject("Tests are running");
     }
@@ -264,8 +264,8 @@ export default class ConfigurationStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
-  public approveTest(testLabel: string) {
+  @Action({ rawError: true })
+  public approveTest(testLabel: string): Promise<void> {
     if (this.context.rootState.testRunnerStore.testRunning) {
       return Promise.reject("Tests are running");
     }
@@ -276,8 +276,8 @@ export default class ConfigurationStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
-  public approveTestViewport(payload: {testLabel: string, viewportLabel: string}) {
+  @Action({ rawError: true })
+  public approveTestViewport(payload: { testLabel: string, viewportLabel: string }): Promise<void> {
     if (this.context.rootState.testRunnerStore.testRunning) {
       return Promise.reject("Tests are running");
     }
@@ -288,43 +288,43 @@ export default class ConfigurationStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
-  public setContextAfterConfigLoaded(path: string) {
+  @Action({ rawError: true })
+  public setContextAfterConfigLoaded(path: string): void {
     this.context.commit("setPath", path);
     this.context.commit("updateRecently", path);
     this.context.commit("testLogStore/resetLogs", null, { root: true });
     this.context.commit("testResultStore/expireTestsResult", undefined, { root: true });
-    this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
+    this.context.dispatch("testResultStore/watchResultChange", null, { root: true });
     this.context.dispatch("engineScriptStore/retrieveEngineScripts", null, { root: true });
     BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
   }
 
-  @Action({rawError: true})
-  public initConfig({template, directory}: {template: BackstopConfiguration, directory: string}): Promise<void> {
+  @Action({ rawError: true })
+  public initConfig({ template, directory }: { template: BackstopConfiguration, directory: string }): Promise<void> {
     const path = FileService.resolvePath([directory, "backstop.json"]);
     return BackstopService.initTests(directory)
-        .then(() => {
-          if (template.id === "default") {
-            return DialogFileService.openAndParseFile(path)
-              .then((content) => {
-                this.context.commit("setFullConfiguration", content);
-              });
-          } else {
-            this.context.commit("setFullConfiguration", template);
-            this.context.commit("setPath", path);
-            return this.context.dispatch("saveConfiguration");
-          }
-        }).then(() => {
-          return this.context.dispatch("setContextAfterConfigLoaded", path);
-        });
+      .then(() => {
+        if (template.id === "default") {
+          return DialogFileService.openAndParseFile(path)
+            .then((content) => {
+              this.context.commit("setFullConfiguration", content);
+            });
+        } else {
+          this.context.commit("setFullConfiguration", template);
+          this.context.commit("setPath", path);
+          return this.context.dispatch("saveConfiguration");
+        }
+      }).then(() => {
+        return this.context.dispatch("setContextAfterConfigLoaded", path);
+      });
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   public openConfiguration(): Promise<void> {
     return DialogFileService.openFileDialog()
       .then(({ path, content }) => {
         if (typeof content.id !== "string" ||
-            !Array.isArray(content.scenarios)) {
+          !Array.isArray(content.scenarios)) {
           return Promise.reject("File doesn't look like a BackstopJS configuration");
         }
         this.context.commit("setFullConfiguration", content);
@@ -332,13 +332,13 @@ export default class ConfigurationStore extends VuexModule {
       });
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   public openConfigurationFromPath(path: string): Promise<void> {
     return DialogFileService.openAndParseFile(path)
       .then((content) => {
         if (typeof content.id !== "string" ||
-            !Array.isArray(content.viewports) ||
-            !Array.isArray(content.scenarios)) {
+          !Array.isArray(content.viewports) ||
+          !Array.isArray(content.scenarios)) {
           return Promise.reject("File doesn't look like a BackstopJS configuration");
         }
         this.context.commit("setFullConfiguration", content);
@@ -346,17 +346,17 @@ export default class ConfigurationStore extends VuexModule {
       });
   }
 
-  @Action({rawError: true})
-  public saveConfiguration() {
+  @Action({ rawError: true })
+  public saveConfiguration(): Promise<void> {
     this.context.commit("setSavingState", true);
     const content = JSON.stringify(this.currentConfiguration, null, 4);
 
     return FileService.writeFile(this.configurationPath, content)
-            .then(() => {
-              this.context.commit("resetModification");
-              this.context.commit("setConfigurationModified", false);
-            }).finally(() => {
-              this.context.commit("setSavingState", false);
-            });
+      .then(() => {
+        this.context.commit("resetModification");
+        this.context.commit("setConfigurationModified", false);
+      }).finally(() => {
+        this.context.commit("setSavingState", false);
+      });
   }
 }

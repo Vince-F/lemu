@@ -62,7 +62,7 @@ describe('ConfigurationStore', () => {
         configurationModified: false
       };
       configurationStore.mutations?.addScenario(state);
-      expect(state.currentConfiguration.scenarios).toStrictEqual([{ label: "Hello test" }, new BackstopTest({ label: "New test 2"})]);
+      expect(state.currentConfiguration.scenarios).toStrictEqual([{ label: "Hello test" }, new BackstopTest({ label: "New test 2" })]);
       expect(state.configurationModified).toBeTruthy();
     });
 
@@ -105,7 +105,7 @@ describe('ConfigurationStore', () => {
   });
 
   describe("approveTests", () => {
-    it ("should not approve tests if they are running", () => {
+    it("should not approve tests if they are running", () => {
       const commit = jest.fn();
       const context: ActionContext<any, any> = {
         dispatch: jest.fn(),
@@ -126,7 +126,7 @@ describe('ConfigurationStore', () => {
       return expect(result).rejects.toEqual("Tests are running");
     });
 
-    it ("should not approve and tells if there us no configuration", () => {
+    it("should not approve and tells if there us no configuration", () => {
       const commit = jest.fn();
       const context: ActionContext<any, any> = {
         dispatch: jest.fn(),
@@ -147,7 +147,7 @@ describe('ConfigurationStore', () => {
       return expect(result).rejects.toEqual("No configuration loaded");
     });
 
-    it ("should approve all the tests", async () => {
+    it("should approve all the tests", async () => {
       const configuration = {
         id: "test"
       };
@@ -167,7 +167,7 @@ describe('ConfigurationStore', () => {
         rootGetters: {}
       };
 
-      mockedBackstopService.approveTests.mockImplementationOnce(() => Promise.resolve());
+      mockedBackstopService.approveTests.mockImplementationOnce(() => Promise.resolve(undefined));
 
       const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
         .call(store, context);
@@ -178,7 +178,7 @@ describe('ConfigurationStore', () => {
   });
 
   describe("approveTest", () => {
-    it ("should not approve tests if they are running", () => {
+    it("should not approve tests if they are running", () => {
       const commit = jest.fn();
       const context: ActionContext<any, any> = {
         dispatch: jest.fn(),
@@ -199,7 +199,7 @@ describe('ConfigurationStore', () => {
       return expect(result).rejects.toEqual("Tests are running");
     });
 
-    it ("should not approve and tells if there us no configuration", () => {
+    it("should not approve and tells if there us no configuration", () => {
       const commit = jest.fn();
       const context: ActionContext<any, any> = {
         dispatch: jest.fn(),
@@ -220,7 +220,7 @@ describe('ConfigurationStore', () => {
       return expect(result).rejects.toEqual("No configuration loaded");
     });
 
-    it ("should approve the test for one test", async () => {
+    it("should approve the test for one test", async () => {
       const configuration = {
         id: "test"
       };
@@ -240,7 +240,7 @@ describe('ConfigurationStore', () => {
         rootGetters: {}
       };
 
-      mockedBackstopService.approveTest.mockImplementationOnce(() => Promise.resolve());
+      mockedBackstopService.approveTest.mockImplementationOnce(() => Promise.resolve(undefined));
 
       const result = (configurationStore.actions?.approveTest as ActionHandler<any, any>)
         .call(store, context, "testLabel");
@@ -251,7 +251,7 @@ describe('ConfigurationStore', () => {
   });
 
   describe("approveTestViewport", () => {
-    it ("should not approve tests if they are running", () => {
+    it("should not approve tests if they are running", () => {
       const commit = jest.fn();
       const context: ActionContext<any, any> = {
         dispatch: jest.fn(),
@@ -267,12 +267,12 @@ describe('ConfigurationStore', () => {
       };
 
       const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
-        .call(store, context, {testLabel: "testLabel", viewportLabel: "viewportLabel"});
+        .call(store, context, { testLabel: "testLabel", viewportLabel: "viewportLabel" });
 
       return expect(result).rejects.toEqual("Tests are running");
     });
 
-    it ("should not approve and tells if there us no configuration", () => {
+    it("should not approve and tells if there us no configuration", () => {
       const commit = jest.fn();
       const context: ActionContext<any, any> = {
         dispatch: jest.fn(),
@@ -288,12 +288,12 @@ describe('ConfigurationStore', () => {
       };
 
       const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
-        .call(store, context, {testLabel: "testLabel", viewportLabel: "viewportLabel"});
+        .call(store, context, { testLabel: "testLabel", viewportLabel: "viewportLabel" });
 
       return expect(result).rejects.toEqual("No configuration loaded");
     });
 
-    it ("should approve the test for one viewport", async () => {
+    it("should approve the test for one viewport", async () => {
       const configuration = {
         id: "test"
       };
@@ -313,10 +313,10 @@ describe('ConfigurationStore', () => {
         rootGetters: {}
       };
 
-      mockedBackstopService.approveTest.mockImplementationOnce(() => Promise.resolve());
+      mockedBackstopService.approveTest.mockImplementationOnce(() => Promise.resolve(undefined));
 
       const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
-        .call(store, context, {testLabel: "testLabel", viewportLabel: "viewportLabel"});
+        .call(store, context, { testLabel: "testLabel", viewportLabel: "viewportLabel" });
 
       await expect(result).resolves.toEqual(undefined);
       expect(mockedBackstopService.approveTest)
@@ -329,7 +329,7 @@ describe('ConfigurationStore', () => {
   });
 
   describe("openConfiguration", () => {
-    it ("should reject when dialog is rejected (closed for instance)", async () => {
+    it("should reject when dialog is rejected (closed for instance)", async () => {
       const commit = jest.fn();
       const dispatch = jest.fn();
       const context: ActionContext<any, any> = {
@@ -353,7 +353,7 @@ describe('ConfigurationStore', () => {
       expect(dispatch).toHaveBeenCalledTimes(0);
     });
 
-    it ("should reject when opened file is not a backstop configuration", async () => {
+    it("should reject when opened file is not a backstop configuration", async () => {
       const commit = jest.fn();
       const dispatch = jest.fn();
       const context: ActionContext<any, any> = {
@@ -365,7 +365,8 @@ describe('ConfigurationStore', () => {
         rootGetters: {}
       };
 
-      mockedDialogFileService.openFileDialog.mockImplementationOnce(() => Promise.resolve({path: "path", content: {}}));
+      mockedDialogFileService.openFileDialog.mockImplementationOnce(() =>
+        Promise.resolve({ path: "path", content: {} }));
 
       const result = (configurationStore.actions?.openConfiguration as ActionHandler<any, any>)
         .call(store, context);
@@ -377,8 +378,8 @@ describe('ConfigurationStore', () => {
       expect(commit).toHaveBeenCalledTimes(0);
     });
 
-    it ("should open configuration and set path", async () => {
-      const configuration = {id: "test", scenarios: []};
+    it("should open configuration and set path", async () => {
+      const configuration = { id: "test", scenarios: [] };
       const commit = jest.fn();
       const dispatch = jest.fn();
       const context: ActionContext<any, any> = {
@@ -393,36 +394,22 @@ describe('ConfigurationStore', () => {
       };
 
       mockedDialogFileService.openFileDialog.mockImplementationOnce(
-        () => Promise.resolve({path: "path", content: configuration}));
-      mockedBackstopService.setWorkingDir.mockImplementationOnce(jest.fn());
+        () => Promise.resolve({ path: "path", content: configuration }));
 
       const result = (configurationStore.actions?.openConfiguration as ActionHandler<any, any>)
         .call(store, context);
 
       await expect(result).resolves.toEqual(undefined);
 
-      expect(commit).toHaveBeenCalledTimes(5);
+      expect(commit).toHaveBeenCalledTimes(1);
       expect(dispatch).toHaveBeenCalledTimes(1);
 
       expect(commit.mock.calls[0][0]).toBe("setFullConfiguration");
-      expect(commit.mock.calls[0][1]).toEqual({newConfiguration: configuration});
+      expect(commit.mock.calls[0][1]).toEqual(configuration);
 
-      expect(commit.mock.calls[1][0]).toBe("setPath");
-      expect(commit.mock.calls[1][1]).toEqual("path");
 
-      expect(commit.mock.calls[2][0]).toBe("updateRecently");
-      expect(commit.mock.calls[2][1]).toEqual("path");
-
-      expect(commit.mock.calls[3][0]).toBe("testLogStore/resetLogs");
-      expect(commit.mock.calls[3][2]).toEqual({root: true});
-
-      expect(commit.mock.calls[4][0]).toBe("testResultStore/expireTestsResult");
-      expect(commit.mock.calls[4][2]).toEqual({root: true});
-
-      expect(dispatch.mock.calls[0][0]).toBe("testResultStore/watchResultChange");
-      expect(dispatch.mock.calls[0][2]).toEqual({root: true});
-
-      expect(mockedBackstopService.setWorkingDir).toHaveBeenCalledWith("configurationPath");
+      expect(dispatch.mock.calls[0][0]).toBe("setContextAfterConfigLoaded");
+      expect(dispatch.mock.calls[0][1]).toEqual("path");
     });
   });
 
@@ -436,10 +423,12 @@ describe('ConfigurationStore', () => {
   /* getters */
   describe("tests", () => {
     it("should get the scenarios from the current configuration", () => {
-      const scenarios = [{label: "test", url: "someUrl"}];
-      const state = { currentConfiguration: {
-        scenarios
-      }};
+      const scenarios = [{ label: "test", url: "someUrl" }];
+      const state = {
+        currentConfiguration: {
+          scenarios
+        }
+      };
 
       const result = configurationStore.getters?.tests(state, {}, {}, {});
       expect(result).toEqual(scenarios);
@@ -481,7 +470,7 @@ describe('ConfigurationStore', () => {
       expect(result).toBeFalsy();
     });
 
-    it ("should say the test is modified if it is mark as modified", () => {
+    it("should say the test is modified if it is mark as modified", () => {
       const state = {
         testsModified: [true]
       };
