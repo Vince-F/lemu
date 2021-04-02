@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu, protocol } from 'electron';
 import { autoUpdater } from "electron-updater";
+import logger from "electron-log";
 
 import path = require("path");
 import "v8-compile-cache";
@@ -10,7 +11,7 @@ import { BrowserWindowManager } from './controllers/browserWindowManager';
 try {
   autoUpdater.checkForUpdatesAndNotify();
 } catch (e) {
-  console.log("Fail to check for updates");
+  logger.warn("Fail to check for updates");
 }
 
 let mainWindow: Electron.BrowserWindow | null = null;
@@ -55,11 +56,10 @@ function registerDocProtocol() {
     if (url.endsWith("/") || url === "") {
       url += "index.html";
     }
-    console.log("request url from doc is", url);
     callback({ path: path.normalize(`./dist-app/docs/${url}`) });
   });
   if (!successfull) {
-    console.error("Fail to register doc protocol");
+    logger.error("Fail to register doc protocol");
   }
 }
 

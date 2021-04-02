@@ -2,7 +2,6 @@ import { dialog } from "electron";
 import fs = require("fs");
 import { FileService } from "./fileService";
 
-
 export class DialogService {
   public static openFileDialog(): Promise<{path: string, content: any}> {
     return dialog.showOpenDialog({

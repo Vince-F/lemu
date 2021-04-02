@@ -20,6 +20,12 @@ declare global {
       invoke: (channel: string, ...args: any[]) => Promise<any>;
       createTitleBar: () => void;
       updateTitleBarTitle: (newTitle: string) => void;
+      logger: {
+        silly(...args: string[]): void;
+        info(...args: string[]): void;
+        warn(...args: string[]): void;
+        error(...args: string[]): void;
+      };
     };
   }
 }

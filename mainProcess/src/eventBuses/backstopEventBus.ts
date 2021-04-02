@@ -82,6 +82,6 @@ electron.ipcMain.on(eventNames.CONFIG_CHANGED.REQUEST, (event, path) => {
   BackstopFileService.watchConfigurationFile(path);
 });
 
-electron.ipcMain.on(eventNames.UNREGISTER_CONFIG_WATCHER.REQUEST, (event) => {
+electron.ipcMain.on(eventNames.UNREGISTER_CONFIG_WATCHER.REQUEST, () => {
   BackstopFileService.unregisterConfigurationWatcher();
 });

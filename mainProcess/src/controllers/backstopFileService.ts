@@ -12,7 +12,7 @@ export class BackstopFileService {
     this.configFileWatcher = fs.watch(configPath);
 
     let eventReceived = false;
-    this.configFileWatcher.on("change", (eventType) => {
+    this.configFileWatcher.on("change", () => {
       if (!eventReceived) {
         eventReceived = true;
         BrowserWindowManager.sendEvent(eventNames.CONFIG_CHANGED.REPLY);

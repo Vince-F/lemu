@@ -4,9 +4,10 @@ import fs = require("fs");
 import { eventNames } from "../../../shared/constants/eventNames";
 import { BrowserWindowManager } from "./browserWindowManager";
 import { BackstopTestResultReader } from "./backstopTestResultReader";
+import logger from "electron-log";
 
 export class BackstopWorkerManager {
-  public static executeCommand(workingPath: string, command: string, options?: any) {
+  public static executeCommand(workingPath: string, command: string, options?: unknown) {
     return new Promise((resolve, reject) => {
       fs.readFile(path.join(__dirname, "./backstopWorker.js"), {encoding: "utf-8"}, (err, fileContent) => {
         if (err) {
@@ -47,7 +48,8 @@ export class BackstopWorkerManager {
             } else if (this.recordApprovalEnabled) {
               this.addApprovalResultToUpdate(message);
             }
-            console.log(message);
+
+            logger.log(message);
             BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
               level: "info",
               message
@@ -55,7 +57,7 @@ export class BackstopWorkerManager {
           });
 
           worker.stderr.on("data", (data: Buffer) => {
-            console.error(data.toString());
+            logger.warn(data.toString());
             BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
               level: "error",
               message: data.toString()
@@ -77,6 +79,7 @@ export class BackstopWorkerManager {
   }
 
   private static updateApprovalResult(workingPath: string) {
+    // TODO: this is false if the config is custom
     const reportPath = path.join(workingPath, "backstop_data/html_report/");
     BackstopTestResultReader.retrieveReportResult(reportPath)
       .then((reportContent: any) => {
@@ -90,9 +93,9 @@ export class BackstopWorkerManager {
         const content = "report(" + JSON.stringify(reportContent) + ");";
         fs.writeFile(path.join(reportPath, "config.js"), content, { encoding: "utf-8" }, (err) => {
           if (err) {
-            console.error("Failed to update report:", err.message);
+            logger.error("Failed to update report:", err.message);
           } else {
-            console.log("Report successfully updated");
+            logger.log("Report successfully updated");
           }
         });
       });

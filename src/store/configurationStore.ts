@@ -237,7 +237,7 @@ export default class ConfigurationStore extends VuexModule {
     try {
       recentPaths = JSON.parse(localStorage.getItem("recentlyOpened") || "");
     } catch (e) {
-      console.log("fail to open recent path");
+      window.ipcHandler.logger.warn("fail to open recent path");
     }
     const idx = recentPaths.indexOf(path);
     if (idx > -1) {

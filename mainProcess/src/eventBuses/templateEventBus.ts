@@ -26,7 +26,7 @@ ipcMain.handle(eventNames.CREATE_OR_UPDATE_CONFIGURATION_TEMPLATE, (event, name:
   return TemplateManager.getInstance().createOrUpdateConfigurationTemplate(name, content);
 });
 
-ipcMain.handle(eventNames.RETRIEVE_CONFIGURATION_TEMPLATES, (event) => {
+ipcMain.handle(eventNames.RETRIEVE_CONFIGURATION_TEMPLATES, () => {
   return TemplateManager.getInstance().retrieveConfigurationTemplates();
 });
 
