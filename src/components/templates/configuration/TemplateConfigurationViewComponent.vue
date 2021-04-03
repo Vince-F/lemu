@@ -25,7 +25,7 @@
 
         <v-tab>Engine</v-tab>
         <v-tab-item>
-          <engine-configuration-component :configuration="currentConfiguration" 
+          <engine-configuration-component :configuration="currentConfiguration"
             @setConfigurationEngineOptionsField="setConfigurationEngineOptionsField"
             @updateField="updateField"/>
         </v-tab-item>
@@ -38,7 +38,7 @@
 
         <v-tab>Perfomance</v-tab>
         <v-tab-item>
-          <performance-configuration-component :configuration="currentConfiguration" 
+          <performance-configuration-component :configuration="currentConfiguration"
             @updateField="updateField"/>
         </v-tab-item>
       </v-tabs>
@@ -112,24 +112,33 @@ import EntityMenuBarActionComponent from "../../layout/EntityMenuBarActionCompon
 export default class ConfigurationComponent extends Vue {
   @State((state) => state.templateStore.configurationTemplates)
   private readonly configurationTemplates!: BackstopConfiguration[];
+
   @Mutation("templateStore/addViewportInConfiguration")
   private readonly addViewportInConfig!: (configIdx: number) => void;
+
   @Mutation("templateStore/removeViewportInConfiguration")
   private readonly removeViewportInConfig!: (payload: {configIdx: number, viewportId: number}) => void;
+
   @Mutation("templateStore/setFieldInConfiguration")
-  private readonly setConfigurationField!: (payload: {configIdx: number, field: string, value: any}) => void;
+  private readonly setConfigurationField!: (payload: {configIdx: number, field: string, value: unknown}) => void;
+
   @Mutation("templateStore/setPathFieldInConfiguration")
-  private readonly setConfigurationPathField!: (payload: {configIdx: number, field: string, value: any}) => void;
+  private readonly setConfigurationPathField!: (payload: {configIdx: number, field: string, value: unknown}) => void;
+
   @Mutation("templateStore/setReportInConfiguration")
   private readonly setConfigurationReport!: (payload: {configIdx: number, reportType: string, kept: boolean}) => void;
+
   @Mutation("templateStore/setViewportFieldInConfiguration")
   private readonly setConfigurationViewportField!:
-    (payload: {configIdx: number, viewportIndex: number, field: string, value: any}) => void;
+    (payload: {configIdx: number, viewportIndex: number, field: string, value: unknown}) => void;
+
   @Mutation("templateStore/setEngineOptionInConfiguration")
   private readonly setConfigurationEngineOptionsField!: (payload: {configIdx: number,
-    field: string, value: any}) => void;
+    field: string, value: unknown}) => void;
+
   @Mutation("templateStore/removeEngineOptionInConfiguration")
   private readonly removeEngineOption!: (fieldName: string) => void;
+
   @Mutation("templateStore/removeConfigurationTemplate")
   private readonly removeConfigurationTemplate!: (index: number) => void;
 
@@ -141,7 +150,6 @@ export default class ConfigurationComponent extends Vue {
     this.currentConfiguration = null;
     this.currentIndex = -1;
   }
-
 
   private addViewport() {
     this.addViewportInConfig(this.currentIndex);
@@ -164,28 +172,28 @@ export default class ConfigurationComponent extends Vue {
   }
 
   private removeViewport(index: number) {
-    this.removeViewportInConfig({configIdx: this.currentIndex, viewportId: index});
+    this.removeViewportInConfig({ configIdx: this.currentIndex, viewportId: index });
   }
 
-  private updateField(field: string, value: any) {
-    this.setConfigurationField({configIdx: this.currentIndex, field, value});
+  private updateField(field: string, value: unknown) {
+    this.setConfigurationField({ configIdx: this.currentIndex, field, value });
   }
 
-  private updatePathField(field: string, value: any) {
-    this.setConfigurationPathField({configIdx: this.currentIndex, field, value});
+  private updatePathField(field: string, value: unknown) {
+    this.setConfigurationPathField({ configIdx: this.currentIndex, field, value });
   }
 
   private updateReport(reportType: string, kept: boolean) {
-    this.setConfigurationReport({configIdx: this.currentIndex, reportType, kept});
+    this.setConfigurationReport({ configIdx: this.currentIndex, reportType, kept });
   }
 
-  private updateViewportField(viewportIndex: number, field: string, value: any) {
-    this.setConfigurationViewportField({configIdx: this.currentIndex, viewportIndex, field, value});
+  private updateViewportField(viewportIndex: number, field: string, value: unknown) {
+    this.setConfigurationViewportField({ configIdx: this.currentIndex, viewportIndex, field, value });
   }
 
   private deleteConfiguration() {
     this.removeConfigurationTemplate(this.currentIndex);
-    this.$router.push({name: "configurationTemplates.welcome"});
+    this.$router.push({ name: "configurationTemplates.welcome" });
   }
 }
 </script>

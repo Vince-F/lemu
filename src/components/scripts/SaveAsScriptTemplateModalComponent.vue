@@ -39,17 +39,13 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { State, Action } from "vuex-class";
-import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
-
-interface ElectronFile extends File {
-  path: string;
-}
+import { State } from "vuex-class";
+import { EngineScriptTemplate } from "@/models/engineScriptTemplate";
 
 @Component
 export default class AddScriptModalComponent extends Vue {
   @Prop(Object)
-  private readonly payload!: any;
+  private readonly payload!: {fileName: string};
 
   @State((state) => state.templateStore.scripts)
   private readonly scripts!: EngineScriptTemplate[];
@@ -84,7 +80,10 @@ export default class AddScriptModalComponent extends Vue {
   }
 
   private add() {
-    (this.$refs.form as any).validate(); // this is Veutify v-form component
+    const formComponent: unknown = this.$refs.forms;
+    if (formComponent && Object.prototype.hasOwnProperty.call(formComponent, "validate")) {
+      (formComponent as {validate: () => void }).validate();
+    }
     if (this.valid) {
       this.$emit("validate", this.fileName);
     }

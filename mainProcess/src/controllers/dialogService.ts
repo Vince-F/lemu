@@ -17,7 +17,7 @@ export class DialogService {
             };
           });
       } else {
-        return Promise.reject("dismiss");
+        return Promise.reject(new Error("dismiss"));
       }
     });
   }
@@ -30,7 +30,7 @@ export class DialogService {
         const filePath = directorySelection.filePaths[0];
         return filePath;
       } else {
-        return Promise.reject("dismiss");
+        return Promise.reject(new Error("dismiss"));
       }
     });
   }

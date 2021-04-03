@@ -44,29 +44,29 @@
 <script lang="ts">
 import { BackstopConfiguration } from "@/models/backstopConfiguration";
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { ModalService } from '../../services/modalService';
+import { ModalService } from "../../services/modalService";
 import AddEngineOptionModalComponent from "./AddEngineOptionModalComponent.vue";
 
 @Component
 export default class EngineConfigurationComponent extends Vue {
-  @Prop({required: true})
+  @Prop({ required: true })
   private readonly configuration!: BackstopConfiguration;
 
   private addEngineOption() {
     ModalService.launchModal(AddEngineOptionModalComponent)
-      .then((newField: {name: string, value: any, type: string}) => {
+      .then((newField: {name: string, value: unknown, type: string}) => {
         if (newField.type === "number") {
           newField.value = Number.parseFloat(newField.value);
         }
-        this.setConfigurationEngineOptionsField({field: newField.name, value: newField.value});
+        this.setConfigurationEngineOptionsField({ field: newField.name, value: newField.value });
       });
   }
 
-  private setConfigurationEngineOptionsField(value: {field: string, value: any}) {
+  private setConfigurationEngineOptionsField(value: {field: string, value: unknown}) {
     this.$emit("setConfigurationEngineOptionsField", value);
   }
 
-  private updateField(field: string, value: any) {
+  private updateField(field: string, value: unknown) {
     this.$emit("updateField", field, value);
   }
 }

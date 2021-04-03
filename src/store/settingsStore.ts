@@ -1,11 +1,10 @@
-import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
-
+import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 
 @Module({
   namespaced: true
 })
 export default class SettingsStore extends VuexModule {
-  public darkModeEnabled: boolean = false;
+  public darkModeEnabled = false;
 
   @Action({ rawError: true })
   public loadSettings(): Promise<void> {
@@ -25,20 +24,20 @@ export default class SettingsStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public updateDarkMode(darkModeEnabled: boolean) {
+  public updateDarkMode(darkModeEnabled: boolean): Promise<void> {
     this.context.commit("setDarkMode", darkModeEnabled);
     return this.context.dispatch("saveSettings");
   }
 
   @Action({ rawError: true })
-  public saveSettings() {
+  public saveSettings(): void {
     localStorage.setItem("settings", JSON.stringify({
       darkMode: this.darkModeEnabled
     }));
   }
 
   @Mutation
-  public setDarkMode(enabled: boolean) {
+  public setDarkMode(enabled: boolean): void {
     this.darkModeEnabled = enabled;
   }
 }

@@ -15,7 +15,6 @@
   </v-dialog>
 </template>
 
-
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
@@ -24,10 +23,11 @@ import { State, Action } from "vuex-class";
 export default class AboutModalComponent extends Vue {
   @State((state) => state.settingsStore.darkModeEnabled)
   private readonly darkModeEnabled!: boolean;
+
   @Action("settingsStore/updateDarkMode")
   private readonly updateDarkMode!: (newVal: boolean) => Promise<void>;
 
-  private dialogDisplayed: boolean = true;
+  private dialogDisplayed = true;
 
   constructor() {
     super(arguments);

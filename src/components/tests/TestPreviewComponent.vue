@@ -2,13 +2,13 @@
   <div>
     <div class="d-flex">
       <div v-for="(value, key) in selectorFields" :key="key" class="mr-8">
-        <v-switch class="slider mr-2" :label="'Display \'' + key + '\' selector'" 
+        <v-switch class="slider mr-2" :label="'Display \'' + key + '\' selector'"
           :input-value="selectorProperties[key].displayed" @change="updateSelectorProperty(key, 'displayed', $event)"/>
-        <v-menu 
+        <v-menu
           offset-y
           :close-on-content-click="false">
           <template v-slot:activator="{ on: menuListener }">
-            <div class="color-picker" v-on="menuListener" 
+            <div class="color-picker" v-on="menuListener"
               :style="{background: selectorProperties[key].color }"></div>
           </template>
           <v-color-picker
@@ -90,7 +90,7 @@ export default class TestPreviewComponent extends Vue {
   }
 
   private get selectorFields(): {[key: string]: string[]} {
-    const result: any = {};
+    const result: {[key: string]: unknown} = {};
     let i = 0;
     for (const key in this.testContent) {
       if (key in this.testContent) {
@@ -104,7 +104,7 @@ export default class TestPreviewComponent extends Vue {
             result[key] = this.testContent[key];
           }
           if (!this.selectorProperties[key]) {
-            Vue.set(this.selectorProperties, key, {displayed: true, color: this.predefinedColors[i]});
+            Vue.set(this.selectorProperties, key, { displayed: true, color: this.predefinedColors[i] });
           }
         }
         i++;
@@ -138,7 +138,7 @@ export default class TestPreviewComponent extends Vue {
     this.setPreviewOnSelectors();
   }
 
-  @Watch("selectorProperties", {deep: true})
+  @Watch("selectorProperties", { deep: true })
   private updateSelectorsAfterSelectorPropertiesUpdate() {
     this.setPreviewOnSelectors();
   }

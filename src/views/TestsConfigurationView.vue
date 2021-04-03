@@ -38,18 +38,22 @@ import ReloadConfigurationModalComponent from "../components/app/ReloadConfigura
 @Component({
   name: "test-configuration-view",
   components: {
-    MainMenuComponent,
-  },
+    MainMenuComponent
+  }
 })
 export default class TestConfigurationView extends Vue {
   @State((state) => state.configurationStore.configurationPath)
   private configurationPath!: string;
+
   @State((state) => state.configurationStore.configurationModified)
   private configurationModified!: string;
+
   @State((state) => state.configurationStore.isSaving)
   private configurationIsSaving!: boolean;
+
   @Action("configurationStore/openConfigurationFromPath")
   private openConfigurationFromPath!: (path: string) => Promise<void>;
+
   @Action("configurationStore/saveConfiguration")
   private saveConfiguration!: () => Promise<void>;
 

@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Action, Mutation } from "vuex-class";
+import { Action } from "vuex-class";
 import ScriptMenuComponent from "../components/scripts/ScriptMenuComponent.vue";
 import MenuAndContentComponent from "../components/layout/MenuAndContentComponent.vue";
 
@@ -27,6 +27,7 @@ import MenuAndContentComponent from "../components/layout/MenuAndContentComponen
 export default class ScriptView extends Vue {
   @Action("templateStore/retrieveEngineScriptTemplates")
   private readonly retrieveEngineScriptTemplates!: () => Promise<void>;
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
@@ -37,7 +38,7 @@ export default class ScriptView extends Vue {
   private created() {
     this.retrieveEngineScriptTemplates()
       .catch(() => {
-        this.displaySnackbar({text: "Failed to load engine script templates", success: false});
+        this.displaySnackbar({ text: "Failed to load engine script templates", success: false });
       });
   }
 }

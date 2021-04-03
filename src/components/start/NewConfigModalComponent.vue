@@ -13,11 +13,11 @@
             v-model="selectedTemplate"
             item-text="id"
             return-object
-          ></v-select>    
+          ></v-select>
           <v-text-field @click="selectDirectory"
             readonly clearable
-            v-model="configurationDirectory" 
-            label="Configuration directory" 
+            v-model="configurationDirectory"
+            label="Configuration directory"
             :rules="directoryRules"
             prepend-icon="mdi-folder"></v-text-field>
         </v-form>
@@ -46,6 +46,7 @@ import { Action, State } from "vuex-class";
 export default class AddScriptModalComponent extends Vue {
   @State((state) => state.templateStore.configurationTemplates)
   private readonly configurationTemplates!: BackstopConfiguration[];
+
   @Action("templateStore/retrieveConfigurationTemplates")
   private readonly retrieveConfigurationTemplates!: () => Promise<void>;
 
@@ -62,7 +63,7 @@ export default class AddScriptModalComponent extends Vue {
     this.valid = false;
     this.configurationDirectory = "";
     this.directoryRules = [
-      (value: string) => value && value.length > 0 || "You must select a directory where to save the configuration"
+      (value: string) => (value && value.length > 0) || "You must select a directory where to save the configuration"
     ];
   }
 
@@ -71,7 +72,7 @@ export default class AddScriptModalComponent extends Vue {
   }
 
   private get templates() {
-    let templates = [new BackstopConfiguration({id: "default"})];
+    let templates = [new BackstopConfiguration({ id: "default" })];
     if (Array.isArray(this.configurationTemplates)) {
       templates = templates.concat(this.configurationTemplates);
     }
@@ -79,7 +80,10 @@ export default class AddScriptModalComponent extends Vue {
   }
 
   private create() {
-    (this.$refs.form as any).validate(); // this is Vuetify v-form component
+    const formComponent: unknown = this.$refs.forms;
+    if (formComponent && Object.prototype.hasOwnProperty.call(formComponent, "validate")) {
+      (formComponent as {validate: () => void }).validate();
+    }
     if (this.valid) {
       this.$emit("validate", {
         template: this.selectedTemplate,

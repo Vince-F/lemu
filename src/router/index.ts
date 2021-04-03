@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
+import Vue from "vue";
+import VueRouter from "vue-router";
 import StartScreenView from "../views/StartScreenView.vue";
 import TestsConfigurationView from "../views/TestsConfigurationView.vue";
 import ReportView from "../views/ReportView.vue";
@@ -8,7 +8,6 @@ import ScriptView from "../views/ScriptView.vue";
 import TestView from "../views/TestView.vue";
 
 import ConfigurationComponent from "../components/generalConfig/ConfigurationComponent.vue";
-import TestsListComponent from "../components/tests/TestsListComponent.vue";
 import TestViewComponent from "../components/tests/TestViewComponent.vue";
 import TestWelcomeScreenComponent from "../components/tests/TestWelcomeScreenComponent.vue";
 import ScriptViewComponent from "../components/scripts/ScriptViewComponent.vue";
@@ -22,18 +21,17 @@ import TemplateConfigurationsMenuComponent from "../components/templates/configu
 import TemplateConfigurationViewComponent from "../components/templates/configuration/TemplateConfigurationViewComponent.vue";
 import TemplateConfigurationWelcomeComponent from "../components/templates/configuration/TemplateConfigurationWelcomeComponent.vue";
 
-
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
-    name: 'startScreen',
-    component: StartScreenView,
+    path: "/",
+    name: "startScreen",
+    component: StartScreenView
   },
   {
-    path: '/tests',
-    name: 'testConfiguration',
+    path: "/tests",
+    name: "testConfiguration",
     component: TestsConfigurationView,
     children: [
       {
@@ -134,7 +132,7 @@ const routes = [
             }
           }
         ]
-      },
+      }
     ]
   }
 ];

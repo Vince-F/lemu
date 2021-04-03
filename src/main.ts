@@ -1,17 +1,18 @@
-import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-import store from './store';
-import vuetify from './plugins/vuetify';
-
-Vue.config.productionTip = false;
+import Vue from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
+import vuetify from "./plugins/vuetify";
 
 import "./styles/font.css";
 import "./styles/main.css";
 
+Vue.config.productionTip = false;
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare global {
   interface Window {
-    vueApp: any;
+    vueApp: Vue;
     ipcHandler: {
       send: (channel: string, ...args: any[]) => void;
       sendSync: (channel: string, ...args: any[]) => any;
@@ -29,11 +30,13 @@ declare global {
     };
   }
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 window.vueApp = new Vue({
   router,
   store,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   vuetify,
   render: (h) => h(App)
-}).$mount('#app');
+}).$mount("#app");

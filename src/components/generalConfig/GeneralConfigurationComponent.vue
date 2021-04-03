@@ -18,22 +18,23 @@ import { State, Getter } from "vuex-class";
 
 @Component
 export default class GeneralConfigurationComponent extends Vue {
-  @Prop({required: true, type: Object})
+  @Prop({ required: true, type: Object })
   private readonly configuration!: BackstopConfiguration;
 
-  @Prop({type: Boolean})
+  @Prop({ type: Boolean })
   private readonly templateView!: boolean;
 
   @State((state) => state.engineScriptStore.scripts)
   private readonly scripts!: EngineScript[];
+
   @Getter("configurationStore/engineScriptDirectory")
   private readonly engineScriptDirectory!: string;
 
-  private updateField(field: string, value: any) {
+  private updateField(field: string, value: unknown) {
     this.$emit("updateField", field, value);
   }
 
-  private updatePathField(field: string, value: any) {
+  private updatePathField(field: string, value: unknown) {
     this.$emit("updatePathField", field, value);
   }
 

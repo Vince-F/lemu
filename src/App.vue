@@ -27,11 +27,11 @@
   .sub-toolbar {
     top: 30px;
   }
-  
+
   .app-title {
     font-weight: 400;
   }
-  
+
   .app {
     position: absolute;
     inset: 0;
@@ -62,20 +62,28 @@ import ReleaseInfoModalComponent from "./components/app/ReleaseInfoModalComponen
 export default class App extends Vue {
   @State((state) => state.applicationStore.snackbarDisplayed)
   private readonly snackbarDisplayed!: boolean;
+
   @State((state) => state.applicationStore.snackbarText)
   private readonly snackbarText!: string;
+
   @State((state) => state.applicationStore.snackbarSuccess)
   private readonly snackbarSuccess!: boolean;
+
   @State((state) => state.applicationStore.appInfos)
   private readonly appInfos!: {appVersion: string, backstopVersion: string} | null;
+
   @State((state) => state.settingsStore.darkModeEnabled)
   private readonly darkModeEnabled!: boolean;
+
   @Mutation("applicationStore/hideSnackbar")
   private readonly hideSnackbar!: () => void;
+
   @Action("applicationStore/retrieveAppInfos")
   private readonly retrieveAppInfos!: () => Promise<void>;
+
   @Action("testLogStore/initializeLogListener")
   private readonly initializeLogListener!: () => Promise<void>;
+
   @Action("settingsStore/loadSettings")
   private readonly loadSettings!: () => Promise<void>;
 
@@ -94,7 +102,7 @@ export default class App extends Vue {
       });
   }
 
-  @Watch('darkModeEnabled', { immediate: true })
+  @Watch("darkModeEnabled", { immediate: true })
   private updateDarkMode() {
     this.$vuetify.theme.dark = this.darkModeEnabled;
   }

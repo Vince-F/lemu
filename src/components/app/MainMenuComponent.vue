@@ -21,16 +21,16 @@ export default class MainMenuComponent extends Vue {
       {
         title: "General configuration",
         icon: "mdi-cog",
-        path: "/tests/generalConfig",
+        path: "/tests/generalConfig"
       },
       { title: "Tests", icon: "mdi-bug", path: "/tests/list" },
       {
         title: "Engine scripts",
         icon: "mdi-script",
-        path: "/tests/engineScripts",
+        path: "/tests/engineScripts"
       },
       { title: "Reports", icon: "mdi-clipboard-text", path: "/tests/report" },
-      { title: "Logs", icon: "mdi-file-document", path: "/tests/logs" },
+      { title: "Logs", icon: "mdi-file-document", path: "/tests/logs" }
     ];
   }
 }

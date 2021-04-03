@@ -24,7 +24,7 @@
       </div>
     </div>
   </div>
-  
+
 </template>
 
 <style scoped>
@@ -37,42 +37,46 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { Action, State, Mutation } from "vuex-class";
-import { BackstopConfiguration } from '../../models/backstopConfiguration';
-import { FileService } from '../../services/fileService';
+import { Action, State } from "vuex-class";
+import { BackstopConfiguration } from "../../models/backstopConfiguration";
+import { FileService } from "../../services/fileService";
 
 @Component
 export default class ReportComponent extends Vue {
   @State((state) => state.configurationStore.currentConfiguration)
   private readonly configuration!: BackstopConfiguration;
+
   @State((state) => state.configurationStore.configurationPath)
   private readonly path!: string;
+
   @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
+
   @Action("configurationStore/approveTests")
-  private readonly approveTests!: () => Promise<any>;
+  private readonly approveTests!: () => Promise<void>;
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
   private get reportPath() {
-    const configurationPath = this.configuration && this.configuration.paths &&
-        this.configuration.paths.html_report || "";
+    const configurationPath = (this.configuration && this.configuration.paths &&
+        this.configuration.paths.html_report) || "";
     const prefixPath = this.path.substr(0, this.path.length - "backstop.json".length);
-    return configurationPath &&
-          FileService.resolvePath([prefixPath, configurationPath, "index.html"]) || "";
+    return (configurationPath &&
+          FileService.resolvePath([prefixPath, configurationPath, "index.html"])) || "";
   }
 
   private approveTestsResult() {
     this.approveTests()
       .then(() => {
-        this.displaySnackbar({text: "Tests successfully approved.", success: true});
+        this.displaySnackbar({ text: "Tests successfully approved.", success: true });
         const reportFrame = this.$refs.reportFrame;
-        if (reportFrame instanceof HTMLIFrameElement && reportFrame
-          && reportFrame.contentWindow) {
+        if (reportFrame instanceof HTMLIFrameElement && reportFrame &&
+          reportFrame.contentWindow) {
           reportFrame.contentWindow.location.reload(true);
         }
       }).catch((error) => {
-        this.displaySnackbar({text: "Test approval failed. Error: " + error, success: false});
+        this.displaySnackbar({ text: "Test approval failed. Error: " + error, success: false });
       });
   }
 }

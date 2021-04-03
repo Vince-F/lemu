@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img :src="imgSrc" v-on:load="stopLoading" 
+    <img :src="imgSrc" v-on:load="stopLoading"
           class="standard-image"
           @click="openFullScreen"/>
     <v-progress-circular
@@ -20,7 +20,7 @@
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>
-      </div>     
+      </div>
     </v-overlay>
   </div>
 </template>
@@ -54,7 +54,7 @@ import { Vue, Prop, Component } from "vue-property-decorator";
 
 @Component
 export default class ZoomableImageComponent extends Vue {
-  @Prop({required: true, type: String})
+  @Prop({ required: true, type: String })
   private readonly imgSrc!: string;
 
   private zoomed: boolean;

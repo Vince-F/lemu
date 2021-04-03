@@ -26,7 +26,7 @@ export default class ConfirmationModalComponent extends Vue {
   @Prop({ required: true, type: String })
   private textContent!: string;
 
-  private dialogDisplayed: boolean = true;
+  private dialogDisplayed = true;
 
   private accept() {
     this.dialogDisplayed = false;

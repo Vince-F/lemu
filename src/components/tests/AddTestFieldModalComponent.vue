@@ -20,7 +20,7 @@
             <v-select outlined dense
               :items="predefinedFields" label="Predefined field" v-model="selectedField"
               item-text="name" :messages="helpMessage" return-object
-              @change="updateNewValueTypeWithPredefinedField" :rules="predefinedFieldRules" />                
+              @change="updateNewValueTypeWithPredefinedField" :rules="predefinedFieldRules" />
           </div>
           <v-text-field outlined dense
             v-if="fieldType === 'number'" label="Value" type="number" v-model="fieldValue" />
@@ -30,7 +30,7 @@
             label="Value" v-model="fieldValue"/>
           <v-select outlined dense v-else-if="fieldType === 'scripts'" :items="scriptNames"
             label="Value" multiple v-model="fieldValue" />
-          <viewports-component v-else-if="fieldType === 'viewports'" 
+          <viewports-component v-else-if="fieldType === 'viewports'"
             :viewports="fieldValue" @addViewport="addViewport"
             @removeViewport="removeViewport" @updateViewportField="updateViewportField" />
           <v-text-field outlined dense v-else label="Value" v-model="fieldValue" />
@@ -56,17 +56,17 @@
         </v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog> 
+  </v-dialog>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State, Getter, Action } from "vuex-class";
-import { backstopScenarioProperties } from '../../constants/backstopScenarioProperties';
+import { State, Getter } from "vuex-class";
+import { backstopScenarioProperties } from "../../constants/backstopScenarioProperties";
 import { backstopFieldHelp } from "../../constants/backstopFieldHelp";
-import { EngineScript } from '@/models/engineScript';
+import { EngineScript } from "@/models/engineScript";
 import ViewportsComponent from "./ViewportsComponent.vue";
-import { Viewport } from '@/models/viewport';
+import { Viewport } from "@/models/viewport";
 import { backstopFieldType } from "@/models/backstopFieldType";
 import { EngineScriptHelper } from "../../controllers/EngineScriptHelper";
 
@@ -78,12 +78,14 @@ import { EngineScriptHelper } from "../../controllers/EngineScriptHelper";
 export default class AddTestFieldModalComponent extends Vue {
   @State((state) => state.engineScriptStore.scripts)
   private readonly scripts!: EngineScript[];
+
   @Getter("configurationStore/engineScriptDirectory")
   private readonly engineScriptDirectory!: string;
 
   private dialogDisplayed: boolean;
   private readonly predefinedFields: Array<{name: string,
     type: backstopFieldType }>;
+
   private readonly modes: string[];
   private readonly types: string[];
   private currentMode: string;
@@ -136,7 +138,10 @@ export default class AddTestFieldModalComponent extends Vue {
   }
 
   private addField() {
-    (this.$refs.form as any).validate(); // this is Vuetify v-form component
+    const formComponent: unknown = this.$refs.forms;
+    if (formComponent && Object.prototype.hasOwnProperty.call(formComponent, "validate")) {
+      (formComponent as {validate: () => void }).validate();
+    }
     if (this.valid) {
       this.dialogDisplayed = false;
       this.$emit("validate", {
@@ -166,16 +171,16 @@ export default class AddTestFieldModalComponent extends Vue {
 
   private updateNewValueType() {
     switch (this.fieldType) {
-      case 'array':
-      case 'scripts':
-      case 'viewports':
-      case 'selectors':
+      case "array":
+      case "scripts":
+      case "viewports":
+      case "selectors":
         this.fieldValue = [];
         break;
-      case 'boolean':
+      case "boolean":
         this.fieldValue = false;
         break;
-      case 'number':
+      case "number":
         this.fieldValue = 0;
         break;
       default:
@@ -184,7 +189,7 @@ export default class AddTestFieldModalComponent extends Vue {
     }
   }
 
-  private updateViewportField(index: number, field: string, value: any) {
+  private updateViewportField(index: number, field: string, value: unknown) {
     if (Array.isArray(this.fieldValue) && this.fieldValue[index]) {
       Vue.set((this.fieldValue[index] as Viewport), field, value);
     }

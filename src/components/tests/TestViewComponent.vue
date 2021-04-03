@@ -3,14 +3,14 @@
     @contextmenu="showContextMenu">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
       <div class="flex-grow-1 flex-shrink-1">
-        {{testContent.label}} 
+        {{testContent.label}}
         <v-tooltip top>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on" color="green" class="icon-offset" v-if="testStatus === 'pass'">
               mdi-check-circle
             </v-icon>
             <v-icon v-on="on" color="grey" class="icon-offset" v-else-if="testStatus === 'unknown'">
-              mdi-help-circle 
+              mdi-help-circle
             </v-icon>
             <v-icon v-on="on" color="red" class="icon-offset" v-else>
               mdi-alert
@@ -147,9 +147,9 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Action, Mutation, State, Getter } from "vuex-class";
-import { BackstopTest } from '../../models/backstopTest';
-import { BackstopConfiguration } from '../../models/backstopConfiguration';
-import { BackstopTestResult } from '../../models/backstopTestResult';
+import { BackstopTest } from "../../models/backstopTest";
+import { BackstopConfiguration } from "../../models/backstopConfiguration";
+import { BackstopTestResult } from "../../models/backstopTestResult";
 import { ModalService } from "../../services/modalService";
 import TestConfigurationComponent from "./TestConfigurationComponent.vue";
 import TestPreviewComponent from "./TestPreviewComponent.vue";
@@ -168,24 +168,34 @@ import EntityMenuBarActionComponent from "../layout/EntityMenuBarActionComponent
 export default class TestViewComponent extends Vue {
   @State((state) => state.configurationStore.currentConfiguration)
   private readonly configuration!: BackstopConfiguration;
+
   @State((state) => state.configurationStore.configurationPath)
   private readonly path!: string;
+
   @State((state) => state.testResultStore.resultExpired)
   private readonly resultExpired!: boolean;
+
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
+
   @Action("testRunnerStore/runTest")
-  private readonly runTest!: (testLabel: string) => Promise<any>;
+  private readonly runTest!: (testLabel: string) => Promise<void>;
+
   @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
+
   @Action("testResultStore/retrieveTestsResult")
   private readonly retrieveTestsResult!: () => Promise<void>;
+
   @Getter("testResultStore/getResultByTestLabel")
   private readonly getResultByTestLabel!: (labelName: string) => BackstopTestResult[];
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+
   @Mutation("configurationStore/removeScenario")
   private readonly removeScenario!: (index: number) => void;
+
   @Mutation("configurationStore/duplicateScenario")
   private readonly duplicateScenario!: (index: number) => void;
 
@@ -206,27 +216,27 @@ export default class TestViewComponent extends Vue {
     this.contextMenuY = -1;
   }
 
-  private get isFullscreen() {
+  private get isFullscreen(): boolean {
     return this.$route.name === "test.fullscreenView";
   }
 
-  private get testResult() {
+  private get testResult(): BackstopTestResult {
     return this.getResultByTestLabel(this.testContent?.label || "");
   }
 
-  private get testStatus() {
-    let status = 'unknown';
+  private get testStatus(): "unknown" | "pass" | "failed" {
+    let status = "unknown";
     this.testResult.forEach((result) => {
       if (result.status === "pass" && status === "unknown") {
         status = "pass";
       } else if (result.status !== "pass") {
-        status = 'failed';
+        status = "failed";
       }
     });
     return status;
   }
 
-  public created() {
+  public created(): void {
     this.loadTest();
   }
 
@@ -249,9 +259,9 @@ export default class TestViewComponent extends Vue {
     if (this.testContent) {
       this.approveTest(this.testContent.label)
         .then(() => {
-          this.displaySnackbar({text: "Test successfully approved", success: true});
+          this.displaySnackbar({ text: "Test successfully approved", success: true });
         }).catch((err) => {
-          this.displaySnackbar({text: "Fail to approve test, error: " + err, success: false});
+          this.displaySnackbar({ text: "Fail to approve test, error: " + err, success: false });
         });
     }
   }
@@ -272,9 +282,9 @@ export default class TestViewComponent extends Vue {
     if (this.testContent) {
       this.runTest(this.testContent.label)
         .then(() => {
-          this.displaySnackbar({text: "Test successfully run", success: true});
+          this.displaySnackbar({ text: "Test successfully run", success: true });
         }).catch((err) => {
-          this.displaySnackbar({text: "Test failed, error: " + err, success: false});
+          this.displaySnackbar({ text: "Test failed, error: " + err, success: false });
         });
     }
   }
@@ -294,7 +304,7 @@ export default class TestViewComponent extends Vue {
     }
   }
 
-  @Watch('resultExpired')
+  @Watch("resultExpired")
   private updateTestResult() {
     this.resultLoading = true;
     this.retrieveTestsResult()
