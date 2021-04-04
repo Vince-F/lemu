@@ -7,7 +7,7 @@ import { BackstopService } from '@/services/backstopService';
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 import { SearchService } from '@/services/searchService';
 import { ModalService } from "@/services/modalService";
-import RefrerenceRenameModalComponent from "../components/app/RefrerenceRenameModalComponent.vue";
+import RefrerenceRenameModalComponent from "../components/app/ReferenceRenameModalComponent.vue";
 @Module({
   namespaced: true
 })
@@ -369,6 +369,7 @@ export default class ConfigurationStore extends VuexModule {
         .then(() => {
           BackstopService.renameReferenceWithNewConfigName(this.referenceDirectory,
             this.originalConfigName, this.configName);
+          this.context.commit("setOriginalConfigName", this.configName);
         });
     }
   }
@@ -382,6 +383,7 @@ export default class ConfigurationStore extends VuexModule {
             .then(() => {
               this.context.commit("resetModification");
               this.context.commit("setConfigurationModified", false);
+              this.context.dispatch("updateReferenceImageNameIfNeeded");
             }).finally(() => {
               this.context.commit("setSavingState", false);
             });

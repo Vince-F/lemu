@@ -43,5 +43,5 @@ export const eventNames = Object.freeze({
   RETRIEVE_CONFIGURATION_TEMPLATES: "retrieveConfigurationTemplates",
   DELETE_CONFIGURATION_TEMPLATE: "deleteConfigurationTemplate",
 
-  RENAME_REFERENCES: "renameRefereces"
+  RENAME_REFERENCES: "renameReferences"
 });
