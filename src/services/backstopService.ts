@@ -98,6 +98,10 @@ export class BackstopService {
     window.ipcHandler.send(eventNames.UNREGISTER_CONFIG_WATCHER.REQUEST);
   }
 
+  public static renameReferenceWithNewConfigName(refDirectory: string, oldRefName: string, newRefName: string) {
+    window.ipcHandler.invoke(eventNames.RENAME_REFERENCES, refDirectory, oldRefName, newRefName);
+  }
+
   private static registerAgainTestWatcher: boolean = false;
   private static resultPath: string = "";
 

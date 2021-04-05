@@ -43,5 +43,6 @@ exports.eventNames = Object.freeze({
     CREATE_CONFIGURATION_TEMPLATE: "createConfigurationTemplate",
     CREATE_OR_UPDATE_CONFIGURATION_TEMPLATE: "createOrUpdateConfigurationTemplate",
     RETRIEVE_CONFIGURATION_TEMPLATES: "retrieveConfigurationTemplates",
-    DELETE_CONFIGURATION_TEMPLATE: "deleteConfigurationTemplate"
+    DELETE_CONFIGURATION_TEMPLATE: "deleteConfigurationTemplate",
+    RENAME_REFERENCES: "renameReferences"
 });

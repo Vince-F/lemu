@@ -6,7 +6,8 @@ import { BackstopTest } from '@/models/backstopTest';
 import { BackstopService } from '@/services/backstopService';
 import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
 import { SearchService } from '@/services/searchService';
-
+import { ModalService } from "@/services/modalService";
+import RefrerenceRenameModalComponent from "../components/app/ReferenceRenameModalComponent.vue";
 @Module({
   namespaced: true
 })
@@ -16,6 +17,7 @@ export default class ConfigurationStore extends VuexModule {
   public testsModified: boolean[] = [];
   public configurationModified: boolean = false;
   public isSaving: boolean = false;
+  public originalConfigName: string = "";
 
   public get configName() {
     return this.currentConfiguration?.id ?? "";
@@ -43,6 +45,13 @@ export default class ConfigurationStore extends VuexModule {
 
   public get htmlReportDirectory() {
     const reportPath = this.currentConfiguration?.paths?.html_report ?? "";
+    const prefixPath = this.configurationPath.substr(0, this.configurationPath.length - "backstop.json".length);
+    return reportPath &&
+          FileService.resolvePath([prefixPath, reportPath]) || "";
+  }
+
+  public get referenceDirectory() {
+    const reportPath = this.currentConfiguration?.paths?.bitmaps_reference ?? "";
     const prefixPath = this.configurationPath.substr(0, this.configurationPath.length - "backstop.json".length);
     return reportPath &&
           FileService.resolvePath([prefixPath, reportPath]) || "";
@@ -174,6 +183,11 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Mutation
+  public setOriginalConfigName(configName: string) {
+    this.originalConfigName = configName;
+  }
+
+  @Mutation
   public setScenarioField(
     {scenarioIndex, field, value}: {scenarioIndex: number, field: string, value: any}
   ) {
@@ -297,6 +311,7 @@ export default class ConfigurationStore extends VuexModule {
     this.context.dispatch("testResultStore/watchResultChange", null, { root: true});
     this.context.dispatch("engineScriptStore/retrieveEngineScripts", null, { root: true });
     BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
+    this.context.commit("setOriginalConfigName", this.configName);
   }
 
   @Action({rawError: true})
@@ -347,6 +362,18 @@ export default class ConfigurationStore extends VuexModule {
       });
   }
 
+  @Action({ rawError: true })
+  public updateReferenceImageNameIfNeeded() {
+    if (this.originalConfigName !== this.configName) {
+      ModalService.launchModal(RefrerenceRenameModalComponent)
+        .then(() => {
+          BackstopService.renameReferenceWithNewConfigName(this.referenceDirectory,
+            this.originalConfigName, this.configName);
+          this.context.commit("setOriginalConfigName", this.configName);
+        });
+    }
+  }
+
   @Action({rawError: true})
   public saveConfiguration() {
     this.context.commit("setSavingState", true);
@@ -356,6 +383,7 @@ export default class ConfigurationStore extends VuexModule {
             .then(() => {
               this.context.commit("resetModification");
               this.context.commit("setConfigurationModified", false);
+              this.context.dispatch("updateReferenceImageNameIfNeeded");
             }).finally(() => {
               this.context.commit("setSavingState", false);
             });
