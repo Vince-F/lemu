@@ -123,7 +123,7 @@ export default class OpenConfigurationComponent extends Vue {
     try {
       this.recentlyOpened = JSON.parse(localStorage.getItem("recentlyOpened") || "");
     } catch (e) {
-      console.log("fail to open recent path");
+      window.ipcHandler.logger.warn("fail to open recent path");
     }
   }
 

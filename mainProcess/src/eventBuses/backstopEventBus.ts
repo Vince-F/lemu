@@ -70,6 +70,10 @@ electron.ipcMain.handle(eventNames.RETRIEVE_TEST_RESULT, (event, path) => {
     });
 });
 
+electron.ipcMain.handle(eventNames.RENAME_REFERENCES, (event, refDirectory, oldRefName, newRefName) => {
+  return BackstopFileService.renameReferenceWithNewConfigName(refDirectory, oldRefName, newRefName);
+});
+
 electron.ipcMain.on(eventNames.TEST_RESULT_CHANGED.REQUEST, (event, path) => {
   BackstopTestResultReader.watchResultChanges(path);
 });
@@ -82,6 +86,6 @@ electron.ipcMain.on(eventNames.CONFIG_CHANGED.REQUEST, (event, path) => {
   BackstopFileService.watchConfigurationFile(path);
 });
 
-electron.ipcMain.on(eventNames.UNREGISTER_CONFIG_WATCHER.REQUEST, (event) => {
+electron.ipcMain.on(eventNames.UNREGISTER_CONFIG_WATCHER.REQUEST, () => {
   BackstopFileService.unregisterConfigurationWatcher();
 });

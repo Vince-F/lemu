@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { Titlebar, Color } from 'custom-electron-titlebar';
-import * as path from "path";
+import logger from "electron-log";
 
 let titleBar: Titlebar | null = null;
 
@@ -14,6 +14,12 @@ declare global {
       invoke: (channel: string, ...args: any[]) => Promise<any>;
       createTitleBar: () => void;
       updateTitleBarTitle: (newTitle: string) => void;
+      logger: {
+        silly(...args: string[]): void;
+        info(...args: string[]): void;
+        warn(...args: string[]): void;
+        error(...args: string[]): void;
+      };
     };
   }
 }
@@ -55,6 +61,21 @@ const ipcHandler = {
         newTitle = "Lemu";
       }
       titleBar.updateTitle(newTitle);
+    }
+  },
+
+  logger: {
+    silly(...args: string[]): void {
+      logger.silly(...args);
+    },
+    info(...args: string[]): void {
+      logger.info(...args);
+    },
+    warn(...args: string[]): void {
+      logger.warn(...args);
+    },
+    error(...args: string[]): void {
+      logger.error(...args);
     }
   }
 };
