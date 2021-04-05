@@ -53,7 +53,9 @@ export class BackstopFileService {
           Promise.all(renamePromises)
             .then(() => {
               resolve();
-            });
+            }).catch((e) => {
+              reject(new Error(e));
+            })
         }
       });
     });
@@ -110,6 +112,4 @@ export class BackstopFileService {
       });
     });
   }
-
-
 }
