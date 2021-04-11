@@ -1,5 +1,11 @@
 # Changelog
 
+## V1.23.0
+### Features
+- Add "settings" section and add "dark mode"
+- Save logs in a file
+- Add mechanism to rename references when backstop config id is changed
+
 ## V1.22.0
 ### Features
 - Redesign welcome screen
