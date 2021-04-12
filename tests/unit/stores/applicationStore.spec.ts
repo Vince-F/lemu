@@ -9,6 +9,103 @@ jest.mock("axios");
 const mockedAxios = mocked(axios, true);
 
 describe("applicationStore", () => {
+  describe("applicationTitle", () => {
+    it ("should return nothing when there is no config loaded", () => {
+      const state = {};
+      const getters = {};
+      const rootState = {};
+      const rootGetters = {
+        configurationStore: {
+          configName: () => null
+        }
+      };
+
+      const result = applicationStore.getters?.applicationTitle(state, getters, rootState, rootGetters);
+
+      expect(result).toBe("");
+    });
+
+    it ("should return the name of the config with saved, when there is no modif", () => {
+      const state = {};
+      const getters = {};
+      const rootState = {
+        configurationStore: {
+          scriptsModified: false
+        }
+      };
+      const rootGetters = {
+        configurationStore: {
+          configName: () => "config",
+          hasConfigurationBeenModified: () => false
+        }
+      };
+
+      const result = applicationStore.getters?.applicationTitle(state, getters, rootState, rootGetters);
+
+      expect(result).toBe("config - Saved");
+    });
+
+    it ("should return the name of the config with unsaved, when the config is modified", () => {
+      const state = {};
+      const getters = {};
+      const rootState = {
+        configurationStore: {
+          scriptsModified: false
+        }
+      };
+      const rootGetters = {
+        configurationStore: {
+          configName: () => "config",
+          hasConfigurationBeenModified: () => true
+        }
+      };
+
+      const result = applicationStore.getters?.applicationTitle(state, getters, rootState, rootGetters);
+
+      expect(result).toBe("config - Unsaved");
+    });
+
+    it ("should return the name of the config with unsaved, when the scripts are modified", () => {
+      const state = {};
+      const getters = {};
+      const rootState = {
+        configurationStore: {
+          scriptsModified: true
+        }
+      };
+      const rootGetters = {
+        configurationStore: {
+          configName: () => "config",
+          hasConfigurationBeenModified: () => false
+        }
+      };
+
+      const result = applicationStore.getters?.applicationTitle(state, getters, rootState, rootGetters);
+
+      expect(result).toBe("config - Unsaved");
+    });
+
+    it ("should return the name of the config with unsaved, when the config and the scripts are modified", () => {
+      const state = {};
+      const getters = {};
+      const rootState = {
+        configurationStore: {
+          scriptsModified: true
+        }
+      };
+      const rootGetters = {
+        configurationStore: {
+          configName: () => "config",
+          hasConfigurationBeenModified: () => true
+        }
+      };
+
+      const result = applicationStore.getters?.applicationTitle(state, getters, rootState, rootGetters);
+
+      expect(result).toBe("config - Unsaved");
+    });
+  });
+
   describe("setSnackbarDisplayed", () => {
     it ("should set state for a success snackbar", () => {
       const state = {
