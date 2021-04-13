@@ -1,18 +1,16 @@
 import { ApplicationService } from "@/services/applicationService";
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 import axios from "axios";
+import { ApplicationInfo } from '@/models/applicationInfo';
 
 @Module({
   namespaced: true
 })
 export default class ApplicationStore extends VuexModule {
-  public snackbarText = "";
-  public snackbarDisplayed = false;
-  public snackbarSuccess = false;
-  public appInfos: {
-    appVersion: string,
-    backstopVersion: string
-  } | null = null;
+  public snackbarText: string = "";
+  public snackbarDisplayed: boolean = false;
+  public snackbarSuccess: boolean = false;
+  public appInfos: ApplicationInfo | null = null;
 
   public get applicationTitle(): string {
     const configName = this.context.rootGetters["configurationStore/configName"];
@@ -40,8 +38,8 @@ export default class ApplicationStore extends VuexModule {
   }
 
   @Mutation
-  public fillAppInfos(appInfos: {appVersion: string, backstopVersion: string}): void {
-    this.appInfos = appInfos;
+  public fillAppInfos(appInfos: ApplicationInfo): void {
+    this.appInfos = new ApplicationInfo(appInfos);
   }
 
   @Action
