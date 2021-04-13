@@ -2,7 +2,7 @@
   <v-card outlined height="100%" max-height="100%" class="card">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
       <div class="flex-grow-1 flex-shrink-1">
-        General configuration 
+        General configuration
       </div>
     </v-card-title>
     <v-card-text class="content flex-grow-1 flex-shrink-1">
@@ -21,7 +21,7 @@
 
         <v-tab>Engine</v-tab>
         <v-tab-item>
-          <engine-configuration-component :configuration="configuration" 
+          <engine-configuration-component :configuration="configuration"
             @setConfigurationEngineOptionsField="setConfigurationEngineOptionsField"
             @updateField="updateField"/>
         </v-tab-item>
@@ -34,7 +34,7 @@
 
         <v-tab>Perfomance</v-tab>
         <v-tab-item>
-          <performance-configuration-component :configuration="configuration" 
+          <performance-configuration-component :configuration="configuration"
             @updateField="updateField"/>
         </v-tab-item>
       </v-tabs>
@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import { State, Mutation, Action } from "vuex-class";
+import { State, Mutation } from "vuex-class";
 import { BackstopConfiguration } from "../../models/backstopConfiguration";
 import { ModalService } from "../../services/modalService";
 import ViewportsComponent from "../tests/ViewportsComponent.vue";
@@ -101,21 +101,29 @@ import GeneralConfigurationComponent from "./GeneralConfigurationComponent.vue";
 export default class ConfigurationComponent extends Vue {
   @State((state) => state.configurationStore.currentConfiguration)
   private readonly configuration!: BackstopConfiguration;
+
   @Mutation("configurationStore/addViewport")
   private readonly addViewportInConfig!: () => void;
+
   @Mutation("configurationStore/removeViewport")
   private readonly removeViewportInConfig!: (index: number) => void;
+
   @Mutation("configurationStore/setConfigurationField")
-  private readonly setConfigurationField!: (payload: {field: string, value: any}) => void;
+  private readonly setConfigurationField!: (payload: {field: string, value: unknown}) => void;
+
   @Mutation("configurationStore/setConfigurationPathField")
-  private readonly setConfigurationPathField!: (payload: {field: string, value: any}) => void;
+  private readonly setConfigurationPathField!: (payload: {field: string, value: unknown}) => void;
+
   @Mutation("configurationStore/setConfigurationReport")
   private readonly setConfigurationReport!: (payload: {reportType: string, kept: boolean}) => void;
+
   @Mutation("configurationStore/setConfigurationViewportField")
   private readonly setConfigurationViewportField!:
-    (payload: {viewportIndex: number, field: string, value: any}) => void;
+    (payload: {viewportIndex: number, field: string, value: unknown}) => void;
+
   @Mutation("configurationStore/setConfigurationEngineOptionsField")
-  private readonly setConfigurationEngineOptionsField!: (payload: {field: string, value: any}) => void;
+  private readonly setConfigurationEngineOptionsField!: (payload: {field: string, value: unknown}) => void;
+
   @Mutation("configurationStore/removeEngineOption")
   private readonly removeEngineOption!: (fieldName: string) => void;
 
@@ -134,20 +142,20 @@ export default class ConfigurationComponent extends Vue {
     this.removeViewportInConfig(index);
   }
 
-  private updateField(field: string, value: any) {
-    this.setConfigurationField({field, value});
+  private updateField(field: string, value: unknown) {
+    this.setConfigurationField({ field, value });
   }
 
-  private updatePathField(field: string, value: any) {
-    this.setConfigurationPathField({field, value});
+  private updatePathField(field: string, value: unknown) {
+    this.setConfigurationPathField({ field, value });
   }
 
   private updateReport(reportType: string, kept: boolean) {
-    this.setConfigurationReport({reportType, kept});
+    this.setConfigurationReport({ reportType, kept });
   }
 
-  private updateViewportField(viewportIndex: number, field: string, value: any) {
-    this.setConfigurationViewportField({viewportIndex, field, value});
+  private updateViewportField(viewportIndex: number, field: string, value: unknown) {
+    this.setConfigurationViewportField({ viewportIndex, field, value });
   }
 }
 </script>

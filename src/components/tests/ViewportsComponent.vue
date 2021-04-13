@@ -33,12 +33,12 @@
 </style>
 
 <script lang="ts">
-import { Viewport } from '@/models/viewport';
+import { Viewport } from "@/models/viewport";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class ViewportsComponent extends Vue {
-  @Prop({required: true, type: Array})
+  @Prop({ required: true, type: Array })
   private readonly viewports!: Viewport[];
 
   private addViewport() {

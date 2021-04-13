@@ -42,10 +42,10 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component({
-  name: "main-menu-component",
+  name: "main-menu-component"
 })
 export default class BaseMenuComponent extends Vue {
-  @Prop({ required: true, type: Array})
+  @Prop({ required: true, type: Array })
   private readonly menus!: Array<{ title: string; icon: string; path: string }>;
 
   private retracted: boolean;

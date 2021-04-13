@@ -16,10 +16,12 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class EntityMenuBarActionComponent extends Vue {
-  @Prop({ required: true, type: String})
+  @Prop({ required: true, type: String })
   private readonly iconName!: string;
-  @Prop({ required: true, type: String})
+
+  @Prop({ required: true, type: String })
   private readonly tooltipContent!: string;
+
   @Prop({ type: Boolean })
   private readonly disabled!: boolean;
 

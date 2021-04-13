@@ -1,11 +1,10 @@
 
-
 export class BackstopTestResult {
-  public pair: any; // TODO type it correctly
+  public pair: unknown; // TODO type it correctly
   public status: string; // TODO type with enum
 
-  constructor(data: any) {
-    this.pair = data && data.pair || null;
-    this.status = data && data.status || "";
+  constructor(data: any) {  // eslint-disable-line
+    this.pair = data?.pair ?? null;
+    this.status = data?.status ?? "";
   }
 }

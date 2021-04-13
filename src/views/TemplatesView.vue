@@ -28,18 +28,14 @@
 </style>
 
 <script lang="ts">
-import { BackstopService } from "@/services/backstopService";
-import { ModalService } from "@/services/modalService";
 import { Vue, Component } from "vue-property-decorator";
-import { Action, State } from "vuex-class";
 import TemplatesMenuComponent from "../components/templates/TemplatesMenuComponent.vue";
-import ReloadConfigurationModalComponent from "../components/app/ReloadConfigurationModalComponent.vue";
 
 @Component({
   name: "templates-view",
   components: {
     TemplatesMenuComponent
-  },
+  }
 })
 export default class TemplatesView extends Vue {
   constructor() {

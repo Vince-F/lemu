@@ -50,9 +50,9 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Getter, Mutation, Action } from "vuex-class";
-import MonacoEditor from 'monaco-editor-vue';
-import { ModalService } from '@/services/modalService';
-import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
+import MonacoEditor from "monaco-editor-vue";
+import { ModalService } from "@/services/modalService";
+import { EngineScriptTemplate } from "@/models/engineScriptTemplate";
 import EntityMenuBarActionComponent from "../../layout/EntityMenuBarActionComponent.vue";
 
 @Component({
@@ -64,14 +64,19 @@ import EntityMenuBarActionComponent from "../../layout/EntityMenuBarActionCompon
 export default class TemplateScriptViewComponent extends Vue {
   @Getter("templateStore/getScriptByName")
   private readonly getScriptByName!: (name: string) => EngineScriptTemplate;
+
   @Mutation("templateStore/removeEngineScriptTemplate")
   private readonly removeEngineScriptTemplate!: (script: EngineScriptTemplate) => void;
+
   @Mutation("templateStore/setEngineScriptTemplateContent")
   private readonly setEngineScriptTemplateContent!: (payload: {name: string, content: string}) => void;
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+
   @Mutation("templateStore/setEngineScriptTemplateName")
   private readonly setEngineScriptTemplateName!: (payload: {script: EngineScriptTemplate, newName: string}) => void;
+
   private script: EngineScriptTemplate | null;
 
   constructor() {
@@ -89,7 +94,7 @@ export default class TemplateScriptViewComponent extends Vue {
       ModalService.launchConfirmationModal("Do you want to delete this script?")
         .then(() => {
           this.removeEngineScriptTemplate(scriptToDelete);
-          this.$router.push({name: "scriptTemplates.welcome"});
+          this.$router.push({ name: "scriptTemplates.welcome" });
         });
     }
   }
@@ -105,7 +110,6 @@ export default class TemplateScriptViewComponent extends Vue {
 
   private updateScriptContent(newContent: string) {
     if (this.script) {
-      const scriptName = this.script.name;
       this.setEngineScriptTemplateContent({
         name: this.script.name,
         content: newContent
@@ -115,7 +119,7 @@ export default class TemplateScriptViewComponent extends Vue {
 
   private updateScriptName(newName: string) {
     if (this.script) {
-      this.setEngineScriptTemplateName({script: this.script, newName});
+      this.setEngineScriptTemplateName({ script: this.script, newName });
     }
   }
 }

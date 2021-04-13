@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 
 @Component({})
@@ -38,10 +38,11 @@ export default class AboutModalComponent extends Vue {
     appVersion: string;
     backstopVersion: string;
   } | null;
+
   @Action("applicationStore/retrieveAppInfos")
   private readonly retrieveAppInfos!: () => Promise<void>;
 
-  private dialogDisplayed: boolean = true;
+  private dialogDisplayed = true;
   private loading: boolean;
 
   constructor() {

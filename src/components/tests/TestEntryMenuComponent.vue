@@ -35,19 +35,23 @@ import { ModalService } from "../../services/modalService";
 
 @Component
 export default class TestEntryMenuComponent extends Vue {
-  @Prop({ required: true, type: BackstopConfiguration})
+  @Prop({ required: true, type: BackstopConfiguration })
   private readonly test!: BackstopConfiguration;
-  @Prop({ required: true, type: Number})
+
+  @Prop({ required: true, type: Number })
   private readonly testIndex!: number;
 
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
+
   @Mutation("configurationStore/duplicateScenario")
   private readonly duplicateScenario!: (scenarioIndex: number) => void;
+
   @Mutation("configurationStore/removeScenario")
   private readonly removeScenario!: (scenarioIndex: number) => void;
+
   @Action("testRunnerStore/runTest")
-  private readonly runTest!: (testLabel: string) => Promise<any>;
+  private readonly runTest!: (testLabel: string) => Promise<void>;
 
   private deleteTest(testIndex: number) {
     ModalService.launchConfirmationModal("Do you really wish to delete this entry?")

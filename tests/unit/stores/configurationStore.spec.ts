@@ -4,6 +4,7 @@ import store from "@/store/index";
 import { ActionContext, ActionHandler } from "vuex";
 import { BackstopService } from "@/services/backstopService";
 import { DialogFileService } from "@/services/dialogFileService";
+import { BackstopConfiguration } from "@/models/backstopConfiguration";
 import { mocked } from 'ts-jest/utils';
 
 jest.mock("@/services/backstopService");
@@ -13,15 +14,17 @@ const mockedBackstopService = mocked(BackstopService, true);
 jest.mock("@/services/dialogFileService");
 const mockedDialogFileService = mocked(DialogFileService, true);
 
-describe('ConfigurationStore', () => {
+describe("ConfigurationStore", () => {
   /* mutations */
   describe("addViewport", () => {
     it("should add empty viewport even if none existed before and says configuration is modified", () => {
       const state = {
-        currentConfiguration: {} as any,
+        currentConfiguration: {} as BackstopConfiguration,
         configurationModified: false
       };
-      configurationStore.mutations?.addViewport(state);
+      if (configurationStore.mutations) {
+        configurationStore.mutations.addViewport(state);
+      }
       expect(state.configurationModified).toBeTruthy();
       expect(Array.isArray(state.currentConfiguration.viewports)).toBeTruthy();
       expect(state.currentConfiguration.viewports).toStrictEqual([{ label: "", width: 0, height: 0 }]);
@@ -34,7 +37,9 @@ describe('ConfigurationStore', () => {
         },
         configurationModified: false
       };
-      configurationStore.mutations?.addViewport(state);
+      if (configurationStore.mutations) {
+        configurationStore.mutations.addViewport(state);
+      }
       expect(state.configurationModified).toBeTruthy();
       expect(Array.isArray(state.currentConfiguration.viewports)).toBeTruthy();
       expect(state.currentConfiguration.viewports).toStrictEqual([{ label: "test", width: 123, height: 456 }, { label: "", width: 0, height: 0 }]);
@@ -45,7 +50,9 @@ describe('ConfigurationStore', () => {
         currentConfiguration: null,
         configurationModified: false
       };
-      configurationStore.mutations?.addViewport(state);
+      if (configurationStore.mutations) {
+        configurationStore.mutations.addViewport(state);
+      }
       expect(state.configurationModified).toBeFalsy();
       expect(state.currentConfiguration).toBeNull();
     });
@@ -61,17 +68,21 @@ describe('ConfigurationStore', () => {
         },
         configurationModified: false
       };
-      configurationStore.mutations?.addScenario(state);
+      if (configurationStore.mutations) {
+        configurationStore.mutations.addScenario(state);
+      }
       expect(state.currentConfiguration.scenarios).toStrictEqual([{ label: "Hello test" }, new BackstopTest({ label: "New test 2" })]);
       expect(state.configurationModified).toBeTruthy();
     });
 
     it("should add empty scenario even if list doesn't exist and says configuration is modified", () => {
       const state = {
-        currentConfiguration: {} as any,
+        currentConfiguration: {} as BackstopConfiguration,
         configurationModified: false
       };
-      configurationStore.mutations?.addScenario(state);
+      if (configurationStore.mutations) {
+        configurationStore.mutations.addScenario(state);
+      }
       expect(state.currentConfiguration.scenarios).toStrictEqual([new BackstopTest({ label: "New test 1" })]);
       expect(state.configurationModified).toBeTruthy();
     });
@@ -81,7 +92,9 @@ describe('ConfigurationStore', () => {
         currentConfiguration: null,
         configurationModified: false
       };
-      configurationStore.mutations?.addScenario(state);
+      if (configurationStore.mutations) {
+        configurationStore.mutations.addScenario(state);
+      }
       expect(state.currentConfiguration).toBeNull();
       expect(state.configurationModified).toBeFalsy();
     });
@@ -92,14 +105,18 @@ describe('ConfigurationStore', () => {
       const state = {
         isSaving: false
       };
-      configurationStore.mutations?.setSavingState(state, true);
+      if (configurationStore.mutations) {
+        configurationStore.mutations.setSavingState(state, true);
+      }
       expect(state.isSaving).toBeTruthy();
     });
     it("should set state as not saving", () => {
       const state = {
         isSaving: true
       };
-      configurationStore.mutations?.setSavingState(state, false);
+      if (configurationStore.mutations) {
+        configurationStore.mutations.setSavingState(state, false);
+      }
       expect(state.isSaving).toBeFalsy();
     });
   });
@@ -430,14 +447,20 @@ describe('ConfigurationStore', () => {
         }
       };
 
-      const result = configurationStore.getters?.tests(state, {}, {}, {});
+      let result = null;
+      if (configurationStore.getters) {
+        result = configurationStore.getters.tests(state, {}, {}, {});
+      }
       expect(result).toEqual(scenarios);
     });
 
     it("should return an empty array is not config is loaded", () => {
       const state = {};
 
-      const result = configurationStore.getters?.tests(state, {}, {}, {});
+      let result = null;
+      if (configurationStore.getters) {
+        result = configurationStore.getters?.tests(state, {}, {}, {});
+      }
       expect(result).toEqual([]);
     });
   });
@@ -448,14 +471,20 @@ describe('ConfigurationStore', () => {
         currentConfiguration: {}
       };
 
-      const result = configurationStore.getters?.hasConfiguration(state, {}, {}, {});
+      let result;
+      if (configurationStore.getters) {
+        result = configurationStore.getters?.hasConfiguration(state, {}, {}, {});
+      }
       expect(result).toBeTruthy();
     });
 
     it("should return false when there is no config", () => {
       const state = {};
 
-      const result = configurationStore.getters?.hasConfiguration(state, {}, {}, {});
+      let result;
+      if (configurationStore.getters) {
+        result = configurationStore.getters?.hasConfiguration(state, {}, {}, {});
+      }
       expect(result).toBeFalsy();
     });
   });
@@ -466,7 +495,10 @@ describe('ConfigurationStore', () => {
         testsModified: []
       };
 
-      const result = configurationStore.getters?.hasTestBeenModified(state, {}, {}, {})(0);
+      let result;
+      if (configurationStore.getters) {
+        result = configurationStore.getters?.hasTestBeenModified(state, {}, {}, {})(0);
+      }
       expect(result).toBeFalsy();
     });
 
@@ -475,7 +507,10 @@ describe('ConfigurationStore', () => {
         testsModified: [true]
       };
 
-      const result = configurationStore.getters?.hasTestBeenModified(state, {}, {}, {})(0);
+      let result;
+      if (configurationStore.getters) {
+        result = configurationStore.getters?.hasTestBeenModified(state, {}, {}, {})(0);
+      }
       expect(result).toBeTruthy();
     });
   });
@@ -484,7 +519,10 @@ describe('ConfigurationStore', () => {
     it("should return configuration is not modified by default", () => {
       const state = {};
 
-      const result = configurationStore.getters?.hasConfigurationBeenModified(state, {}, {}, {});
+      let result;
+      if (configurationStore.getters) {
+        result = configurationStore.getters?.hasConfigurationBeenModified(state, {}, {}, {});
+      }
       expect(result).toBeFalsy();
     });
 
@@ -493,7 +531,10 @@ describe('ConfigurationStore', () => {
         configurationModified: true
       };
 
-      const result = configurationStore.getters?.hasConfigurationBeenModified(state, {}, {}, {});
+      let result;
+      if (configurationStore.getters) {
+        result = configurationStore.getters?.hasConfigurationBeenModified(state, {}, {}, {});
+      }
       expect(result).toBeTruthy();
     });
   });

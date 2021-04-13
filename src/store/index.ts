@@ -1,7 +1,5 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-
-Vue.use(Vuex);
+import Vue from "vue";
+import Vuex from "vuex";
 
 import configurationStore from "./configurationStore";
 import applicationStore from "./applicationStore";
@@ -11,6 +9,8 @@ import testLogStore from "./testLogStore";
 import engineScriptStore from "./engineScriptStore";
 import templateStore from "./templateStore";
 import settingsStore from "./settingsStore";
+
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
@@ -28,5 +28,5 @@ export default new Vuex.Store({
     engineScriptStore,
     templateStore,
     settingsStore
-  },
+  }
 });

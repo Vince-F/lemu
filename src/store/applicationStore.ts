@@ -1,5 +1,5 @@
-import { ApplicationService } from '@/services/applicationService';
-import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+import { ApplicationService } from "@/services/applicationService";
+import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 import axios from "axios";
 import { ApplicationInfo } from '@/models/applicationInfo';
 
@@ -12,7 +12,7 @@ export default class ApplicationStore extends VuexModule {
   public snackbarSuccess: boolean = false;
   public appInfos: ApplicationInfo | null = null;
 
-  public get applicationTitle() {
+  public get applicationTitle(): string {
     const configName = this.context.rootGetters["configurationStore/configName"];
     if (configName) {
       const modified = this.context.rootGetters["configurationStore/hasConfigurationBeenModified"] ||
@@ -25,7 +25,7 @@ export default class ApplicationStore extends VuexModule {
   }
 
   @Mutation
-  public setSnackbarDisplayed({text, success}: {text: string, success: boolean}) {
+  public setSnackbarDisplayed({ text, success }: {text: string, success: boolean}): void {
     this.snackbarDisplayed = false;
     this.snackbarText = text;
     this.snackbarSuccess = success;
@@ -33,17 +33,17 @@ export default class ApplicationStore extends VuexModule {
   }
 
   @Mutation
-  public hideSnackbar() {
+  public hideSnackbar(): void {
     this.snackbarDisplayed = false;
   }
 
   @Mutation
-  public fillAppInfos(appInfos: any) {
+  public fillAppInfos(appInfos: ApplicationInfo): void {
     this.appInfos = new ApplicationInfo(appInfos);
   }
 
   @Action
-  public displaySnackbar(payload: {text: string, success: boolean}) {
+  public displaySnackbar(payload: {text: string, success: boolean}): void {
     this.context.commit("setSnackbarDisplayed", payload);
     setTimeout(() => {
       this.context.commit("hideSnackbar");
@@ -51,15 +51,15 @@ export default class ApplicationStore extends VuexModule {
   }
 
   @Action
-  public retrieveAppInfos() {
+  public retrieveAppInfos(): Promise<void> {
     return ApplicationService.getVersionsInfo()
-        .then((result) => {
-          this.context.commit("fillAppInfos", result);
-        });
+      .then((result) => {
+        this.context.commit("fillAppInfos", result);
+      });
   }
 
   @Action
-  public retrieveChangelog(version: string) {
+  public retrieveChangelog(version: string): Promise<void> {
     return axios.get(`https://api.github.com/repos/vince-f/lemu/releases/tags/v${version}`)
       .then((response) => {
         return response.data.body;

@@ -129,21 +129,25 @@ import { backstopConfigDefault } from "../../../constants/backstopConfigDefault"
 
 @Component({
   name: "template-configurations-menu-component",
-  components: {},
+  components: {}
 })
 export default class TemplateConfigurationsMenuComponent extends Vue {
   @State((state) => state.templateStore.configurationTemplates)
   private readonly configurations!: BackstopConfiguration[];
+
   @Action("templateStore/retrieveConfigurationTemplates")
   private readonly retrieveConfigurationTemplates!: () => Promise<void>;
+
   @Mutation("templateStore/removeConfigurationTemplate")
   private readonly removeConfigurationTemplate!: (
     script: BackstopConfiguration
   ) => void;
+
   @Action("templateStore/createConfigurationTemplate")
   private readonly createConfigurationTemplate!: (
     config: BackstopConfiguration
   ) => Promise<void>;
+
   @Getter("templateStore/hasConfigurationBeenModified")
   private hasConfigurationBeenModified!: (idx: number) => boolean;
 
@@ -163,7 +167,7 @@ export default class TemplateConfigurationsMenuComponent extends Vue {
 
   private duplicateConfiguration(configuration: BackstopConfiguration) {
     const newConfiguration = new BackstopConfiguration(
-      {id: configuration.id + "_copy"}
+      { id: configuration.id + "_copy" }
     );
     this.createConfigurationTemplate(newConfiguration);
   }
@@ -173,14 +177,14 @@ export default class TemplateConfigurationsMenuComponent extends Vue {
       "Do you really wish to delete this entry?"
     ).then(() => {
       this.removeConfigurationTemplate(config);
-      this.$router.push({name: "configurationTemplates.welcome"});
+      this.$router.push({ name: "configurationTemplates.welcome" });
     });
   }
 
   private openConfigurationDetails(index: number) {
     this.$router.push({
       name: "configurationTemplates.view",
-      params: { index: "" + index },
+      params: { index: "" + index }
     });
   }
 }

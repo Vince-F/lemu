@@ -25,11 +25,11 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 
 @Component({})
 export default class ReloadConfigurationModalComponent extends Vue {
-  private dialogDisplayed: boolean = true;
+  private dialogDisplayed = true;
 
   private keepChangesAndSave() {
     this.dialogDisplayed = false;

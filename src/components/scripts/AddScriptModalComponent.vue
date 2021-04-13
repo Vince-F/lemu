@@ -34,14 +34,14 @@
           <div v-else-if="type === 'template'">
             <p v-if="scriptTemplates.length === 0">
               No scripts template found.
-            </p> 
+            </p>
             <v-select v-else
               :items="scriptTemplates"
               label="Template"
               v-model="selectedTemplate"
               item-text="name"
               return-object
-            ></v-select>    
+            ></v-select>
           </div>
           <div v-else-if="type === 'fromFile'">
             <v-file-input v-model="fileToCopy" accept="text/javascript" label="File to copy" :rules="fileRules"></v-file-input>
@@ -73,7 +73,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { State } from "vuex-class";
-import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
+import { EngineScriptTemplate } from "@/models/engineScriptTemplate";
 
 interface ElectronFile extends File {
   path: string;
@@ -110,7 +110,10 @@ export default class AddScriptModalComponent extends Vue {
   }
 
   private add() {
-    (this.$refs.form as any).validate(); // this is Veutify v-form component
+    const formComponent: unknown = this.$refs.forms;
+    if (formComponent && Object.prototype.hasOwnProperty.call(formComponent, "validate")) {
+      (formComponent as {validate: () => void }).validate();
+    }
     if (this.valid) {
       switch (this.type) {
         case "empty":
@@ -120,17 +123,17 @@ export default class AddScriptModalComponent extends Vue {
           });
           this.dialogDisplayed = false;
           break;
-      case "fromFile":
-        if (this.fileToCopy) {
-          this.$emit("validate", {
-            type: this.type,
-            fileName: this.fileToCopy.name,
-            originFilePath: this.fileToCopy.path
-          });
-          this.dialogDisplayed = false;
-        }
-        break;
-      case "template":
+        case "fromFile":
+          if (this.fileToCopy) {
+            this.$emit("validate", {
+              type: this.type,
+              fileName: this.fileToCopy.name,
+              originFilePath: this.fileToCopy.path
+            });
+            this.dialogDisplayed = false;
+          }
+          break;
+        case "template":
           if (this.selectedTemplate) {
             this.$emit("validate", {
               type: this.type,

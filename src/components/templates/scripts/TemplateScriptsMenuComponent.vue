@@ -121,29 +121,32 @@
 </style>
 
 <script lang="ts">
-import { EngineScript } from "@/models/engineScript";
 import { EngineScriptTemplate } from "@/models/engineScriptTemplate";
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import { Getter, Mutation, Action, State } from "vuex-class";
 import { ModalService } from "../../../services/modalService";
 
 @Component({
   name: "scripts-menu-component",
-  components: {},
+  components: {}
 })
 export default class TemplateScriptsMenuComponent extends Vue {
   @State((state) => state.templateStore.scripts)
   private readonly scripts!: EngineScriptTemplate[];
+
   @Action("templateStore/retrieveEngineScriptTemplates")
   private readonly retrieveEngineScriptTemplates!: () => Promise<void>;
+
   @Mutation("templateStore/removeEngineScriptTemplate")
   private readonly removeEngineScriptTemplate!: (
     script: EngineScriptTemplate
   ) => void;
+
   @Action("templateStore/createEngineScriptTemplate")
   private readonly createEngineScriptTemplate!: (
     script: EngineScriptTemplate
   ) => Promise<void>;
+
   @Getter("templateStore/hasScriptBeenModified")
   private hasScriptBeenModified!: (idx: number) => boolean;
 
@@ -173,14 +176,14 @@ export default class TemplateScriptsMenuComponent extends Vue {
       "Do you really wish to delete this entry?"
     ).then(() => {
       this.removeEngineScriptTemplate(script);
-      this.$router.push({name: "scriptTemplates.welcome"});
+      this.$router.push({ name: "scriptTemplates.welcome" });
     });
   }
 
   private openScriptDetails(script: EngineScriptTemplate) {
     this.$router.push({
       name: "scriptTemplates.view",
-      params: { name: script.name },
+      params: { name: script.name }
     });
   }
 }

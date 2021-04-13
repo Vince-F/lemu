@@ -6,7 +6,7 @@
     <v-card>
       <v-card-title class="headline">Add engine option</v-card-title>
       <v-card-text>
-        <v-form 
+        <v-form
         v-model="valid"
         ref="form">
           <v-text-field
@@ -21,7 +21,7 @@
             @change="updateNewValueType"
             :rules="typeRules"
           ></v-select>
-          <v-text-field v-if="type === 'number'" label="Value" 
+          <v-text-field v-if="type === 'number'" label="Value"
             type="number" v-model="value"
             ></v-text-field>
           <v-checkbox v-else-if="type === 'boolean'" label="Value"
@@ -54,12 +54,11 @@
         </v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog> 
+  </v-dialog>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { backstopScenarioProperties } from '../../constants/backstopScenarioProperties';
+import { Vue, Component } from "vue-property-decorator";
 
 @Component({})
 export default class AddEngineOptionModalComponent extends Vue {
@@ -70,7 +69,7 @@ export default class AddEngineOptionModalComponent extends Vue {
   private value: number | boolean | string | string[];
   private valid: boolean;
   private nameRules: Array<(value: string) => boolean | string>;
-  private typeRules: Array<(value: any) => boolean | string>;
+  private typeRules: Array<(value: unknown) => boolean | string>;
 
   constructor() {
     super(arguments);
@@ -82,15 +81,18 @@ export default class AddEngineOptionModalComponent extends Vue {
     this.valid = false;
 
     this.nameRules = [
-      (value: string) => value && value.length > 0 || "Field name cannot be empty"
+      (value: string) => (value && value.length > 0) || "Field name cannot be empty"
     ];
     this.typeRules = [
-      (value: any) => !!value || "You must choose a type"
+      (value: unknown) => !!value || "You must choose a type"
     ];
   }
 
   private addField() {
-    (this.$refs.form as any).validate(); // this is Veutify v-form component
+    const formComponent: unknown = this.$refs.forms;
+    if (formComponent && Object.prototype.hasOwnProperty.call(formComponent, "validate")) {
+      (formComponent as {validate: () => void }).validate();
+    }
     if (this.valid) {
       this.dialogDisplayed = false;
       this.$emit("validate", {
@@ -108,13 +110,13 @@ export default class AddEngineOptionModalComponent extends Vue {
 
   private updateNewValueType() {
     switch (this.type) {
-      case 'array':
+      case "array":
         this.value = [];
         break;
-      case 'boolean':
+      case "boolean":
         this.value = false;
         break;
-      case 'number':
+      case "number":
         this.value = 0;
         break;
       default:
