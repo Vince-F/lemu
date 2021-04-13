@@ -1,12 +1,13 @@
 import Vue from "vue";
 import { DialogFileService } from "@/services/dialogFileService";
 import { FileService } from "../services/fileService";
-import { BackstopConfiguration } from "@/models/backstopConfiguration";
-import { BackstopTest } from "@/models/backstopTest";
-import { BackstopService } from "@/services/backstopService";
-import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
-import { SearchService } from "@/services/searchService";
-
+import { BackstopConfiguration } from '@/models/backstopConfiguration';
+import { BackstopTest } from '@/models/backstopTest';
+import { BackstopService } from '@/services/backstopService';
+import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+import { SearchService } from '@/services/searchService';
+import { ModalService } from "@/services/modalService";
+import RefrerenceRenameModalComponent from "../components/app/ReferenceRenameModalComponent.vue";
 @Module({
   namespaced: true
 })
@@ -14,8 +15,9 @@ export default class ConfigurationStore extends VuexModule {
   public currentConfiguration: BackstopConfiguration | null = null;
   public configurationPath = "";
   public testsModified: boolean[] = [];
-  public configurationModified = false;
-  public isSaving = false;
+  public configurationModified: boolean = false;
+  public isSaving: boolean = false;
+  public originalConfigName: string = "";
 
   public get configName(): string {
     return this.currentConfiguration?.id ?? "";
@@ -46,6 +48,13 @@ export default class ConfigurationStore extends VuexModule {
     const prefixPath = this.configurationPath.substr(0, this.configurationPath.length - "backstop.json".length);
     return (reportPath &&
           FileService.resolvePath([prefixPath, reportPath])) ?? "";
+  }
+
+  public get referenceDirectory(): string {
+    const reportPath = this.currentConfiguration?.paths?.bitmaps_reference ?? "";
+    const prefixPath = this.configurationPath.substr(0, this.configurationPath.length - "backstop.json".length);
+    return reportPath &&
+          FileService.resolvePath([prefixPath, reportPath]) || "";
   }
 
   public get engineScriptDirectory(): string {
@@ -174,6 +183,11 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Mutation
+  public setOriginalConfigName(configName: string) {
+    this.originalConfigName = configName;
+  }
+
+  @Mutation
   public setScenarioField(
     { scenarioIndex, field, value }: {scenarioIndex: number, field: string, value: unknown}
   ): void {
@@ -297,6 +311,7 @@ export default class ConfigurationStore extends VuexModule {
     this.context.dispatch("testResultStore/watchResultChange", null, { root: true });
     this.context.dispatch("engineScriptStore/retrieveEngineScripts", null, { root: true });
     BackstopService.setWorkingDir(this.backstopConfigurationDirectory);
+    this.context.commit("setOriginalConfigName", this.configName);
   }
 
   @Action({ rawError: true })
@@ -322,10 +337,13 @@ export default class ConfigurationStore extends VuexModule {
   @Action({ rawError: true })
   public openConfiguration(): Promise<void> {
     return DialogFileService.openFileDialog()
-      .then(({ path, content }) => {
-        if (typeof content.id !== "string" ||
+      .then((result) => {
+        const path: string = result.path;
+        const content: any = result.content;
+        if (typeof content === "object" && content &&
+            (typeof content.id !== "string" ||
             !Array.isArray(content.viewports) ||
-            !Array.isArray(content.scenarios)) {
+            !Array.isArray(content.scenarios))) {
           return Promise.reject(new Error("File doesn't look like a BackstopJS configuration"));
         }
         this.context.commit("setFullConfiguration", content);
@@ -336,10 +354,11 @@ export default class ConfigurationStore extends VuexModule {
   @Action({ rawError: true })
   public openConfigurationFromPath(path: string): Promise<void> {
     return DialogFileService.openAndParseFile(path)
-      .then((content) => {
-        if (typeof content.id !== "string" ||
+      .then((content: any) => {
+        if (typeof content === "object" && content &&
+          (typeof content.id !== "string" ||
             !Array.isArray(content.viewports) ||
-            !Array.isArray(content.scenarios)) {
+            !Array.isArray(content.scenarios))) {
           return Promise.reject(new Error("File doesn't look like a BackstopJS configuration"));
         }
         this.context.commit("setFullConfiguration", content);
@@ -348,6 +367,18 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Action({ rawError: true })
+  public updateReferenceImageNameIfNeeded(): void {
+    if (this.originalConfigName !== this.configName) {
+      ModalService.launchModal(RefrerenceRenameModalComponent)
+        .then(() => {
+          BackstopService.renameReferenceWithNewConfigName(this.referenceDirectory,
+            this.originalConfigName, this.configName);
+          this.context.commit("setOriginalConfigName", this.configName);
+        });
+    }
+  }
+
+  @Action({rawError: true})
   public saveConfiguration(): Promise<void> {
     this.context.commit("setSavingState", true);
     const content = JSON.stringify(this.currentConfiguration, null, 4);
@@ -356,6 +387,7 @@ export default class ConfigurationStore extends VuexModule {
       .then(() => {
         this.context.commit("resetModification");
         this.context.commit("setConfigurationModified", false);
+        this.context.dispatch("updateReferenceImageNameIfNeeded");
       }).finally(() => {
         this.context.commit("setSavingState", false);
       });

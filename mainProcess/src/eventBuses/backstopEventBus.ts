@@ -71,6 +71,10 @@ electron.ipcMain.handle(eventNames.RETRIEVE_TEST_RESULT, (event, path) => {
     });
 });
 
+electron.ipcMain.handle(eventNames.RENAME_REFERENCES, (event, refDirectory, oldRefName, newRefName) => {
+  return BackstopFileService.renameReferenceWithNewConfigName(refDirectory, oldRefName, newRefName);
+});
+
 electron.ipcMain.on(eventNames.TEST_RESULT_CHANGED.REQUEST, (event, path) => {
   BackstopTestResultReader.watchResultChanges(path);
 });

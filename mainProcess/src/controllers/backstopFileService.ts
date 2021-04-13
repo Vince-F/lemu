@@ -1,9 +1,10 @@
 import fs = require("fs");
+import path = require("path");
 import { eventNames } from "../../../shared/constants/eventNames";
 import { BrowserWindowManager } from "./browserWindowManager";
 
 export class BackstopFileService {
-  public static async retrieveEngineScripts(dirPath: string): Promise<Array<{dirPath: string, content: string}>> {
+  public static async retrieveEngineScripts(dirPath: string): Promise<Array<{ dirPath: string, content: string }>> {
     const files = await this.retrieveEngineScriptsName(dirPath);
     return Promise.all(files.map((filePath) => this.readEngineScript(filePath)));
   }
@@ -30,15 +31,45 @@ export class BackstopFileService {
     }
   }
 
+  public static renameReferenceWithNewConfigName(refDirectory: string, oldRefName: string,
+                                                 newRefName: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      fs.readdir(refDirectory, (err, files) => {
+        if (err) {
+          reject(err);
+        } else {
+          const renamePromises = files.map((filename) => {
+            return new Promise((resolve2, reject2) => {
+              fs.rename(path.join(refDirectory, filename),
+                path.join(refDirectory, filename.replace(oldRefName, newRefName)), (err) => {
+                  if (err) {
+                    reject2(err);
+                  } else {
+                    resolve2(null);
+                  }
+                });
+            });
+          });
+          Promise.all(renamePromises)
+            .then(() => {
+              resolve();
+            }).catch((e) => {
+              reject(new Error(e));
+            })
+        }
+      });
+    });
+  }
+
   private static configFileWatcher: fs.FSWatcher;
 
-  private static readEngineScript(dirPath: string): Promise<{dirPath: string, content: string}> {
+  private static readEngineScript(dirPath: string): Promise<{ dirPath: string, content: string }> {
     return new Promise((resolve, reject) => {
-      fs.readFile(dirPath, {encoding: "utf-8"}, (err, content) => {
+      fs.readFile(dirPath, { encoding: "utf-8" }, (err, content) => {
         if (err) {
           reject(err.message);
         } else {
-          resolve({dirPath, content});
+          resolve({ dirPath, content });
         }
       });
     });

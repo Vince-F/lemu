@@ -41,4 +41,5 @@ export declare const eventNames: Readonly<{
     CREATE_OR_UPDATE_CONFIGURATION_TEMPLATE: string;
     RETRIEVE_CONFIGURATION_TEMPLATES: string;
     DELETE_CONFIGURATION_TEMPLATE: string;
+    RENAME_REFERENCES: string;
 }>;

@@ -32,7 +32,7 @@ export class BackstopService {
   }
 
   public static approveTest(config: BackstopConfiguration, testLabel: string,
-    viewportLabel?: string): Promise<unknown> {
+                            viewportLabel?: string): Promise<unknown> {
     return window.ipcHandler.invoke(eventNames.APPROVE_TEST, config, testLabel, viewportLabel)
       .then((result: {success: boolean}) => {
         if (!result.success) {
@@ -107,8 +107,12 @@ export class BackstopService {
     window.ipcHandler.send(eventNames.UNREGISTER_CONFIG_WATCHER.REQUEST);
   }
 
-  private static registerAgainTestWatcher = false;
-  private static resultPath = "";
+  public static renameReferenceWithNewConfigName(refDirectory: string, oldRefName: string, newRefName: string) {
+    window.ipcHandler.invoke(eventNames.RENAME_REFERENCES, refDirectory, oldRefName, newRefName);
+  }
+
+  private static registerAgainTestWatcher: boolean = false;
+  private static resultPath: string = "";
 
   private static handleTestFinished(result: {success: boolean, content: unknown}): unknown {
     if (this.registerAgainTestWatcher) {
