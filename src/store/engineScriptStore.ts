@@ -1,6 +1,6 @@
-import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
-import { EngineScript } from '@/models/engineScript';
-import { BackstopService } from '@/services/backstopService';
+import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
+import { EngineScript } from "@/models/engineScript";
+import { BackstopService } from "@/services/backstopService";
 import { FileService } from "../services/fileService";
 
 @Module({
@@ -9,9 +9,9 @@ import { FileService } from "../services/fileService";
 export default class EngineScriptStore extends VuexModule {
   private scripts: EngineScript[] = [];
   private removedScriptsPath: string[] = [];
-  private scriptsModified: boolean = false;
+  private scriptsModified = false;
 
-  public get getScript() {
+  public get getScript(): (path: string) => EngineScript | undefined {
     const scripts = this.scripts;
     return (path: string) => {
       path = path.replace(/\\/g, "/");
@@ -20,7 +20,7 @@ export default class EngineScriptStore extends VuexModule {
   }
 
   @Mutation
-  public addScript({scriptPath, content}: {scriptPath: string, content: string}) {
+  public addScript({ scriptPath, content }: {scriptPath: string, content: string}): void {
     scriptPath = scriptPath.replaceAll("\\", "/");
     const newScript = new EngineScript(scriptPath, content);
     this.scripts.push(newScript);
@@ -28,13 +28,13 @@ export default class EngineScriptStore extends VuexModule {
   }
 
   @Mutation
-  public cleanAfterSave() {
+  public cleanAfterSave(): void {
     this.scriptsModified = false;
     this.removedScriptsPath = [];
   }
 
   @Mutation
-  public removeScript(scriptPath: string) {
+  public removeScript(scriptPath: string): void {
     const idx = this.scripts.findIndex((entry) => entry.path.replace(/\\/g, "/").endsWith(scriptPath));
     if (idx > -1) {
       const path = this.scripts[idx].path;
@@ -45,7 +45,7 @@ export default class EngineScriptStore extends VuexModule {
   }
 
   @Mutation
-  public setEngineScripts(engineScripts: EngineScript[]) {
+  public setEngineScripts(engineScripts: EngineScript[]): void {
     this.scripts = engineScripts.map((entry) => {
       entry.path = entry.path.replace(/\\/g, "/");
       return entry;
@@ -54,7 +54,7 @@ export default class EngineScriptStore extends VuexModule {
   }
 
   @Mutation
-  public setScriptContent({path, content}: {path: string, content: string}) {
+  public setScriptContent({ path, content }: {path: string, content: string}): void {
     this.scripts.forEach((script) => {
       if (script.path === path) {
         script.content = content;
@@ -62,8 +62,8 @@ export default class EngineScriptStore extends VuexModule {
     });
   }
 
-  @Action({rawError: true})
-  public retrieveEngineScripts() {
+  @Action({ rawError: true })
+  public retrieveEngineScripts(): Promise<void> {
     const engineScriptPath = this.context.rootGetters["configurationStore/engineScriptDirectory"];
 
     return BackstopService.retrieveEngineScripts(engineScriptPath)
@@ -72,8 +72,8 @@ export default class EngineScriptStore extends VuexModule {
       });
   }
 
-  @Action({rawError: true})
-  public saveAllScripts() {
+  @Action({ rawError: true })
+  public saveAllScripts(): Promise<void> {
     const savePromises = this.scripts.map((script) => {
       return FileService.writeFile(script.path, script.content);
     });

@@ -2,7 +2,7 @@
   <v-card class="card">
     <v-card-title class="header flex-grow-0 flex-shrink-0">
       <div class="flex-grow-1 flex-shrink-1">
-        Logs 
+        Logs
       </div>
       <div class="flex-grow-0 flex-shrink-0">
         <entity-menu-bar-action-component iconName="mdi-delete" tooltipContent="Reset logs"
@@ -69,6 +69,7 @@ import EntityMenuBarActionComponent from "../layout/EntityMenuBarActionComponent
 export default class LogsComponent extends Vue {
   @State((state) => state.testLogStore.logs)
   private readonly logs!: Array<{message: string, level: string, time: Date}>;
+
   @Mutation("testLogStore/resetLogs")
   private readonly resetLogs!: () => void;
 

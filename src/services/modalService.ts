@@ -1,25 +1,25 @@
 import ConfirmationModalComponent from "../components/app/ConfirmationModalComponent.vue";
 import SaveConfirmationModalComponent from "../components/app/SaveConfirmationModalComponent.vue";
-import { VueConstructor } from 'vue';
+import { VueConstructor } from "vue";
 
 export class ModalService {
-  public static launchModal(modalComponent: VueConstructor, payload?: any): Promise<any> {
+  public static launchModal(ModalComponent: VueConstructor, payload?: unknown): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const element = this.getModalContainerElement();
-      const modal = new modalComponent({
+      const modal = new ModalComponent({
         parent: window.vueApp,
         propsData: {
           payload
         }
       });
 
-      modal.$on('validate', (resultPayload: any) => {
+      modal.$on("validate", (resultPayload: unknown) => {
         modal.$destroy();
         resolve(resultPayload);
       });
-      modal.$on('dimiss', () => {
+      modal.$on("dimiss", () => {
         modal.$destroy();
-        reject();
+        reject(new Error());
       });
 
       modal.$mount(element);
@@ -36,13 +36,13 @@ export class ModalService {
         }
       });
 
-      modal.$on('accept', () => {
+      modal.$on("accept", () => {
         modal.$destroy();
         resolve();
       });
-      modal.$on('dimiss', () => {
+      modal.$on("dimiss", () => {
         modal.$destroy();
-        reject();
+        reject(new Error());
       });
 
       modal.$mount(element);
@@ -56,27 +56,27 @@ export class ModalService {
         parent: window.vueApp
       });
 
-      modal.$on('save', () => {
+      modal.$on("save", () => {
         modal.$destroy();
         resolve("save");
       });
-      modal.$on('discard', () => {
+      modal.$on("discard", () => {
         modal.$destroy();
         resolve("discard");
       });
-      modal.$on('dimiss', () => {
+      modal.$on("dimiss", () => {
         modal.$destroy();
-        reject();
+        reject(new Error());
       });
 
       modal.$mount(element);
     });
   }
 
-  private static getModalContainerElement() {
+  private static getModalContainerElement(): HTMLElement {
     let element = document.getElementById("#modal");
     if (!element) {
-      element = document.createElement('div');
+      element = document.createElement("div");
       element.id = "modal";
       document.getElementById("#app");
       document.body.appendChild(element);

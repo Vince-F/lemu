@@ -119,32 +119,42 @@ import { SearchService } from "../../services/searchService";
 export default class AppToolbarComponent extends Vue {
   @Action("configurationStore/saveConfiguration")
   private readonly saveConfiguration!: () => Promise<void>;
+
   @Mutation("configurationStore/dismissCurrentConfiguration")
   private readonly dismissCurrentConfiguration!: () => void;
+
   @Getter("configurationStore/hasConfiguration")
   private readonly hasConfiguration!: boolean;
+
   @Getter("configurationStore/hasConfigurationBeenModified")
   private readonly hasConfigurationBeenModified!: boolean;
+
   @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
+
   @Action("testRunnerStore/runTests")
-  private readonly runBackstopTests!: () => Promise<any>;
+  private readonly runBackstopTests!: () => Promise<void>;
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {
     text: string;
     success: boolean;
   }) => void;
+
   @Action("engineScriptStore/saveAllScripts")
   private readonly saveAllScripts!: () => Promise<void>;
+
   @Action("configurationStore/openConfiguration")
-  private openConfiguration!: () => Promise<any>;
+  private openConfiguration!: () => Promise<unknown>;
+
   @Action("templateStore/saveTemplates")
   private saveTemplates!: () => Promise<void>;
+
   @Getter("applicationStore/applicationTitle")
   private readonly applicationTitle!: string;
 
   private selectedTest: number | null;
-  private foundTests: any[];
+  private foundTests: unknown[];
 
   constructor() {
     super(arguments);
@@ -193,7 +203,7 @@ export default class AppToolbarComponent extends Vue {
   }
 
   private goToTest() {
-    this.$router.push({ name: "tests.view", params: { index: "" + this.selectedTest}});
+    this.$router.push({ name: "tests.view", params: { index: "" + this.selectedTest } });
   }
 
   private openConfig() {
@@ -224,7 +234,7 @@ export default class AppToolbarComponent extends Vue {
         if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
           this.displaySnackbar({
             text: "Failed to open file. " + error,
-            success: false,
+            success: false
           });
         }
       });
@@ -238,7 +248,7 @@ export default class AppToolbarComponent extends Vue {
       .catch(() => {
         this.displaySnackbar({
           text: "Tests failed. Open the logs to see more details.",
-          success: false,
+          success: false
         });
       });
   }
@@ -257,7 +267,7 @@ export default class AppToolbarComponent extends Vue {
       .catch((error) => {
         this.displaySnackbar({
           text: "Failed to save file: " + error,
-          success: false,
+          success: false
         });
       });
   }

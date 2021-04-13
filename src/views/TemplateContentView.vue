@@ -47,16 +47,16 @@ export default class TemplateContentView extends Vue {
         const borderElem = menuElem.querySelector(".v-navigation-drawer__border");
 
         if (borderElem instanceof HTMLElement) {
-          borderElem.style.cursor = "ew-resize";
-          borderElem.style.width = "2px";
-          function resize(e: MouseEvent) {
+          const resize = (e: MouseEvent) => {
             document.body.style.cursor = "ew-resize";
             let width = e.clientX - menuPosition.left;
             width = width < 150 ? 150 : width;
             (menuElem as HTMLElement).style.width = width + "px";
-          }
+          };
+          borderElem.style.cursor = "ew-resize";
+          borderElem.style.width = "2px";
 
-          borderElem.addEventListener("mousedown", (e) => {
+          borderElem.addEventListener("mousedown", () => {
             menuElem.style.transition = "initial";
             document.addEventListener("mousemove", resize, false);
           }, false);

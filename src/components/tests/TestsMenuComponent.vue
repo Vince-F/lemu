@@ -11,12 +11,12 @@
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-    
+
     <v-divider></v-divider>
 
     <v-list dense>
       <div class="filter-area">
-        <v-menu 
+        <v-menu
           offset-y
           :close-on-content-click="false"
           :nudge-width="420">
@@ -31,7 +31,7 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on: tooltipListener }">
                   <v-btn icon class="flex-grow-0 flex-shrink-0">
-                    <v-icon v-on="{...menuListener, ...tooltipListener}" v-bind="attrs" 
+                    <v-icon v-on="{...menuListener, ...tooltipListener}" v-bind="attrs"
                       :color="filterModified? 'primary lighten-1' : 'grey lighten-1'">mdi-filter-variant</v-icon>
                   </v-btn>
                 </template>
@@ -90,7 +90,7 @@
                 mdi-check-circle
               </v-icon>
               <v-icon color="grey" v-else-if="getTestStatus(test.label) === 'unknown'">
-                mdi-help-circle 
+                mdi-help-circle
               </v-icon>
               <v-icon color="red" v-else>
                 mdi-alert
@@ -177,7 +177,7 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Getter, Mutation, Action, State } from "vuex-class";
 import { BackstopTest } from "../../models/backstopTest";
-import { BackstopTestResult } from '../../models/backstopTestResult';
+import { BackstopTestResult } from "../../models/backstopTestResult";
 import TestEntryMenuComponent from "./TestEntryMenuComponent.vue";
 
 @Component({
@@ -189,18 +189,25 @@ import TestEntryMenuComponent from "./TestEntryMenuComponent.vue";
 export default class TestsMenuComponent extends Vue {
   @State((state) => state.testResultStore.resultExpired)
   private readonly resultExpired!: boolean;
+
   @Mutation("configurationStore/addScenario")
   private readonly addScenario!: () => void;
+
   @Getter("configurationStore/tests")
   private readonly tests!: BackstopTest[];
+
   @Getter("configurationStore/hasTestBeenModified")
   private readonly hasTestBeenModified!: (idx: number) => boolean;
+
   @Getter("testResultStore/getResultByTestLabel")
   private readonly getResultByTestLabel!: (labelName: string) => BackstopTestResult[];
+
   @Action("testResultStore/retrieveTestsResult")
   private readonly retrieveTestsResult!: () => Promise<void>;
+
   @Action("testRunnerStore/runTests")
-  private readonly runBackstopTests!: () => Promise<any>;
+  private readonly runBackstopTests!: () => Promise<void>;
+
   @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
 
@@ -231,14 +238,14 @@ export default class TestsMenuComponent extends Vue {
   }
 
   private get filterModified() {
-    return this.filter.name.length > 0
-      || this.filter.testStatus.length !== this.testStatusValues.length;
+    return this.filter.name.length > 0 ||
+      this.filter.testStatus.length !== this.testStatusValues.length;
   }
 
   private get filteredTests() {
     return this.tests.filter((test) => {
-      return test.label.includes(this.filter.name)
-        && this.filter.testStatus.includes(this.getTestStatus(test.label));
+      return test.label.includes(this.filter.name) &&
+        this.filter.testStatus.includes(this.getTestStatus(test.label));
     });
   }
 
@@ -249,19 +256,19 @@ export default class TestsMenuComponent extends Vue {
 
   private getTestStatus(testLabel: string) {
     const testResults = this.getResultByTestLabel(testLabel);
-    let status = 'unknown';
+    let status = "unknown";
     testResults.forEach((result) => {
       if (result.status === "pass" && status === "unknown") {
         status = "pass";
       } else if (result.status !== "pass") {
-        status = 'failed';
+        status = "failed";
       }
     });
     return status;
   }
 
   private openTestDetails(testIndex: number) {
-    this.$router.push({ name: "tests.view", params: { index: "" + testIndex }});
+    this.$router.push({ name: "tests.view", params: { index: "" + testIndex } });
   }
 
   private showContextMenu($event: MouseEvent, testIndex: number) {
@@ -283,7 +290,7 @@ export default class TestsMenuComponent extends Vue {
     this.contextMenuY = $event.clientY;
   }
 
-  @Watch('resultExpired')
+  @Watch("resultExpired")
   private updateTestResult() {
     this.retrieveTestsResult();
   }

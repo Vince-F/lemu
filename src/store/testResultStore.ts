@@ -1,26 +1,26 @@
-import { BackstopTestResult } from '@/models/backstopTestResult';
-import { BackstopService } from '@/services/backstopService';
-import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
+import { BackstopTestResult } from "@/models/backstopTestResult";
+import { BackstopService } from "@/services/backstopService";
+import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 
 @Module({
   namespaced: true
 })
 export default class TestResultStore extends VuexModule {
   public testsResult: BackstopTestResult[] = [];
-  public resultExpired: boolean = true;
+  public resultExpired = true;
 
   @Mutation
-  public expireTestsResult() {
+  public expireTestsResult(): void {
     this.resultExpired = true;
   }
 
   @Mutation
-  public setTestsResult(result: BackstopTestResult[]) {
+  public setTestsResult(result: BackstopTestResult[]) : void{
     this.testsResult = result;
     this.resultExpired = false;
   }
 
-  public get getResultByTestLabel() {
+  public get getResultByTestLabel(): (labelName: string) => BackstopTestResult[] {
     return (labelName: string) => {
       return this.testsResult.filter((testResult: BackstopTestResult) => {
         return testResult.pair.label === labelName;
@@ -29,7 +29,7 @@ export default class TestResultStore extends VuexModule {
   }
 
   @Action
-  public retrieveTestsResult() {
+  public retrieveTestsResult(): Promise<void | BackstopTestResult[]> {
     if (this.testsResult && this.testsResult.length > 0 &&
         !this.resultExpired) {
       return Promise.resolve(this.testsResult);
@@ -42,7 +42,7 @@ export default class TestResultStore extends VuexModule {
   }
 
   @Action
-  public watchResultChange() {
+  public watchResultChange(): Promise<void> {
     BackstopService.registerResultWatcher(this.context.rootGetters["configurationStore/htmlReportDirectory"], () => {
       this.context.commit("expireTestsResult");
     });

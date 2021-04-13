@@ -18,7 +18,7 @@
             <p>
               <v-btn large color="primary" @click="createNewConfig">
                 Create new config...
-              </v-btn> 
+              </v-btn>
             </p>
           </div>
           <div class="open-recent-section">
@@ -37,7 +37,7 @@
             </p>
             <v-btn large color="primary" @click="goToTemplates">
               Manage templates
-            </v-btn> 
+            </v-btn>
           </div>
           <div class="general-section">
             <h1 class="v-card__title no-left-padding">Help</h1>
@@ -100,15 +100,18 @@ import NewConfigModalComponent from "./NewConfigModalComponent.vue";
 import ReleaseInfoModalComponent from "../app/ReleaseInfoModalComponent.vue";
 
 @Component({
-    name: "open-configuration-component"
+  name: "open-configuration-component"
 })
 export default class OpenConfigurationComponent extends Vue {
   @Action("configurationStore/openConfiguration")
-  private readonly openConfiguration!: () => Promise<any>;
+  private readonly openConfiguration!: () => Promise<void>;
+
   @Action("configurationStore/openConfigurationFromPath")
-  private readonly openConfigurationFromPath!: (path: string) => Promise<any>;
+  private readonly openConfigurationFromPath!: (path: string) => Promise<void>;
+
   @Action("configurationStore/initConfig")
   private readonly initTests!: (payload: {template: BackstopConfiguration, directory: string}) => Promise<void>;
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
@@ -135,14 +138,14 @@ export default class OpenConfigurationComponent extends Vue {
             this.$router.push({ name: "generalConfiguration" });
           }).catch((error) => {
             if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
-              this.displaySnackbar({text: "Failed to open file. " + error, success: false});
+              this.displaySnackbar({ text: "Failed to open file. " + error, success: false });
             }
           });
       });
   }
 
   private goToTemplates() {
-    this.$router.push({name: "scriptTemplates.welcome"});
+    this.$router.push({ name: "scriptTemplates.welcome" });
   }
 
   private openSearchFileModal() {
@@ -151,7 +154,7 @@ export default class OpenConfigurationComponent extends Vue {
         this.$router.push({ name: "generalConfiguration" });
       }).catch((error) => {
         if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
-          this.displaySnackbar({text: "Failed to open file. " + error, success: false});
+          this.displaySnackbar({ text: "Failed to open file. " + error, success: false });
         }
       });
   }
@@ -162,7 +165,7 @@ export default class OpenConfigurationComponent extends Vue {
         this.$router.push({ name: "generalConfiguration" });
       }).catch((error) => {
         if (!(error instanceof Error) || !error.message.endsWith("dismiss")) {
-          this.displaySnackbar({text: "Failed to open file. " + error, success: false});
+          this.displaySnackbar({ text: "Failed to open file. " + error, success: false });
         }
       });
   }

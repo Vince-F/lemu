@@ -113,21 +113,25 @@ import ZoomableImageComponent from "./ZoomableImageComponent.vue";
 
 @Component({
   components: {
-    ZoomableImageComponent,
-  },
+    ZoomableImageComponent
+  }
 })
 export default class TestResultComponent extends Vue {
   @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
+
   @Action("configurationStore/approveTest")
   private readonly approveTest!: (testLabel: string) => Promise<void>;
+
   @Action("configurationStore/approveTestViewport")
   private readonly approveTestViewport!: (payload: {
     testLabel: string;
     viewportLabel: string;
   }) => Promise<void>;
+
   @Getter("configurationStore/htmlReportDirectory")
   private readonly htmlReportDirectory!: string;
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {
     text: string;
@@ -136,8 +140,10 @@ export default class TestResultComponent extends Vue {
 
   @Prop({ required: true, type: BackstopTest })
   private readonly testContent!: BackstopTest;
+
   @Prop({ required: true, type: Boolean })
   private readonly resultLoading!: boolean;
+
   @Prop({ required: true, type: Array })
   private readonly testResult!: BackstopTestResult[];
 
@@ -154,13 +160,13 @@ export default class TestResultComponent extends Vue {
         .then(() => {
           this.displaySnackbar({
             text: "Test successfully approved",
-            success: true,
+            success: true
           });
         })
         .catch((err) => {
           this.displaySnackbar({
             text: "Fail to approve test, error: " + err,
-            success: false,
+            success: false
           });
         });
     }
@@ -170,18 +176,18 @@ export default class TestResultComponent extends Vue {
     if (this.testContent) {
       this.approveTestViewport({
         testLabel: this.testContent.label,
-        viewportLabel,
+        viewportLabel
       })
         .then(() => {
           this.displaySnackbar({
             text: "Test successfully approved",
-            success: true,
+            success: true
           });
         })
         .catch((err) => {
           this.displaySnackbar({
             text: "Fail to approve test, error: " + err,
-            success: false,
+            success: false
           });
         });
     }
@@ -190,21 +196,21 @@ export default class TestResultComponent extends Vue {
   private getDiffImagePath(testResult: BackstopTestResult) {
     return FileService.resolvePath([
       this.htmlReportDirectory,
-      testResult.pair.diffImage,
+      testResult.pair.diffImage
     ]);
   }
 
   private getReferenceImagePath(testResult: BackstopTestResult) {
     return FileService.resolvePath([
       this.htmlReportDirectory,
-      testResult.pair.reference,
+      testResult.pair.reference
     ]);
   }
 
   private getTestImagePath(testResult: BackstopTestResult) {
     return FileService.resolvePath([
       this.htmlReportDirectory,
-      testResult.pair.test,
+      testResult.pair.test
     ]);
   }
 

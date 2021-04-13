@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-text-field outlined dense type="number" label="Maximum parallel captures (asyncCaptureLimit)" :value="configuration.asyncCaptureLimit" 
+    <v-text-field outlined dense type="number" label="Maximum parallel captures (asyncCaptureLimit)" :value="configuration.asyncCaptureLimit"
       @input="updateField('asyncCaptureLimit', Number.parseInt($event))"></v-text-field>
-    <v-text-field outlined dense type="number" label="Maximum parallel screen comparison (asyncCompareLimit)" :value="configuration.asyncCompareLimit" 
+    <v-text-field outlined dense type="number" label="Maximum parallel screen comparison (asyncCompareLimit)" :value="configuration.asyncCompareLimit"
       @input="updateField('asyncCompareLimit', Number.parseInt($event))"></v-text-field>
     <v-checkbox label="Debug window" :input-value="configuration.debugWindow" @change="updateField('debugWindow', $event)"></v-checkbox>
     <v-checkbox label="Debug output" :input-value="configuration.debug" @change="updateField('debug', $event)"></v-checkbox>
@@ -15,10 +15,10 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class PerformanceConfigurationComponent extends Vue {
-  @Prop({required: true})
+  @Prop({ required: true })
   private readonly configuration!: BackstopConfiguration;
 
-  private updateField(field: string, value: any) {
+  private updateField(field: string, value: unknown) {
     this.$emit(field, value);
   }
 }

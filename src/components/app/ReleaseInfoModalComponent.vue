@@ -13,7 +13,7 @@
       </v-card-title>
 
       <v-card-text>
-        
+
         <div v-if="appInfos && changelog">
           <p>Your LEMU has been updated to version {{appInfos.appVersion}}</p>
           <p>Here is what has changed</p>
@@ -32,7 +32,7 @@
         </v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog> 
+  </v-dialog>
 </template>
 
 <script lang="ts">
@@ -44,12 +44,14 @@ import marked from "marked";
 export default class AboutModalComponent extends Vue {
   @State((state) => state.applicationStore.appInfos)
   private readonly appInfos!: {appVersion: string, backstopVersion: string} | null;
+
   @Action("applicationStore/retrieveAppInfos")
   private readonly retrieveAppInfos!: () => Promise<void>;
+
   @Action("applicationStore/retrieveChangelog")
   private readonly retrieveChangelog!: (version: string) => Promise<string>;
 
-  private dialogDisplayed: boolean = true;
+  private dialogDisplayed = true;
   private loading: boolean;
   private changelog: string;
 

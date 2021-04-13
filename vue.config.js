@@ -1,15 +1,15 @@
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 module.exports = {
-  "transpileDependencies": [
+  transpileDependencies: [
   ],
   publicPath: "./",
   outputDir: "dist-app",
   chainWebpack: config => {
-    config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
+    config.plugin("monaco-editor").use(MonacoWebpackPlugin, [
       {
-        languages: ['json', 'javascript']
+        languages: ["json", "javascript"]
       }
     ]);
   }
-}
+};

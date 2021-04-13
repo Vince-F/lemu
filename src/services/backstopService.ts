@@ -1,52 +1,53 @@
-import { BackstopConfiguration } from '@/models/backstopConfiguration';
-import { BackstopReport } from '@/models/backstopReport';
-import { EngineScript } from '@/models/engineScript';
+import { BackstopConfiguration } from "@/models/backstopConfiguration";
+import { BackstopReport } from "@/models/backstopReport";
+import { EngineScript } from "@/models/engineScript";
 import { eventNames } from "../../shared/constants/eventNames";
 
 export class BackstopService {
-  public static setWorkingDir(path: string) {
+  public static setWorkingDir(path: string): void {
     window.ipcHandler.send(eventNames.WORKING_DIR, path);
   }
 
-  public static runTests(config: BackstopConfiguration) {
+  public static runTests(config: BackstopConfiguration): Promise<unknown> {
     return window.ipcHandler.invoke(eventNames.RUN_TEST, config)
-      .then((result: {success: boolean, content: any}) => {
+      .then((result: {success: boolean, content: unknown}) => {
         return this.handleTestFinished(result);
       });
   }
 
-  public static runTest(config: BackstopConfiguration, testLabel: string) {
+  public static runTest(config: BackstopConfiguration, testLabel: string): Promise<unknown> {
     return window.ipcHandler.invoke(eventNames.RUN_TEST, config, testLabel)
-      .then((result: {success: boolean, content: any}) => {
+      .then((result: {success: boolean, content: unknown}) => {
         return this.handleTestFinished(result);
       });
   }
 
-  public static approveTests(config: BackstopConfiguration) {
+  public static approveTests(config: BackstopConfiguration): Promise<unknown> {
     return window.ipcHandler.invoke(eventNames.APPROVE_TEST, config)
       .then((result: {success: boolean}) => {
         if (!result.success) {
-          return Promise.reject();
+          return Promise.reject(new Error());
         }
       });
   }
 
-  public static approveTest(config: BackstopConfiguration, testLabel: string, viewportLabel?: string) {
+  public static approveTest(config: BackstopConfiguration, testLabel: string,
+    viewportLabel?: string): Promise<unknown> {
     return window.ipcHandler.invoke(eventNames.APPROVE_TEST, config, testLabel, viewportLabel)
       .then((result: {success: boolean}) => {
         if (!result.success) {
-          return Promise.reject();
+          return Promise.reject(new Error());
         }
       });
   }
 
-  public static initTests(path: string) {
+  public static initTests(path: string): Promise<void> {
     return window.ipcHandler.invoke("initTest", path);
   }
 
   public static retrieveEngineScripts(path: string): Promise<EngineScript[]> {
     return window.ipcHandler.invoke(eventNames.RETRIEVE_ENGINE_SCRIPTS, path)
-      .then((result: {success: boolean, content: any}) => {
+      .then((result: {success: boolean, content: unknown}) => {
         if (result.success) {
           if (Array.isArray(result.content)) {
             return result.content.map((entry) => {
@@ -56,23 +57,31 @@ export class BackstopService {
             return [];
           }
         } else {
-          return Promise.reject(result.content);
+          if (typeof result.content === "string") {
+            return Promise.reject(new Error(result.content));
+          } else {
+            return Promise.reject(new Error());
+          }
         }
       });
   }
 
   public static retrieveTestsResult(path: string): Promise<BackstopReport> {
     return window.ipcHandler.invoke(eventNames.RETRIEVE_TEST_RESULT, path)
-      .then((result: {success: boolean, content: any}) => {
+      .then((result: {success: boolean, content: unknown}) => {
         if (result.success) {
           return new BackstopReport(result.content);
         } else {
-          return Promise.reject(result.content);
+          if (typeof result.content === "string") {
+            return Promise.reject(new Error(result.content));
+          } else {
+            return Promise.reject(new Error());
+          }
         }
       });
   }
 
-  public static registerResultWatcher(path: string, cb: () => void) {
+  public static registerResultWatcher(path: string, cb: () => void): void {
     window.ipcHandler.receive(eventNames.TEST_RESULT_CHANGED.REPLY, () => {
       cb();
     });
@@ -83,29 +92,30 @@ export class BackstopService {
     window.ipcHandler.send(eventNames.TEST_RESULT_CHANGED.REQUEST, path);
   }
 
-  public static unregisterResultWatcher() {
+  public static unregisterResultWatcher(): void {
     window.ipcHandler.send(eventNames.UNREGISTER_RESULT_WATCHER.REQUEST);
   }
 
-  public static registerConfigWatcher(path: string, cb: () => void) {
+  public static registerConfigWatcher(path: string, cb: () => void): void {
     window.ipcHandler.receive(eventNames.CONFIG_CHANGED.REPLY, () => {
       cb();
     });
     window.ipcHandler.send(eventNames.CONFIG_CHANGED.REQUEST, path);
   }
 
-  public static unregisterConfigWatcher() {
+  public static unregisterConfigWatcher(): void {
     window.ipcHandler.send(eventNames.UNREGISTER_CONFIG_WATCHER.REQUEST);
   }
 
-  public static renameReferenceWithNewConfigName(refDirectory: string, oldRefName: string, newRefName: string) {
-    window.ipcHandler.invoke(eventNames.RENAME_REFERENCES, refDirectory, oldRefName, newRefName);
+  public static renameReferenceWithNewConfigName(refDirectory: string,
+    oldRefName: string, newRefName: string): Promise<void> {
+    return window.ipcHandler.invoke(eventNames.RENAME_REFERENCES, refDirectory, oldRefName, newRefName);
   }
 
-  private static registerAgainTestWatcher: boolean = false;
-  private static resultPath: string = "";
+  private static registerAgainTestWatcher = false;
+  private static resultPath = "";
 
-  private static handleTestFinished(result: {success: boolean, content: any}) {
+  private static handleTestFinished(result: {success: boolean, content: unknown}): unknown {
     if (this.registerAgainTestWatcher) {
       window.ipcHandler.send(eventNames.TEST_RESULT_CHANGED.REQUEST, this.resultPath);
       this.resultPath = "";
@@ -113,15 +123,25 @@ export class BackstopService {
     }
 
     if (result.success) {
-      const notif = new Notification('LEMU', {
-        body: 'Tests finished running with success'
+      const notif = new Notification("LEMU", {
+        body: "Tests finished running with success"
       });
+      notif.onclick = () => {
+        notif.close();
+      };
       return result.content;
     } else {
-      const notif = new Notification('LEMU', {
-        body: 'Tests finished running with error(s)'
+      const notif = new Notification("LEMU", {
+        body: "Tests finished running with error(s)"
       });
-      return Promise.reject(result.content);
+      notif.onclick = () => {
+        notif.close();
+      };
+      if (typeof result.content === "string") {
+        return Promise.reject(new Error(result.content));
+      } else {
+        return Promise.reject(new Error());
+      }
     }
   }
 }

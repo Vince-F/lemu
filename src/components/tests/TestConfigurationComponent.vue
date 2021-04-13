@@ -15,7 +15,7 @@
       <v-text-field outlined dense label="url" :value="testContent.url" @input="updateField('url', $event)"></v-text-field>
       <div class="d-flex" v-for="(additionnalField, index) in additionnalFields" :key="additionnalField.name">
         <v-text-field outlined dense
-          v-if="additionnalField.type === 'number'" :label="additionnalField.name" 
+          v-if="additionnalField.type === 'number'" :label="additionnalField.name"
           type="number" :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, Number.parseInt($event))"
           class="flex-grow-1 flex-shrink-1"></v-text-field>
         <v-checkbox v-else-if="additionnalField.type === 'boolean'" :label="additionnalField.name"
@@ -26,16 +26,16 @@
           :label="additionnalField.name" :value="additionnalField.value"
           :key="index" @change="updateField(additionnalField.name, $event)"
           class="flex-grow-1 flex-shrink-1"></v-combobox>
-        <v-select outlined dense v-else-if="additionnalField.type === 'scripts'" 
-          :value="additionnalField.value" @input="updateField(additionnalField.name, $event)" 
+        <v-select outlined dense v-else-if="additionnalField.type === 'scripts'"
+          :value="additionnalField.value" @input="updateField(additionnalField.name, $event)"
             :items="scriptNames" :label="additionnalField.name"></v-select>
         <div v-else-if="additionnalField.type === 'viewports'" class="viewports-area">
           <v-expansion-panels>
             <v-expansion-panel>
               <v-expansion-panel-header>Viewports</v-expansion-panel-header>
               <v-expansion-panel-content>
-                <viewports-component 
-                  :viewports="additionnalField.value" @addViewport="addViewport(additionnalField.value)" 
+                <viewports-component
+                  :viewports="additionnalField.value" @addViewport="addViewport(additionnalField.value)"
                   @removeViewport="removeViewport(additionnalField.value, arguments[0])"
                   @updateViewportField="updateViewportField(additionnalField.value, arguments[0], arguments[1], arguments[2])"/>
               </v-expansion-panel-content>
@@ -43,7 +43,7 @@
           </v-expansion-panels>
         </div>
         <v-text-field outlined dense
-          v-else :label="additionnalField.name" 
+          v-else :label="additionnalField.name"
           :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, $event)"
           class="flex-grow-1 flex-shrink-1"></v-text-field>
         <v-tooltip top >
@@ -93,13 +93,13 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Action, Mutation, State, Getter } from "vuex-class";
 import { ModalService } from "../../services/modalService";
-import { BackstopTest } from '../../models/backstopTest';
+import { BackstopTest } from "../../models/backstopTest";
 import { backstopFieldHelp } from "../../constants/backstopFieldHelp";
 import AddTestFieldModalComponent from "./AddTestFieldModalComponent.vue";
-import { backstopScenarioProperties } from '@/constants/backstopScenarioProperties';
-import { EngineScript } from '@/models/engineScript';
+import { backstopScenarioProperties } from "@/constants/backstopScenarioProperties";
+import { EngineScript } from "@/models/engineScript";
 import ViewportsComponent from "./ViewportsComponent.vue";
-import { Viewport } from '@/models/viewport';
+import { Viewport } from "@/models/viewport";
 import { EngineScriptHelper } from "../../controllers/EngineScriptHelper";
 
 @Component({
@@ -110,36 +110,49 @@ import { EngineScriptHelper } from "../../controllers/EngineScriptHelper";
 export default class TestConfigurationComponent extends Vue {
   @State((state) => state.testRunnerStore.testRunning)
   private readonly testRunning!: boolean;
+
   @Action("testRunnerStore/runTest")
-  private readonly runTest!: (testLabel: string) => Promise<any>;
+  private readonly runTest!: (testLabel: string) => Promise<void>;
+
   @Mutation("configurationStore/setScenarioField")
-  private setScenarioField!: (paylod: {scenarioIndex: number, field: string, value: any}) => void;
+  private setScenarioField!: (paylod: {scenarioIndex: number, field: string, value: unknown}) => void;
+
   @Mutation("configurationStore/removeScenarioField")
   private readonly removeScenarioField!: (payload: {index: number, fieldName: string}) => void;
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+
   @State((state) => state.engineScriptStore.scripts)
   private readonly scripts!: EngineScript[];
+
   @Getter("configurationStore/engineScriptDirectory")
   private readonly engineScriptDirectory!: string;
 
-  @Prop({required: true, type: Object})
+  @Prop({ required: true, type: Object })
   private readonly testContent!: BackstopTest;
-  @Prop({required: true, type: Number})
+
+  @Prop({ required: true, type: Number })
   private readonly testIndex!: number;
 
-  private get additionnalFields(): Array<{name: string, value: string | number | boolean, type: string}> {
+  private get additionnalFields(): Array<{name: string, value: unknown, type: string}> {
     const result = [];
     for (const key in this.testContent) {
       if (key !== "label" && key !== "url") { // those are the two mandatory fields that are always here
-        const entry = {} as any;
-        entry.name = key;
-        entry.value = this.testContent[key];
+        const entry: {
+          name: string,
+          value: unknown
+          type: string
+        } = {
+          name: key,
+          value: this.testContent[key],
+          type: ""
+        };
         const matchingPredefinedField = backstopScenarioProperties.find((field) => field.name === key);
         if (matchingPredefinedField) {
           entry.type = matchingPredefinedField.type;
         } else if (Array.isArray(this.testContent[key])) {
-          entry.type = 'array';
+          entry.type = "array";
         } else {
           entry.type = typeof this.testContent[key];
         }
@@ -155,12 +168,12 @@ export default class TestConfigurationComponent extends Vue {
 
   private addNewField() {
     ModalService.launchModal(AddTestFieldModalComponent)
-      .then((newField: {name: string, value: any, type: string}) => {
+      .then((newField: {name: string, value: unknown, type: string}) => {
         this.validateField(newField);
       });
   }
 
-  private addViewport(fieldValue: any) {
+  private addViewport(fieldValue: unknown) {
     if (Array.isArray(fieldValue)) {
       fieldValue.push(new Viewport());
     }
@@ -176,7 +189,7 @@ export default class TestConfigurationComponent extends Vue {
   private removeField(fieldName: string) {
     ModalService.launchConfirmationModal("Do you really wish to delete this entry?")
       .then(() => {
-        this.removeScenarioField({index: this.testIndex, fieldName});
+        this.removeScenarioField({ index: this.testIndex, fieldName });
       });
   }
 
@@ -190,18 +203,18 @@ export default class TestConfigurationComponent extends Vue {
     if (this.testContent) {
       this.runTest(this.testContent.label)
         .then(() => {
-          this.displaySnackbar({text: "Test successfully run", success: true});
+          this.displaySnackbar({ text: "Test successfully run", success: true });
         }).catch((err) => {
-          this.displaySnackbar({text: "Test failed, error: " + err, success: false});
+          this.displaySnackbar({ text: "Test failed, error: " + err, success: false });
         });
     }
   }
 
   private updateField(field: string, value: unknown) {
-    this.setScenarioField({scenarioIndex: this.testIndex, field, value});
+    this.setScenarioField({ scenarioIndex: this.testIndex, field, value });
   }
 
-  private updateViewportField(fieldValue: unknown, index: number, field: string, value: any) {
+  private updateViewportField(fieldValue: unknown, index: number, field: string, value: unknown) {
     if (Array.isArray(fieldValue)) {
       Vue.set(fieldValue[index], field, value);
     }
@@ -209,7 +222,7 @@ export default class TestConfigurationComponent extends Vue {
 
   private validateField(newField: {name: string, value: unknown, type: string}) {
     if (newField.name !== null) {
-      if (newField.type === 'number' && typeof newField.value === "string") {
+      if (newField.type === "number" && typeof newField.value === "string") {
         newField.value = Number.parseFloat(newField.value);
       }
       this.updateField(newField.name, newField.value);

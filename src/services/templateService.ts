@@ -1,12 +1,12 @@
-import { BackstopConfiguration } from '@/models/backstopConfiguration';
-import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
+import { BackstopConfiguration } from "@/models/backstopConfiguration";
+import { EngineScriptTemplate } from "@/models/engineScriptTemplate";
 
 export class TemplateService {
-  public static createScriptTemplate(name: string, content: string) {
+  public static createScriptTemplate(name: string, content: string): Promise<void> {
     return window.ipcHandler.invoke("createScriptTemplate", name, content);
   }
 
-  public static createOrUpdateScriptTemplate(scriptTemplate: EngineScriptTemplate) {
+  public static createOrUpdateScriptTemplate(scriptTemplate: EngineScriptTemplate): Promise<void> {
     return window.ipcHandler.invoke("createOrUpdateScriptTemplate", scriptTemplate.name, scriptTemplate.content);
   }
 
@@ -14,15 +14,15 @@ export class TemplateService {
     return window.ipcHandler.invoke("retrieveScriptTemplates");
   }
 
-  public static deleteScriptTemplate(name: string) {
+  public static deleteScriptTemplate(name: string): Promise<void> {
     return window.ipcHandler.invoke("deleteScriptTemplate", name);
   }
 
-  public static createConfigurationTemplate(name: string, content: string) {
+  public static createConfigurationTemplate(name: string, content: string): Promise<void> {
     return window.ipcHandler.invoke("createConfigurationTemplate", name, content);
   }
 
-  public static createOrUpdateConfigurationTemplate(name: string, content: string) {
+  public static createOrUpdateConfigurationTemplate(name: string, content: string): Promise<void> {
     return window.ipcHandler.invoke("createOrUpdateConfigurationTemplate", name, content);
   }
 
@@ -33,7 +33,7 @@ export class TemplateService {
       });
   }
 
-  public static deleteConfigurationTemplate(name: string) {
+  public static deleteConfigurationTemplate(name: string): Promise<void> {
     return window.ipcHandler.invoke("deleteConfigurationTemplate", name);
   }
 }

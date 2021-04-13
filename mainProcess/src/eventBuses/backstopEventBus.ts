@@ -31,7 +31,8 @@ electron.ipcMain.handle(eventNames.APPROVE_TEST, (event, config, scenarioLabel, 
       };
     }).catch((error) => {
       return {
-        success: false
+        success: false,
+        content: error.message
       };
     });
 });

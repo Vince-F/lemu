@@ -7,7 +7,7 @@
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-      
+
     <v-divider></v-divider>
     <v-treeview :items="items"
       activatable
@@ -52,24 +52,29 @@
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { State, Action, Getter, Mutation } from "vuex-class";
 import { TreeEntry } from "../../models/treeEntry";
-import { EngineScript } from '../../models/engineScript';
+import { EngineScript } from "../../models/engineScript";
 import { ModalService } from "../../services/modalService";
 import AddScriptModalComponent from "./AddScriptModalComponent.vue";
 import { FileService } from "../../services/fileService";
-import { EngineScriptTemplate } from '@/models/engineScriptTemplate';
+import { EngineScriptTemplate } from "@/models/engineScriptTemplate";
 
 @Component
 export default class ScriptMenuComponent extends Vue {
   @State((state) => state.engineScriptStore.scripts)
   private readonly scripts!: EngineScript[];
+
   @Getter("configurationStore/engineScriptDirectory")
   private readonly engineScriptDirectory!: string;
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+
   @Mutation("engineScriptStore/addScript")
   private readonly addScript!: (payload: {scriptPath: string, content: string}) => void;
+
   @Mutation("engineScriptStore/removeScript")
   private readonly removeScript!: (scriptPath: string) => void;
+
   private items: TreeEntry[];
 
   constructor() {
@@ -102,7 +107,7 @@ export default class ScriptMenuComponent extends Vue {
                   text: "File successfully created",
                   success: true
                 });
-                this.addScript({scriptPath: fullPath, content: ""});
+                this.addScript({ scriptPath: fullPath, content: "" });
               }).catch((error) => {
                 this.displaySnackbar({
                   text: error,
@@ -118,7 +123,7 @@ export default class ScriptMenuComponent extends Vue {
                     text: "File successfully created",
                     success: true
                   });
-                  this.addScript({scriptPath: fullPath, content: fileContent});
+                  this.addScript({ scriptPath: fullPath, content: fileContent });
                 }).catch((error) => {
                   this.displaySnackbar({
                     text: error,
@@ -129,7 +134,7 @@ export default class ScriptMenuComponent extends Vue {
             break;
           case "template":
             if (result.template) {
-              this.addScript({scriptPath: fullPath, content: result.template.content});
+              this.addScript({ scriptPath: fullPath, content: result.template.content });
             }
         }
       });
@@ -171,10 +176,9 @@ export default class ScriptMenuComponent extends Vue {
     this.items = this.createTreeItemFromMap(paths, "", true);
   }
 
-  private createTreeItemFromMap(map: Map<string, Map<string, any>>, path: string, rootDirectory?: boolean) {
+  private createTreeItemFromMap(map: Map<string, Map<string, unknown>>, path: string, rootDirectory?: boolean) {
     const items: TreeEntry[] = [];
     map.forEach((value, key) => {
-
       items.push({
         id: path + (path.length > 0 ? "/" : "") + (rootDirectory ? "" : key),
         name: key,

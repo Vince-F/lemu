@@ -52,9 +52,9 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import { Getter, Mutation, Action } from "vuex-class";
-import { EngineScript } from '../../models/engineScript';
-import MonacoEditor from 'monaco-editor-vue';
-import { ModalService } from '@/services/modalService';
+import { EngineScript } from "../../models/engineScript";
+import MonacoEditor from "monaco-editor-vue";
+import { ModalService } from "@/services/modalService";
 import SaveAsScriptTemplateModalComponent from "./SaveAsScriptTemplateModalComponent.vue";
 import EntityMenuBarActionComponent from "../layout/EntityMenuBarActionComponent.vue";
 
@@ -67,14 +67,19 @@ import EntityMenuBarActionComponent from "../layout/EntityMenuBarActionComponent
 export default class ScriptViewComponent extends Vue {
   @Getter("engineScriptStore/getScript")
   private readonly getScript!: (path: string) => EngineScript;
+
   @Mutation("engineScriptStore/setScriptContent")
   private readonly setScriptContent!: (payload: {path: string, content: string}) => void;
+
   @Action("templateStore/createEngineScriptTemplate")
   private readonly createEngineScriptTemplate!: (payload: {name: string, content: string}) => Promise<void>;
+
   @Mutation("engineScriptStore/removeScript")
   private readonly removeScript!: (scriptPath: string) => void;
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
+
   private engineScriptData: EngineScript;
 
   constructor() {
@@ -106,11 +111,11 @@ export default class ScriptViewComponent extends Vue {
   private saveAsTemplate() {
     ModalService.launchModal(SaveAsScriptTemplateModalComponent)
       .then((name: string) => {
-        this.createEngineScriptTemplate({name, content: this.engineScriptData.content})
+        this.createEngineScriptTemplate({ name, content: this.engineScriptData.content })
           .then(() => {
-            this.displaySnackbar({text: "Template successfully created.", success: true});
+            this.displaySnackbar({ text: "Template successfully created.", success: true });
           }).catch((error) => {
-            this.displaySnackbar({text: "Error when creating template " + error, success: false});
+            this.displaySnackbar({ text: "Error when creating template " + error, success: false });
           });
       });
   }

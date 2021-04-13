@@ -1,5 +1,4 @@
-import { Viewport } from './viewport';
-
+import { Viewport } from "./viewport";
 
 export class BackstopTest {
   /* mandatory fields */
@@ -25,11 +24,11 @@ export class BackstopTest {
   public viewports!: Viewport[];
 
   /* for custom fields */
-  [key: string]: any;
+  [key: string]: unknown;
 
-  constructor(data: any) {
-    this.label = data && data.label || "";
-    this.url = data && data.url || "";
+  constructor(data: any) { // eslint-disable-line
+    this.label = data?.label ?? "";
+    this.url = data?.url ?? "";
 
     for (const key in data) {
       if (key !== "label" && key !== "url") {
