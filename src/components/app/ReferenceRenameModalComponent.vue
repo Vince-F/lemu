@@ -23,7 +23,7 @@
         </v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog> 
+  </v-dialog>
 </template>
 
 <script lang="ts">
@@ -31,7 +31,7 @@ import { Vue, Component } from "vue-property-decorator";
 
 @Component({})
 export default class ReferenceRenameModalComponent extends Vue {
-  private dialogDisplayed: boolean = true;
+  private dialogDisplayed = true;
 
   private dismiss() {
     this.dialogDisplayed = false;

@@ -1,11 +1,11 @@
 import Vue from "vue";
 import { DialogFileService } from "@/services/dialogFileService";
 import { FileService } from "../services/fileService";
-import { BackstopConfiguration } from '@/models/backstopConfiguration';
-import { BackstopTest } from '@/models/backstopTest';
-import { BackstopService } from '@/services/backstopService';
-import { VuexModule, Module, Mutation, Action } from 'vuex-module-decorators';
-import { SearchService } from '@/services/searchService';
+import { BackstopConfiguration } from "@/models/backstopConfiguration";
+import { BackstopTest } from "@/models/backstopTest";
+import { BackstopService } from "@/services/backstopService";
+import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
+import { SearchService } from "@/services/searchService";
 import { ModalService } from "@/services/modalService";
 import RefrerenceRenameModalComponent from "../components/app/ReferenceRenameModalComponent.vue";
 @Module({
@@ -15,9 +15,9 @@ export default class ConfigurationStore extends VuexModule {
   public currentConfiguration: BackstopConfiguration | null = null;
   public configurationPath = "";
   public testsModified: boolean[] = [];
-  public configurationModified: boolean = false;
-  public isSaving: boolean = false;
-  public originalConfigName: string = "";
+  public configurationModified = false;
+  public isSaving = false;
+  public originalConfigName = "";
 
   public get configName(): string {
     return this.currentConfiguration?.id ?? "";
@@ -53,8 +53,8 @@ export default class ConfigurationStore extends VuexModule {
   public get referenceDirectory(): string {
     const reportPath = this.currentConfiguration?.paths?.bitmaps_reference ?? "";
     const prefixPath = this.configurationPath.substr(0, this.configurationPath.length - "backstop.json".length);
-    return reportPath &&
-          FileService.resolvePath([prefixPath, reportPath]) || "";
+    return (reportPath &&
+          FileService.resolvePath([prefixPath, reportPath])) || "";
   }
 
   public get engineScriptDirectory(): string {
@@ -183,7 +183,7 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Mutation
-  public setOriginalConfigName(configName: string) {
+  public setOriginalConfigName(configName: string): void {
     this.originalConfigName = configName;
   }
 
@@ -339,7 +339,7 @@ export default class ConfigurationStore extends VuexModule {
     return DialogFileService.openFileDialog()
       .then((result) => {
         const path: string = result.path;
-        const content: any = result.content;
+        const content: any = result.content; // eslint-disable-line
         if (typeof content === "object" && content &&
             (typeof content.id !== "string" ||
             !Array.isArray(content.viewports) ||
@@ -354,7 +354,7 @@ export default class ConfigurationStore extends VuexModule {
   @Action({ rawError: true })
   public openConfigurationFromPath(path: string): Promise<void> {
     return DialogFileService.openAndParseFile(path)
-      .then((content: any) => {
+      .then((content: any) => { // eslint-disable-line
         if (typeof content === "object" && content &&
           (typeof content.id !== "string" ||
             !Array.isArray(content.viewports) ||
@@ -378,7 +378,7 @@ export default class ConfigurationStore extends VuexModule {
     }
   }
 
-  @Action({rawError: true})
+  @Action({ rawError: true })
   public saveConfiguration(): Promise<void> {
     this.context.commit("setSavingState", true);
     const content = JSON.stringify(this.currentConfiguration, null, 4);
