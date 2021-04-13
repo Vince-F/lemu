@@ -1,5 +1,5 @@
 export class FileService {
-  public static resolvePath(paths: string[]): Promise<string> {
+  public static resolvePath(paths: string[]): string {
     return window.ipcHandler.sendSync("resolvePath", paths);
   }
 
