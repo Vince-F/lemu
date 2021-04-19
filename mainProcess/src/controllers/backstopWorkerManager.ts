@@ -9,61 +9,54 @@ import logger from "electron-log";
 export class BackstopWorkerManager {
   public static executeCommand(workingPath: string, command: string, options?: unknown) {
     return new Promise((resolve, reject) => {
-      fs.readFile(path.join(__dirname, "./backstopWorker.js"), {encoding: "utf-8"}, (err, fileContent) => {
-        if (err) {
-          reject("Failed to open test launcher.");
+      const worker = new Worker(path.join(__dirname, "./backstopWorker.js"), {
+        stderr: true,
+        stdout: true
+      });
+      worker.on("message", (result) => {
+        if (result.success) {
+          resolve(result.arguments[0]);
         } else {
-          const worker = new Worker(path.join(__dirname, "./backstopWorker.js"), {
-            //eval: true,
-            stderr: true,
-            stdout: true
-          });
-          worker.on("message", (result) => {
-            if (result.success) {
-              resolve(result.arguments[0]);
-            } else {
-              reject(result.arguments[0]);
-            }
-            worker.terminate();
-          });
-          BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
-            level: "divider",
-            message: ""
-          });
-
-          worker.postMessage({
-            command,
-            options,
-            workingPath
-          });
-
-          worker.stdout.on("data", (data: Buffer) => {
-            const message = data.toString();
-            if (message.includes(this.approveEndSentence)) {
-              this.recordApprovalEnabled = false;
-              this.updateApprovalResult(workingPath);
-            } else if (message.includes(this.approveStartSentence)) {
-              this.recordApprovalEnabled = true;
-              this.fileToUpdateInReport = [];
-            } else if (this.recordApprovalEnabled) {
-              this.addApprovalResultToUpdate(message);
-            }
-
-            logger.log(message);
-            BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
-              level: "info",
-              message
-            });
-          });
-
-          worker.stderr.on("data", (data: Buffer) => {
-            logger.warn(data.toString());
-            BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
-              level: "error",
-              message: data.toString()
-            });
-          });
+          reject(result.arguments[0]);
         }
+        worker.terminate();
+      });
+      BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
+        level: "divider",
+        message: ""
+      });
+
+      worker.postMessage({
+        command,
+        options,
+        workingPath
+      });
+
+      worker.stdout.on("data", (data: Buffer) => {
+        const message = data.toString();
+        if (message.includes(this.approveEndSentence)) {
+          this.recordApprovalEnabled = false;
+          this.updateApprovalResult(workingPath);
+        } else if (message.includes(this.approveStartSentence)) {
+          this.recordApprovalEnabled = true;
+          this.fileToUpdateInReport = [];
+        } else if (this.recordApprovalEnabled) {
+          this.addApprovalResultToUpdate(message);
+        }
+
+        logger.log(message);
+        BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
+          level: "info",
+          message
+        });
+      });
+
+      worker.stderr.on("data", (data: Buffer) => {
+        logger.warn(data.toString());
+        BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
+          level: "error",
+          message: data.toString()
+        });
       });
     });
   }
