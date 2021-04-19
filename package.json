@@ -1,6 +1,6 @@
 {
   "name": "lemu",
-  "version": "1.23.0",
+  "version": "1.23.1",
   "private": true,
   "author": "Vincent Francolin",
   "scripts": {
@@ -75,6 +75,7 @@
     "publish": [
       "github"
     ],
+    "asar": false,
     "files": [
       "shared/**/*.js",
       "dist-app/**/*",

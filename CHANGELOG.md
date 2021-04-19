@@ -1,5 +1,8 @@
 # Changelog
 
+## V1.23.1
+### Fixes
+- fix issue with thread running backstop commands
 ## V1.23.0
 ### Features
 - Add "settings" section and add "dark mode"

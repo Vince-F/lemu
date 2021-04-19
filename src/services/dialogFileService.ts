@@ -1,4 +1,4 @@
-import { eventNames } from "shared/constants/eventNames";
+import { eventNames } from "../../shared/constants/eventNames";
 
 export class DialogFileService {
   public static openFileDialog(): Promise<{path: string, content: unknown}> {
