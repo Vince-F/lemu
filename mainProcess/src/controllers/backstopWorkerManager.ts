@@ -13,8 +13,8 @@ export class BackstopWorkerManager {
         if (err) {
           reject("Failed to open test launcher.");
         } else {
-          const worker = new Worker(fileContent, {
-            eval: true,
+          const worker = new Worker(path.join(__dirname, "./backstopWorker.js"), {
+            //eval: true,
             stderr: true,
             stdout: true
           });
