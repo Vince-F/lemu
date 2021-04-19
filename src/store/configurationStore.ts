@@ -246,6 +246,18 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Mutation
+  public addAction({scenarioIndex}: {scenarioIndex: number}) {
+    if (this.currentConfiguration?.scenarios) {
+      if (!Array.isArray(this.currentConfiguration.scenarios[scenarioIndex].actions)) {
+        Vue.set(this.currentConfiguration.scenarios[scenarioIndex], "actions", []);
+      }
+      this.currentConfiguration.scenarios[scenarioIndex].actions.push({ type: "" });
+      Vue.set(this.testsModified, scenarioIndex, true);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
   public updateRecently(path: string): void {
     let recentPaths: string[] = [];
     try {
