@@ -1,6 +1,7 @@
 
 export class BackstopTestResult {
-  public pair: unknown; // TODO type it correctly
+  // TODO type it correctly
+  public pair: any; // eslint-disable-line
   public status: string; // TODO type with enum
 
   constructor(data: any) {  // eslint-disable-line

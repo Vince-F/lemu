@@ -18,7 +18,7 @@ export default class TestRunnerStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public runTests(): Promise<void> {
+  public runTests(): Promise<unknown> {
     this.context.commit("setTestRunning");
     return BackstopService.runTests(this.context.rootState.configurationStore.currentConfiguration)
       .then((result) => {
@@ -32,7 +32,7 @@ export default class TestRunnerStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public runTest(testLabel: string): Promise<void> {
+  public runTest(testLabel: string): Promise<unknown> {
     this.context.commit("setTestRunning");
     return BackstopService.runTest(this.context.rootState.configurationStore.currentConfiguration, testLabel)
       .then((result) => {

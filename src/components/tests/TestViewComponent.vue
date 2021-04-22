@@ -220,12 +220,12 @@ export default class TestViewComponent extends Vue {
     return this.$route.name === "test.fullscreenView";
   }
 
-  private get testResult(): BackstopTestResult {
+  private get testResult(): BackstopTestResult[] {
     return this.getResultByTestLabel(this.testContent?.label || "");
   }
 
   private get testStatus(): "unknown" | "pass" | "failed" {
-    let status = "unknown";
+    let status: "unknown" | "pass" | "failed" = "unknown";
     this.testResult.forEach((result) => {
       if (result.status === "pass" && status === "unknown") {
         status = "pass";
