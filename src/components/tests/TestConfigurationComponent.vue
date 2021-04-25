@@ -46,7 +46,7 @@
           v-else :label="additionnalField.name"
           :value="additionnalField.value" :key="index" @input="updateField(additionnalField.name, $event)"
           class="flex-grow-1 flex-shrink-1"></v-text-field>
-        <v-tooltip top >
+        <v-tooltip top>
           <template v-slot:activator="{on}">
             <v-btn icon class="flex-grow-0 flex-shrink-0" :class="{'input-action-btn': additionnalField.type === 'boolean','for-viewport': additionnalField.type === 'viewports' }"
               v-on="on" v-if="getHelpMessage(additionnalField.name)">
@@ -59,6 +59,10 @@
           <v-icon color="grey">mdi-delete</v-icon>
         </v-btn>
       </div>
+      <v-btn v-if="!testContent.actions" color="primary" v-on:click="enableActions()">
+        Enable actions
+      </v-btn>
+      <test-actions-component v-else :test="testContent" :testIndex="testIndex" />
     </form>
     <div class="actions-area">
       <v-btn color="primary" v-on:click="addNewField()">
@@ -101,10 +105,12 @@ import { EngineScript } from "@/models/engineScript";
 import ViewportsComponent from "./ViewportsComponent.vue";
 import { Viewport } from "@/models/viewport";
 import { EngineScriptHelper } from "../../controllers/EngineScriptHelper";
+import TestActionsComponent from "./TestActionsComponent.vue";
 
 @Component({
   components: {
-    ViewportsComponent
+    ViewportsComponent,
+    TestActionsComponent
   }
 })
 export default class TestConfigurationComponent extends Vue {
@@ -129,6 +135,9 @@ export default class TestConfigurationComponent extends Vue {
   @Getter("configurationStore/engineScriptDirectory")
   private readonly engineScriptDirectory!: string;
 
+  @Getter("engineScriptStore/getScript")
+  private readonly getScript!: (path: string) => EngineScript | undefined;
+
   @Prop({ required: true, type: Object })
   private readonly testContent!: BackstopTest;
 
@@ -138,7 +147,8 @@ export default class TestConfigurationComponent extends Vue {
   private get additionnalFields(): Array<{name: string, value: unknown, type: string}> {
     const result = [];
     for (const key in this.testContent) {
-      if (key !== "label" && key !== "url") { // those are the two mandatory fields that are always here
+      if (key !== "label" && key !== "url" &&
+        key !== "actions") { // those are the two mandatory fields that are always here
         const entry: {
           name: string,
           value: unknown
@@ -176,6 +186,21 @@ export default class TestConfigurationComponent extends Vue {
   private addViewport(fieldValue: unknown) {
     if (Array.isArray(fieldValue)) {
       fieldValue.push(new Viewport());
+    }
+  }
+
+  private enableActions() {
+    if (!this.getScript("actions")) {
+      ModalService.launchConfirmationModal("'Actions' engine script does not exist but is needed." +
+        "Would you like to add it? If it not added you won't be able to use actions.")
+        .then(() => {
+          // need to add script
+          this.setScenarioField({ scenarioIndex: this.testIndex, field: "actions", value: [] });
+        }).catch(() => {
+          //
+        });
+    } else {
+      this.setScenarioField({ scenarioIndex: this.testIndex, field: "actions", value: [] });
     }
   }
 

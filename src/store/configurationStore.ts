@@ -258,6 +258,37 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Mutation
+  public updateActionField({ scenarioIndex, actionIndex, field, value}:
+    { scenarioIndex: number, actionIndex: number, field: string, value: unknown}) {
+    if (this.currentConfiguration?.scenarios) {
+      if (Array.isArray(this.currentConfiguration.scenarios[scenarioIndex].actions)) {
+        Vue.set(this.currentConfiguration.scenarios[scenarioIndex].actions[actionIndex],
+          field, value);
+        Vue.set(this.testsModified, scenarioIndex, true);
+        this.configurationModified = true;
+      }
+    }
+  }
+
+  @Mutation
+  public updateActionCoordinateField({ scenarioIndex, actionIndex, field, value}:
+    { scenarioIndex: number, actionIndex: number, field: string, value: unknown}) {
+    if (this.currentConfiguration?.scenarios) {
+      if (Array.isArray(this.currentConfiguration.scenarios[scenarioIndex].actions)) {
+        const action = this.currentConfiguration.scenarios[scenarioIndex].actions[actionIndex];
+        if (!action.coordinate) {
+          Vue.set(action, "coordinate", {});
+        }
+        if (action.coordinate) {
+          Vue.set(action.coordinate, field, value);
+        }
+        Vue.set(this.testsModified, scenarioIndex, true);
+        this.configurationModified = true;
+      }
+    }
+  }
+
+  @Mutation
   public updateRecently(path: string): void {
     let recentPaths: string[] = [];
     try {
