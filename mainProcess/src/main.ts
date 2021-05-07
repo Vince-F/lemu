@@ -1,5 +1,5 @@
-import { app, BrowserWindow, Menu, protocol } from 'electron';
-import { autoUpdater } from "electron-updater";
+import { app, BrowserWindow, Menu, protocol, ipcMain } from 'electron';
+import { autoUpdater, AppUpdater } from "electron-updater";
 import logger from "electron-log";
 
 import path = require("path");
@@ -7,12 +7,7 @@ import "v8-compile-cache";
 
 import "./eventBuses";
 import { BrowserWindowManager } from './controllers/browserWindowManager';
-
-try {
-  autoUpdater.checkForUpdatesAndNotify();
-} catch (e) {
-  logger.warn("Fail to check for updates");
-}
+import { eventNames } from '../../shared/constants/eventNames';
 
 let mainWindow: Electron.BrowserWindow | null = null;
 
@@ -67,6 +62,43 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'doc', privileges: { secure: true, standard: true } }
 ]);
 
+function manageUpdate(window: BrowserWindow) {
+  window.webContents
+    .executeJavaScript("localStorage.getItem(\"settings\");")
+    .then((settings) => {
+      autoUpdater.autoDownload = !!settings.autoUpdate;
+      if (settings.autoUpdate) {
+        try {
+          autoUpdater.checkForUpdatesAndNotify();
+        } catch (e) {
+          logger.warn("Fail to check for updates");
+        }
+      } else {
+        autoUpdater.on('update-available', () => {
+          BrowserWindowManager.sendEvent(eventNames.UPDATE_AVAILABLE);
+        });
+        autoUpdater.checkForUpdates()
+          .then((updateCheckResult) => {
+            const updateVersion = updateCheckResult.updateInfo.version;
+            console.log("update available for", updateVersion);
+          }).catch((error) => {
+            logger.warn("Fail to check for updates");
+          });
+      }
+      autoUpdater.on('update-downloaded', () => {
+        BrowserWindowManager.sendEvent(eventNames.UPDATE_DOWNLOADED);
+      });
+
+      ipcMain.on(eventNames.DOWNLOAD_UPDATE, () => {
+        autoUpdater.downloadUpdate();
+      });
+
+      ipcMain.on(eventNames.INSTALL_AND_RESTART, () => {
+        autoUpdater.quitAndInstall();
+      });
+    });
+}
+
 // for notification
 app.setAppUserModelId(process.execPath);
 app.commandLine.appendSwitch("disable-site-isolation-trials");
@@ -74,6 +106,9 @@ app.commandLine.appendSwitch("disable-site-isolation-trials");
 app.on('ready', () => {
   registerDocProtocol();
   createWindow();
+  if (mainWindow) {
+    manageUpdate(mainWindow);
+  }
 });
 
 app.on('window-all-closed', () => {
