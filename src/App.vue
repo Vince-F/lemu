@@ -130,10 +130,6 @@ export default class App extends Vue {
         }
       });
 
-    this.updateSnackbarDisplayed = true;
-    this.updateMessage = "available";
-    this.updateDownloaded = true;
-
     window.ipcHandler.receiveOnce(eventNames.UPDATE_AVAILABLE, () => {
       this.updateMessage = "An update is available";
       this.updateSnackbarDisplayed = true;
