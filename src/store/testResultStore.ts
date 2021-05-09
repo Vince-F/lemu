@@ -15,7 +15,7 @@ export default class TestResultStore extends VuexModule {
   }
 
   @Mutation
-  public setTestsResult(result: BackstopTestResult[]) : void{
+  public setTestsResult(result: BackstopTestResult[]): void {
     this.testsResult = result;
     this.resultExpired = false;
   }
@@ -42,7 +42,7 @@ export default class TestResultStore extends VuexModule {
   }
 
   @Action
-  public watchResultChange(): Promise<void> {
+  public watchResultChange(): void {
     BackstopService.registerResultWatcher(this.context.rootGetters["configurationStore/htmlReportDirectory"], () => {
       this.context.commit("expireTestsResult");
     });

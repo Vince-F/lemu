@@ -54,8 +54,8 @@ export default class EngineConfigurationComponent extends Vue {
 
   private addEngineOption() {
     ModalService.launchModal(AddEngineOptionModalComponent)
-      .then((newField: {name: string, value: unknown, type: string}) => {
-        if (newField.type === "number") {
+      .then((newField: {name: string, value: string | number | boolean, type: string}) => {
+        if (newField.type === "number" && typeof newField.value === "string") {
           newField.value = Number.parseFloat(newField.value);
         }
         this.setConfigurationEngineOptionsField({ field: newField.name, value: newField.value });

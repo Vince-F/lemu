@@ -1,7 +1,7 @@
 import MiniSearch from "minisearch";
 
 export class SearchService {
-  public static addDocumentsToIndex(elements: unknown[]): void {
+  public static addDocumentsToIndex(elements: Array<{[key: string]: unknown}>): void {
     const indexableElements: unknown[] = this.getIndexableElements(elements);
     const indexer = new MiniSearch({
       fields: this.extractKeys(indexableElements),
