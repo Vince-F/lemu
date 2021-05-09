@@ -62,7 +62,7 @@
       <v-btn v-if="!testContent.actions" color="primary" v-on:click="enableActions()">
         Enable actions
       </v-btn>
-      <test-actions-component v-else :test="testContent" :testIndex="testIndex" />
+      <test-actions-component v-else :test="testContent" :testIndex="testIndex" @actions-removed="removeField('actions')"/>
     </form>
     <div class="actions-area">
       <v-btn color="primary" v-on:click="addNewField()">
