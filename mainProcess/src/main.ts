@@ -1,5 +1,5 @@
 import { app, BrowserWindow, Menu, protocol, ipcMain } from 'electron';
-import { autoUpdater, AppUpdater } from "electron-updater";
+import { autoUpdater } from "electron-updater";
 import logger from "electron-log";
 
 import path = require("path");
@@ -66,8 +66,13 @@ function manageUpdate(window: BrowserWindow) {
   window.webContents
     .executeJavaScript("localStorage.getItem(\"settings\");")
     .then((settings) => {
-      autoUpdater.autoDownload = !!settings.autoUpdate;
-      if (settings.autoUpdate) {
+      // default is auto update
+      const autoUpdate = true;
+      if (settings.autoUpdate !== undefined) {
+        autoUpdater.autoDownload = !!settings.autoUpdate;
+      }
+
+      if (autoUpdate) {
         try {
           autoUpdater.checkForUpdatesAndNotify();
         } catch (e) {
