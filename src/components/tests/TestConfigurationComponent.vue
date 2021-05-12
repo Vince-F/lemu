@@ -126,6 +126,9 @@ export default class TestConfigurationComponent extends Vue {
   @Mutation("configurationStore/removeScenarioField")
   private readonly removeScenarioField!: (payload: {index: number, fieldName: string}) => void;
 
+  @Action("engineScriptStore/addActionsScript")
+  private readonly addActionsScript!: () => Promise<void>;
+
   @Action("applicationStore/displaySnackbar")
   private readonly displaySnackbar!: (payload: {text: string, success: boolean}) => void;
 
@@ -194,10 +197,14 @@ export default class TestConfigurationComponent extends Vue {
       ModalService.launchConfirmationModal("'Actions' engine script does not exist but is needed." +
         "Would you like to add it? If it not added you won't be able to use actions.")
         .then(() => {
-          // need to add script
+          debugger;
+          this.addActionsScript();
+          debugger;
+          this.setScenarioField({ scenarioIndex: this.testIndex, field: "onReadyScript", value: "actions.js" });
           this.setScenarioField({ scenarioIndex: this.testIndex, field: "actions", value: [] });
+          debugger;
         }).catch(() => {
-          //
+          this.displaySnackbar({ text: "Failed to create actions in your test", success: false });
         });
     } else {
       this.setScenarioField({ scenarioIndex: this.testIndex, field: "actions", value: [] });
