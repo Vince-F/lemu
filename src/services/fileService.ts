@@ -1,6 +1,8 @@
+import { eventNames } from "../../shared/constants/eventNames";
+
 export class FileService {
   public static resolvePath(paths: string[]): string {
-    return window.ipcHandler.sendSync("resolvePath", paths);
+    return window.ipcHandler.sendSync(eventNames.RESOLVE_PATH, paths);
   }
 
   public static readFile(filePath: string): Promise<string> {
