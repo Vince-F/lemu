@@ -200,7 +200,6 @@ export default class TestConfigurationComponent extends Vue {
           this.addActionsScript();
           this.setScenarioField({ scenarioIndex: this.testIndex, field: "onReadyScript", value: "actions.js" });
           this.setScenarioField({ scenarioIndex: this.testIndex, field: "actions", value: [] });
-          debugger;
         }).catch(() => {
           this.displaySnackbar({ text: "Failed to create actions in your test", success: false });
         });
