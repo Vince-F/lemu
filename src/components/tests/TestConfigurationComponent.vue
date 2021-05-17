@@ -197,9 +197,7 @@ export default class TestConfigurationComponent extends Vue {
       ModalService.launchConfirmationModal("'Actions' engine script does not exist but is needed." +
         "Would you like to add it? If it not added you won't be able to use actions.")
         .then(() => {
-          debugger;
           this.addActionsScript();
-          debugger;
           this.setScenarioField({ scenarioIndex: this.testIndex, field: "onReadyScript", value: "actions.js" });
           this.setScenarioField({ scenarioIndex: this.testIndex, field: "actions", value: [] });
           debugger;
