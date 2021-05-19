@@ -1,5 +1,11 @@
 # Changelog
 
+## V1.24.0
+### Features
+- Add "actions", allowing to execute a set of actions such as "focus", "click" etc for your scenario
+- Allowing to enable/disable auto-update 
+- Improve update management by displaying notification
+
 ## V1.23.1
 ### Fixes
 - fix issue with thread running backstop commands
