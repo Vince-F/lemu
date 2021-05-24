@@ -72,6 +72,8 @@ function manageUpdate(window: BrowserWindow) {
         autoUpdater.autoDownload = !!settings.autoUpdate;
       }
 
+      console.log("auto update mode", settings.autoUpdate, autoUpdater.autoDownload);
+
       if (autoUpdate) {
         try {
           autoUpdater.checkForUpdatesAndNotify();

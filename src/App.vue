@@ -27,11 +27,11 @@
       </v-icon>
       {{ updateMessage }}
       <v-spacer />
-      <v-btn color="white" text @click="download" v-if="updateDownloaded">
-        Download
-      </v-btn>
-      <v-btn color="white" text @click="restartAndInstall" v-else>
+      <v-btn color="white" text @click="restartAndInstall" v-if="updateDownloaded">
         Restart and install
+      </v-btn>
+      <v-btn color="white" text @click="download" v-else>
+        Download
       </v-btn>
       <v-btn color="white" text @click="hideUpdateSnackbar">
         Close
