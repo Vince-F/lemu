@@ -20,6 +20,23 @@
         Close
       </v-btn>
     </v-snackbar>
+
+    <v-snackbar :value="updateSnackbarDisplayed" right bottom timeout="-1">
+      <v-icon color="blue">
+        mdi-update
+      </v-icon>
+      {{ updateMessage }}
+      <v-spacer />
+      <v-btn color="white" text @click="restartAndInstall" v-if="updateDownloaded">
+        Restart and install
+      </v-btn>
+      <v-btn color="white" text @click="download" v-else>
+        Download
+      </v-btn>
+      <v-btn color="white" text @click="hideUpdateSnackbar">
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -53,6 +70,7 @@ import { Action, Mutation, State } from "vuex-class";
 import AppToolbarComponent from "./components/app/AppToolbarComponent.vue";
 import { ModalService } from "./services/modalService";
 import ReleaseInfoModalComponent from "./components/app/ReleaseInfoModalComponent.vue";
+import { eventNames } from "../shared/constants/eventNames";
 
 @Component({
   components: {
@@ -87,6 +105,17 @@ export default class App extends Vue {
   @Action("settingsStore/loadSettings")
   private readonly loadSettings!: () => Promise<void>;
 
+  private updateSnackbarDisplayed: boolean;
+  private updateMessage: string;
+  private updateDownloaded: boolean;
+
+  constructor() {
+    super(arguments);
+    this.updateSnackbarDisplayed = false;
+    this.updateMessage = "";
+    this.updateDownloaded = false;
+  }
+
   private mounted() {
     window.ipcHandler.createTitleBar();
     this.initializeLogListener();
@@ -100,6 +129,29 @@ export default class App extends Vue {
           }
         }
       });
+
+    window.ipcHandler.receiveOnce(eventNames.UPDATE_AVAILABLE, () => {
+      this.updateMessage = "An update is available";
+      this.updateSnackbarDisplayed = true;
+      this.updateDownloaded = false;
+    });
+    window.ipcHandler.receiveOnce(eventNames.UPDATE_DOWNLOADED, () => {
+      this.updateMessage = "An update has been downloaded";
+      this.updateSnackbarDisplayed = true;
+      this.updateDownloaded = true;
+    });
+  }
+
+  private download() {
+    window.ipcHandler.send(eventNames.DOWNLOAD_UPDATE);
+  }
+
+  private restartAndInstall() {
+    window.ipcHandler.send(eventNames.INSTALL_AND_RESTART);
+  }
+
+  private hideUpdateSnackbar() {
+    this.updateSnackbarDisplayed = false;
   }
 
   @Watch("darkModeEnabled", { immediate: true })

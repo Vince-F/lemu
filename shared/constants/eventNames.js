@@ -44,5 +44,9 @@ exports.eventNames = Object.freeze({
     CREATE_OR_UPDATE_CONFIGURATION_TEMPLATE: "createOrUpdateConfigurationTemplate",
     RETRIEVE_CONFIGURATION_TEMPLATES: "retrieveConfigurationTemplates",
     DELETE_CONFIGURATION_TEMPLATE: "deleteConfigurationTemplate",
-    RENAME_REFERENCES: "renameReferences"
+    RENAME_REFERENCES: "renameReferences",
+    UPDATE_AVAILABLE: "updateAvailable",
+    UPDATE_DOWNLOADED: "updateDownloaded",
+    INSTALL_AND_RESTART: "installAndRestart",
+    DOWNLOAD_UPDATE: "downloadUpdate"
 });
