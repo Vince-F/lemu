@@ -65,35 +65,22 @@ protocol.registerSchemesAsPrivileged([
 function manageUpdate(window: BrowserWindow) {
   window.webContents
     .executeJavaScript("localStorage.getItem(\"settings\");")
-    .then((settings) => {
+    .then((settingsStr) => {
       // default is auto update
+      const settings = JSON.parse(settingsStr);
       const autoUpdate = true;
       if (settings.autoUpdate !== undefined) {
         autoUpdater.autoDownload = !!settings.autoUpdate;
       }
 
-      console.log("auto update mode", settings.autoUpdate, autoUpdater.autoDownload);
+      console.log("auto update mode", settings, settings.autoUpdate, autoUpdater.autoDownload);
 
-      if (autoUpdate) {
-        try {
-          autoUpdater.checkForUpdatesAndNotify();
-        } catch (e) {
-          logger.warn("Fail to check for updates");
-        }
-      } else {
-        autoUpdater.on('update-available', () => {
-          BrowserWindowManager.sendEvent(eventNames.UPDATE_AVAILABLE);
-        });
-        autoUpdater.checkForUpdates()
-          .then((updateCheckResult) => {
-            const updateVersion = updateCheckResult.updateInfo.version;
-            console.log("update available for", updateVersion);
-          }).catch((error) => {
-            logger.warn("Fail to check for updates");
-          });
-      }
       autoUpdater.on('update-downloaded', () => {
         BrowserWindowManager.sendEvent(eventNames.UPDATE_DOWNLOADED);
+      });
+
+      autoUpdater.on('update-available', () => {
+        BrowserWindowManager.sendEvent(eventNames.UPDATE_AVAILABLE);
       });
 
       ipcMain.on(eventNames.DOWNLOAD_UPDATE, () => {
@@ -103,6 +90,24 @@ function manageUpdate(window: BrowserWindow) {
       ipcMain.on(eventNames.INSTALL_AND_RESTART, () => {
         autoUpdater.quitAndInstall();
       });
+
+      if (autoUpdate) {
+        try {
+          autoUpdater.checkForUpdatesAndNotify();
+        } catch (e) {
+          logger.warn("Fail to check for updates");
+        }
+      } else {
+        autoUpdater.checkForUpdates()
+          .then((updateCheckResult) => {
+            const updateVersion = updateCheckResult.updateInfo.version;
+            setTimeout(() => {
+              BrowserWindowManager.sendEvent(eventNames.UPDATE_AVAILABLE);
+            }, 15000);
+          }).catch((error) => {
+            logger.warn("Fail to check for updates");
+          });
+      }
     });
 }
 
