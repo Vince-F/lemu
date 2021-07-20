@@ -109,7 +109,7 @@ module.exports = async (page, scenario, vp) => {
 };
 `;
     const scriptPath = this.context.rootGetters["configurationStore/engineScriptDirectory"];
-    const path = FileService.resolvePath([scriptPath, "actions.js"]);
+    const path = FileService.resolvePath([scriptPath, "puppet/actions.js"]);
     this.context.commit("addScript", { scriptPath: path, content: scriptContent });
   }
 

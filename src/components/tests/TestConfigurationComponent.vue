@@ -198,7 +198,7 @@ export default class TestConfigurationComponent extends Vue {
         "Would you like to add it? If it not added you won't be able to use actions.")
         .then(() => {
           this.addActionsScript();
-          this.setScenarioField({ scenarioIndex: this.testIndex, field: "onReadyScript", value: "actions.js" });
+          this.setScenarioField({ scenarioIndex: this.testIndex, field: "onReadyScript", value: "puppet/actions.js" });
           this.setScenarioField({ scenarioIndex: this.testIndex, field: "actions", value: [] });
         }).catch(() => {
           this.displaySnackbar({ text: "Failed to create actions in your test", success: false });
