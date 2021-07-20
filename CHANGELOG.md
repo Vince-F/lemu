@@ -1,5 +1,9 @@
 # Changelog
 
+## V1.24.1
+### Fixes
+- Fix path of "action" script
+
 ## V1.24.0
 ### Features
 - Add "actions", allowing to execute a set of actions such as "focus", "click" etc for your scenario
