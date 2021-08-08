@@ -8,7 +8,14 @@
     </div>
     <fieldset v-for="(action, index) in test.actions" :key="index"
       class="pa-2">
-      <h3>Action n°{{index + 1}}</h3>
+      <div class="d-flex">
+        <h3 class="flex-grow-1 flex-shrink-1">Action n°{{index + 1}}</h3>
+        <div class="flex-grow-0 flex-shrink-0">
+          <v-btn icon class="flex-grow-0 flex-shrink-0" @click="removeCurrentAction(index)">
+            <v-icon color="grey">mdi-delete</v-icon>
+          </v-btn>
+        </div>
+      </div>
       <v-select outlined dense :value="action.type" @input="updateCurrentActionField(index, 'type', $event)"
         :items="actionTypes" label="Type"></v-select>
       <v-text-field v-if="action.type === 'click' || action.type === 'focus' || action.type === 'hover' ||
@@ -67,6 +74,7 @@
 
 <script lang="ts">
 import { BackstopTest } from "@/models/backstopTest";
+import { ModalService } from "@/services/modalService";
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Mutation } from "vuex-class";
 
@@ -88,6 +96,9 @@ export default class TestActionsComponent extends Vue {
   @Mutation("configurationStore/updateActionCoordinateField")
   private readonly updateActionCoordinateField!: (payload:
     { scenarioIndex: number, actionIndex: number, field: string, value: unknown}) => void;
+
+  @Mutation("configurationStore/removeAction")
+  private readonly removeAction!: (payload: { scenarioIndex: number, actionIndex: number }) => void;
 
   private actionTypes: string[];
 
@@ -111,6 +122,13 @@ export default class TestActionsComponent extends Vue {
 
   private removeActions() {
     this.$emit("actions-removed");
+  }
+
+  private removeCurrentAction(index: number) {
+    ModalService.launchConfirmationModal("Do you really want to delete this action?")
+      .then(() => {
+        this.removeAction({ scenarioIndex: this.testIndex, actionIndex: index });
+      });
   }
 }
 </script>

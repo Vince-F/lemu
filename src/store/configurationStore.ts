@@ -258,6 +258,16 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Mutation
+  public removeAction({ scenarioIndex, actionIndex }: { scenarioIndex: number, actionIndex: number }): void {
+    if (this.currentConfiguration?.scenarios) {
+      if (Array.isArray(this.currentConfiguration.scenarios[scenarioIndex].actions)) {
+        this.configurationModified = true;
+        this.currentConfiguration.scenarios[scenarioIndex].actions.splice(actionIndex, 1);
+      }
+    }
+  }
+
+  @Mutation
   public updateActionField({ scenarioIndex, actionIndex, field, value }:
     { scenarioIndex: number, actionIndex: number, field: string, value: unknown }): void {
     if (this.currentConfiguration?.scenarios) {
