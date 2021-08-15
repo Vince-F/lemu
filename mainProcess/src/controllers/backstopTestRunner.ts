@@ -35,6 +35,10 @@ export class BackstopTestRunner {
     });
   }
 
+  public static stopTest() {
+    return BackstopWorkerManager.stopCommand();
+  }
+
   public static approveTests(config: any, scenarioLabel?: string, viewportLabel?: string): Promise<any> {
     let filterRegex;
     if (scenarioLabel && scenarioLabel.length) {

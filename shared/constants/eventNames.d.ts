@@ -2,6 +2,7 @@ export declare const eventNames: Readonly<{
     APP_INFOS: string;
     WORKING_DIR: string;
     RUN_TEST: string;
+    STOP_COMMAND: string;
     APPROVE_TEST: string;
     INIT_TEST: string;
     RETRIEVE_TEST_RESULT: string;

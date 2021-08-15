@@ -13,6 +13,7 @@ export class BackstopWorkerManager {
         stderr: true,
         stdout: true
       });
+      this.lastWorker = worker;
       worker.on("message", (result) => {
         if (result.success) {
           resolve(result.arguments[0]);
@@ -61,6 +62,16 @@ export class BackstopWorkerManager {
     });
   }
 
+  public static stopCommand() {
+    if (this.lastWorker) {
+      // this will leave open processes because backstop won't clean chromium processes. Maybe this drawback is acceptable.
+      return this.lastWorker.terminate();
+    } else {
+      return Promise.resolve();
+    }
+  }
+
+  private static lastWorker?: Worker;
   private static readonly approveStartSentence: string = "The following files will be promoted to reference...";
   private static readonly approveEndSentence: string = "COMMAND | Command \"approve\" successfully executed";
   private static recordApprovalEnabled: boolean = false;

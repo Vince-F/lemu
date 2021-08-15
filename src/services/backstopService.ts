@@ -10,21 +10,25 @@ export class BackstopService {
 
   public static runTests(config: BackstopConfiguration): Promise<unknown> {
     return window.ipcHandler.invoke(eventNames.RUN_TEST, config)
-      .then((result: {success: boolean, content: unknown}) => {
+      .then((result: { success: boolean, content: unknown }) => {
         return this.handleTestFinished(result);
       });
   }
 
   public static runTest(config: BackstopConfiguration, testLabel: string): Promise<unknown> {
     return window.ipcHandler.invoke(eventNames.RUN_TEST, config, testLabel)
-      .then((result: {success: boolean, content: unknown}) => {
+      .then((result: { success: boolean, content: unknown }) => {
         return this.handleTestFinished(result);
       });
   }
 
+  public static stopTest(): Promise<void> {
+    return window.ipcHandler.invoke(eventNames.STOP_COMMAND);
+  }
+
   public static approveTests(config: BackstopConfiguration): Promise<unknown> {
     return window.ipcHandler.invoke(eventNames.APPROVE_TEST, config)
-      .then((result: {success: boolean}) => {
+      .then((result: { success: boolean }) => {
         if (!result.success) {
           return Promise.reject(new Error());
         }
@@ -34,7 +38,7 @@ export class BackstopService {
   public static approveTest(config: BackstopConfiguration, testLabel: string,
     viewportLabel?: string): Promise<unknown> {
     return window.ipcHandler.invoke(eventNames.APPROVE_TEST, config, testLabel, viewportLabel)
-      .then((result: {success: boolean}) => {
+      .then((result: { success: boolean }) => {
         if (!result.success) {
           return Promise.reject(new Error());
         }
@@ -47,7 +51,7 @@ export class BackstopService {
 
   public static retrieveEngineScripts(path: string): Promise<EngineScript[]> {
     return window.ipcHandler.invoke(eventNames.RETRIEVE_ENGINE_SCRIPTS, path)
-      .then((result: {success: boolean, content: unknown}) => {
+      .then((result: { success: boolean, content: unknown }) => {
         if (result.success) {
           if (Array.isArray(result.content)) {
             return result.content.map((entry) => {
@@ -68,7 +72,7 @@ export class BackstopService {
 
   public static retrieveTestsResult(path: string): Promise<BackstopReport> {
     return window.ipcHandler.invoke(eventNames.RETRIEVE_TEST_RESULT, path)
-      .then((result: {success: boolean, content: unknown}) => {
+      .then((result: { success: boolean, content: unknown }) => {
         if (result.success) {
           return new BackstopReport(result.content);
         } else {
@@ -115,7 +119,7 @@ export class BackstopService {
   private static registerAgainTestWatcher = false;
   private static resultPath = "";
 
-  private static handleTestFinished(result: {success: boolean, content: unknown}): unknown {
+  private static handleTestFinished(result: { success: boolean, content: unknown }): unknown {
     if (this.registerAgainTestWatcher) {
       window.ipcHandler.send(eventNames.TEST_RESULT_CHANGED.REQUEST, this.resultPath);
       this.resultPath = "";
