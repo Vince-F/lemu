@@ -16,33 +16,9 @@
           </v-btn>
         </div>
       </div>
-      <v-select outlined dense :value="action.type" @input="updateCurrentActionField(index, 'type', $event)"
-        :items="actionTypes" label="Type"></v-select>
-      <v-text-field v-if="action.type === 'click' || action.type === 'focus' || action.type === 'hover' ||
-          action.type === 'waitForSelector'"
-        outlined dense label="Selector"
-        :value="action.selector" @input="updateCurrentActionField(index, 'selector', $event)"
-        ></v-text-field>
-      <v-text-field v-else-if="action.type === 'waitForTimeout'"
-        outlined dense label="Delay" type="number"
-        :value="action.delay" @input="updateCurrentActionField(index, 'delay', $event)"
-        ></v-text-field>
-      <v-text-field v-else-if="action.type === 'pressKey'"
-        outlined dense label="Key"
-        :value="action.key" @input="updateCurrentActionField(index, 'key', $event)"
-        ></v-text-field>
-      <v-text-field v-else-if="action.type === 'type'"
-        outlined dense label="Text"
-        :value="action.text" @input="updateCurrentActionField(index, 'text', $event)"
-        ></v-text-field>
-      <div v-else-if="action.type === 'mouseMove' && action.coordinate">
-        <v-text-field class="flex-grow-1 flex-shrink-1" outlined dense label="X coordinate" type="number"
-          :value="action.coordinate.x" @input="updateCurrentActionCoordinateField(index, 'x', parseInt($event))"
-          ></v-text-field>
-        <v-text-field class="flex-grow-1 flex-shrink-1" outlined dense label="Y coordinate" type="number"
-          :value="action.coordinate.y" @input="updateCurrentActionCoordinateField(index, 'y', parseInt($event))"
-          ></v-text-field>
-      </div>
+      <test-action-form-component :action="action"
+        @action-field-updated="updateSpecificActionField(index, arguments[0], arguments[1])"
+        @action-coordinate-field-updated="updateSpecificActionCoordinateField(index, arguments[0], arguments[1])"/>
     </fieldset>
     <div>
       <v-btn @click="addActionForCurrentTest">
@@ -77,8 +53,16 @@ import { BackstopTest } from "@/models/backstopTest";
 import { ModalService } from "@/services/modalService";
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Mutation } from "vuex-class";
+import TestActionFormComponent from "./TestActionFormComponent.vue";
+import AddActionModalComponent from "./AddActionModalComponent.vue";
+import { TestAction } from "@/models/testAction";
 
-@Component
+@Component({
+  components: {
+    AddActionModalComponent,
+    TestActionFormComponent
+  }
+})
 export default class TestActionsComponent extends Vue {
   @Prop({ required: true })
   private readonly test!: BackstopTest;
@@ -87,7 +71,7 @@ export default class TestActionsComponent extends Vue {
   private readonly testIndex!: number;
 
   @Mutation("configurationStore/addAction")
-  private readonly addAction!: (payload: { scenarioIndex: number }) => void;
+  private readonly addAction!: (payload: { scenarioIndex: number, action?: TestAction }) => void;
 
   @Mutation("configurationStore/updateActionField")
   private readonly updateActionField!: (payload:
@@ -109,14 +93,20 @@ export default class TestActionsComponent extends Vue {
   }
 
   private addActionForCurrentTest() {
-    this.addAction({ scenarioIndex: this.testIndex });
+    ModalService.launchModal(AddActionModalComponent)
+      .then((result: {action: TestAction}) => {
+        this.addAction({ scenarioIndex: this.testIndex, action: result.action });
+      });
   }
 
-  private updateCurrentActionField(actionIndex: number, field: string, value: unknown) {
+  private updateSpecificActionField(actionIndex: number, field: string, value: unknown) {
     this.updateActionField({ scenarioIndex: this.testIndex, actionIndex, field, value });
+    if (this.test.actions[actionIndex].type !== "mouseMove") {
+      this.updateActionField({ scenarioIndex: this.testIndex, actionIndex, field: "coordinate", value: undefined });
+    }
   }
 
-  private updateCurrentActionCoordinateField(actionIndex: number, field: string, value: number) {
+  private updateSpecificActionCoordinateField(actionIndex: number, field: string, value: number) {
     this.updateActionCoordinateField({ scenarioIndex: this.testIndex, actionIndex, field, value });
   }
 
