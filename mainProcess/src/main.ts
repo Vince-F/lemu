@@ -51,7 +51,7 @@ function registerDocProtocol() {
     if (url.endsWith("/") || url === "") {
       url += "index.html";
     }
-    callback({ path: path.normalize(`./dist-app/docs/${url}`) });
+    callback({ path: path.resolve(app.getAppPath(), `./dist-app/docs/${url}`) });
   });
   if (!successfull) {
     logger.error("Fail to register doc protocol");

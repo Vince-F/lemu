@@ -32,9 +32,8 @@
     <div class="flex-grow-1 flex-shrink-1 button-container">
       <v-btn
         text
-        v-on:click="runTests"
+        @click="toggleTest"
         v-if="hasConfiguration"
-        :disabled="testRunning"
       >
         <template v-if="!testRunning">
           <v-icon>mdi-play</v-icon>
@@ -42,7 +41,7 @@
         </template>
         <template v-else>
           <v-progress-circular indeterminate color="white"></v-progress-circular>
-          Tests running
+          Stop test run
         </template>
       </v-btn>
 
@@ -114,6 +113,7 @@ import { ModalService } from "../../services/modalService";
 import AboutModalComponent from "./AboutModalComponent.vue";
 import SettingsModalComponent from "./SettingsModalComponent.vue";
 import { SearchService } from "../../services/searchService";
+import { BackstopService } from "@/services/backstopService";
 
 @Component({})
 export default class AppToolbarComponent extends Vue {
@@ -122,6 +122,9 @@ export default class AppToolbarComponent extends Vue {
 
   @Mutation("configurationStore/dismissCurrentConfiguration")
   private readonly dismissCurrentConfiguration!: () => void;
+
+  @Mutation("testRunnerStore/setTestNotRunning")
+  private readonly setTestNotRunning!: () => void;
 
   @Getter("configurationStore/hasConfiguration")
   private readonly hasConfiguration!: boolean;
@@ -251,6 +254,17 @@ export default class AppToolbarComponent extends Vue {
           success: false
         });
       });
+  }
+
+  private toggleTest() {
+    if (this.testRunning) {
+      BackstopService.stopTest()
+        .finally(() => {
+          this.setTestNotRunning();
+        });
+    } else {
+      this.runTests();
+    }
   }
 
   private save() {

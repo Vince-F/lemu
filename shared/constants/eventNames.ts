@@ -4,6 +4,7 @@ export const eventNames = Object.freeze({
   RUN_TEST: "runTest",
   APPROVE_TEST: "approveTest",
   INIT_TEST: "initTest",
+  STOP_COMMAND: "stopCommand",
   RETRIEVE_TEST_RESULT: "retrieveTestsResult",
   TEST_LOG: {
     REPLY: "testLog"

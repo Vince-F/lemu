@@ -1,5 +1,15 @@
 # Changelog
 
+## V1.25.0
+### Features
+- Add ability to remove "action" in test view
+- Creating an action has been improved with a dedicated dialog
+- Prevent confirmation modals to be dismissed when clicking outside
+- Add ability to stop test when they are running
+
+### Fixes
+- Fix "help" documentation 
+
 ## V1.24.1
 ### Fixes
 - Fix path of "action" script

@@ -23,6 +23,10 @@ electron.ipcMain.handle(eventNames.RUN_TEST, (event, config, scenarioLabel) => {
     });
 });
 
+electron.ipcMain.handle(eventNames.STOP_COMMAND, (event) => {
+  return BackstopTestRunner.stopTest();
+});
+
 electron.ipcMain.handle(eventNames.APPROVE_TEST, (event, config, scenarioLabel, viewportLabel) => {
   return BackstopTestRunner.approveTests(config, scenarioLabel, viewportLabel)
     .then(() => {

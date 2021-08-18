@@ -8,6 +8,7 @@ import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 import { SearchService } from "@/services/searchService";
 import { ModalService } from "@/services/modalService";
 import RefrerenceRenameModalComponent from "../components/app/ReferenceRenameModalComponent.vue";
+import { TestAction } from "@/models/testAction";
 @Module({
   namespaced: true
 })
@@ -246,14 +247,26 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Mutation
-  public addAction({ scenarioIndex }: { scenarioIndex: number }): void {
+  public addAction({ scenarioIndex, action }: { scenarioIndex: number, action?: TestAction }): void {
     if (this.currentConfiguration?.scenarios) {
       if (!Array.isArray(this.currentConfiguration.scenarios[scenarioIndex].actions)) {
         Vue.set(this.currentConfiguration.scenarios[scenarioIndex], "actions", []);
       }
-      this.currentConfiguration.scenarios[scenarioIndex].actions.push({ type: "", coordinate: { x: 0, y: 0 } });
+      this.currentConfiguration.scenarios[scenarioIndex].actions.push(
+        action || { type: "" }
+      );
       Vue.set(this.testsModified, scenarioIndex, true);
       this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public removeAction({ scenarioIndex, actionIndex }: { scenarioIndex: number, actionIndex: number }): void {
+    if (this.currentConfiguration?.scenarios) {
+      if (Array.isArray(this.currentConfiguration.scenarios[scenarioIndex].actions)) {
+        this.configurationModified = true;
+        this.currentConfiguration.scenarios[scenarioIndex].actions.splice(actionIndex, 1);
+      }
     }
   }
 
