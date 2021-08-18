@@ -8,7 +8,14 @@
     </div>
     <fieldset v-for="(action, index) in test.actions" :key="index"
       class="pa-2">
-      <h3>Action n°{{index + 1}}</h3>
+      <div class="d-flex">
+        <h3 class="flex-grow-1 flex-shrink-1">Action n°{{index + 1}}</h3>
+        <div class="flex-grow-0 flex-shrink-0">
+          <v-btn icon @click="removeCurrentAction(index)">
+            <v-icon color="grey">mdi-delete</v-icon>
+          </v-btn>
+        </div>
+      </div>
       <test-action-form-component :action="action"
         @action-field-updated="updateSpecificActionField(index, arguments[0], arguments[1])"
         @action-coordinate-field-updated="updateSpecificActionCoordinateField(index, arguments[0], arguments[1])"/>
@@ -74,6 +81,9 @@ export default class TestActionsComponent extends Vue {
   private readonly updateActionCoordinateField!: (payload:
     { scenarioIndex: number, actionIndex: number, field: string, value: unknown}) => void;
 
+  @Mutation("configurationStore/removeAction")
+  private readonly removeAction!: (payload: { scenarioIndex: number, actionIndex: number }) => void;
+
   private actionTypes: string[];
 
   constructor() {
@@ -102,6 +112,13 @@ export default class TestActionsComponent extends Vue {
 
   private removeActions() {
     this.$emit("actions-removed");
+  }
+
+  private removeCurrentAction(index: number) {
+    ModalService.launchConfirmationModal("Do you really want to delete this action?")
+      .then(() => {
+        this.removeAction({ scenarioIndex: this.testIndex, actionIndex: index });
+      });
   }
 }
 </script>
