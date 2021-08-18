@@ -1,3 +1,4 @@
+import { TestAction } from "./testAction";
 import { Viewport } from "./viewport";
 
 export class BackstopTest {
@@ -22,17 +23,7 @@ export class BackstopTest {
   public misMatchThreshold!: number;
   public requireSameDimensions!: boolean;
   public viewports!: Viewport[];
-  public actions!: Array<{
-    type: string;
-    selector?: string;
-    delay?: number;
-    key?: string;
-    text?: string;
-    coordinate?: {
-      x: number;
-      y: number;
-    }
-  }>;
+  public actions!: TestAction[];
 
   /* for custom fields */
   [key: string]: unknown;
