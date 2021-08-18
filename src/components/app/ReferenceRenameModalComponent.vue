@@ -2,6 +2,7 @@
   <v-dialog
       v-model="dialogDisplayed"
       max-width="400"
+      persistent
     >
     <v-card>
       <v-card-title class="headline">Configuration name change</v-card-title>

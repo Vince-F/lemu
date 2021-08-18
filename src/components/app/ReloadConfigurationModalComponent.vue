@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialogDisplayed" max-width="400">
+  <v-dialog v-model="dialogDisplayed" max-width="400" persistent>
     <v-card>
       <v-card-title class="headline">Modification outside of LEMU</v-card-title>
 
