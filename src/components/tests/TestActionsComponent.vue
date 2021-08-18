@@ -11,7 +11,7 @@
       <div class="d-flex">
         <h3 class="flex-grow-1 flex-shrink-1">Action n°{{index + 1}}</h3>
         <div class="flex-grow-0 flex-shrink-0">
-          <v-btn icon class="flex-grow-0 flex-shrink-0" @click="removeCurrentAction(index)">
+          <v-btn icon @click="removeCurrentAction(index)">
             <v-icon color="grey">mdi-delete</v-icon>
           </v-btn>
         </div>
