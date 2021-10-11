@@ -1,4 +1,4 @@
-describe("Welcome screen", () => {
+describe("About modal", () => {
   beforeEach(() => {
     cy.visit("/", {
       onBeforeLoad(win) {
@@ -56,35 +56,9 @@ describe("Welcome screen", () => {
     delete window.ipcHandler;
   });
 
-  it("displays welcome screen without any recent opened", () => {
-    cy.matchImageSnapshot();
-  });
-
-  it("displays welcome screen with 5 recent opened", () => {
-    const recentPaths = [
-      "test1",
-      "test2",
-      "test3",
-      "test4",
-      "test5"
-    ];
-    window.localStorage.setItem("recentlyOpened", JSON.stringify(recentPaths));
-    cy.reload();
-    cy.matchImageSnapshot();
-  });
-
-  it("displays changelog when a new version has been installed and changelog has not yet been displayed", ()=> {
-    cy.visit("/", {
-      onBeforeLoad(win) {
-        win.ipcHandler.invoke = (channel: string, ...args: any[]) => {
-          return Promise.resolve({
-            appVersion: "1.2.4",
-            backstopVersion: "4.5.6"
-          });
-        };
-      }
-    });
-    cy.waitFor("[data-release-info-modal]");
+  it("displays about modal", () => {
+    cy.get("[data-more-button]").click();
+    cy.get("[data-about-button]").click();
     cy.matchImageSnapshot();
   });
 });

@@ -61,7 +61,7 @@
       </v-btn>
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn text v-bind="attrs" v-on="on">
+          <v-btn text v-bind="attrs" v-on="on" data-more-button>
             <v-icon>mdi-dots-vertical</v-icon>
             More
           </v-btn>
@@ -73,7 +73,7 @@
             </v-list-item-icon>
             <v-list-item-title>Settings</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="displayAbout">
+          <v-list-item @click="displayAbout" data-about-button>
             <v-list-item-icon>
               <v-icon>mdi-information</v-icon>
             </v-list-item-icon>

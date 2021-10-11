@@ -1,5 +1,6 @@
 <template>
-  <v-dialog v-model="dialogDisplayed" max-width="400">
+  <v-dialog v-model="dialogDisplayed" max-width="400"
+    data-release-info-modal>
     <v-card>
       <v-progress-circular
           indeterminate

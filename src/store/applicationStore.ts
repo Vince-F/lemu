@@ -44,7 +44,7 @@ export default class ApplicationStore extends VuexModule {
     this.appInfos = appInfos;
   }
 
-  @Action
+  @Action({ rawError: true })
   public displaySnackbar(payload: {text: string, success: boolean}): void {
     this.context.commit("setSnackbarDisplayed", payload);
     setTimeout(() => {
@@ -52,7 +52,7 @@ export default class ApplicationStore extends VuexModule {
     }, 15000);
   }
 
-  @Action
+  @Action({ rawError: true })
   public retrieveAppInfos(): Promise<void> {
     return ApplicationService.getVersionsInfo()
       .then((result) => {
@@ -60,7 +60,7 @@ export default class ApplicationStore extends VuexModule {
       });
   }
 
-  @Action
+  @Action({ rawError: true })
   public retrieveChangelog(version: string): Promise<void> {
     return axios.get(`https://api.github.com/repos/vince-f/lemu/releases/tags/v${version}`)
       .then((response) => {
