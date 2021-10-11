@@ -1,52 +1,10 @@
+import { fillWindowObject } from "../../helpers/windowHelper";
+
 describe("Welcome screen", () => {
   beforeEach(() => {
     cy.visit("/", {
       onBeforeLoad(win) {
-        win.localStorage.setItem(`changelog_1.2.3_displayed`, true);
-        win.ipcHandler = {
-          send(channel: string, ...args: any[]) {
-            //
-          },
-          sendSync(channel: string, ...args: any[]) {
-
-          },
-          receive(channel: string, callback: (...args: any[]) => void) {
-            //
-          },
-          receiveOnce(channel: string, callback: (...args: any[]) => void) {
-            //
-          },
-          createTitleBar() {
-            //
-          },
-          updateTitleBarTitle(newTitle: string) {
-            //
-          },
-          logger: {
-            silly(...args: string[]) {
-              //
-            },
-            info(...args: string[]) {
-              //
-            },
-            warn(...args: string[]) {
-              //
-            },
-            error(...args: string[]) {
-              //
-            }
-          },
-          invoke(channel: string, ...args: any[]) {
-            if (channel === "appInfos") {
-              return Promise.resolve({
-                appVersion: "1.2.3",
-                backstopVersion: "4.5.6"
-              });
-            } else {
-              return Promise.resolve({});
-            }
-          }
-        };
+        fillWindowObject(win);
       }
     });
     cy.viewport(1920, 1080);
@@ -69,13 +27,23 @@ describe("Welcome screen", () => {
       "test5"
     ];
     window.localStorage.setItem("recentlyOpened", JSON.stringify(recentPaths));
-    cy.reload();
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        fillWindowObject(win);
+      }
+    });
     cy.matchImageSnapshot();
   });
 
   it("displays changelog when a new version has been installed and changelog has not yet been displayed", ()=> {
+    cy.intercept("https://api.github.com/repos/vince-f/lemu/releases/tags/v1.2.4", {
+      body: { 
+        body: "test"
+      }
+    });
     cy.visit("/", {
       onBeforeLoad(win) {
+        fillWindowObject(win);
         win.ipcHandler.invoke = (channel: string, ...args: any[]) => {
           return Promise.resolve({
             appVersion: "1.2.4",
