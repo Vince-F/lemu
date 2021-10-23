@@ -1,5 +1,5 @@
 <template>
-  <div class="start-screen fill-height">
+  <div class="start-screen fill-height" data-start-view>
     <open-configuration-component />
   </div>
 </template>

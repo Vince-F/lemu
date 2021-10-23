@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialogDisplayed" max-width="400"
     data-release-info-modal>
-    <v-card>
+    <v-card data-release-info-modal-content>
       <v-progress-circular
           indeterminate
           color="primary"
@@ -14,8 +14,7 @@
       </v-card-title>
 
       <v-card-text>
-
-        <div v-if="appInfos && changelog">
+        <div v-if="appInfos && changelog" data-changelog-content>
           <p>Your LEMU has been updated to version {{appInfos.appVersion}}</p>
           <p>Here is what has changed</p>
           <div v-html="changelog"></div>

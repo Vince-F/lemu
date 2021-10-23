@@ -41,17 +41,20 @@
 </template>
 
 <style scoped>
-  .sub-toolbar {
-    top: 30px;
-  }
-
   .app-title {
     font-weight: 400;
+  }
+
+  .sub-toolbar {
+    /* to accomodate electron scrollbar */
+    top: 30px;
   }
 
   .app {
     position: absolute;
     inset: 0;
+    /* to accomodate electron scrollbar */
+    top: 30px;
   }
 
   .app >>> .v-application--wrap {

@@ -21,7 +21,7 @@
               </v-btn>
             </p>
           </div>
-          <div class="open-recent-section">
+          <div class="open-recent-section" data-recently-opened>
             <h1 class="v-card__title no-left-padding">Recently opened</h1>
             <p v-if="recentlyOpened.length === 0">
               No config opened recently.
