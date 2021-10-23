@@ -2,13 +2,13 @@ import { fillWindowObject } from "../../helpers/windowHelper";
 
 describe("Welcome screen", () => {
   beforeEach(() => {
+    cy.viewport(1920, 1080);
     cy.visit("/", {
       onBeforeLoad(win) {
         win.localStorage.setItem("recentlyOpened", JSON.stringify([]));
         fillWindowObject(win);
       }
     });
-    cy.viewport(1920, 1080);
   });
 
   afterEach(() => {
