@@ -118,6 +118,7 @@ export default class ConfigurationStore extends VuexModule {
 
   @Mutation
   public setFullConfiguration(newConfiguration: BackstopConfiguration): void {
+    // maybe construct object here with constructor
     this.currentConfiguration = newConfiguration;
     this.testsModified = [];
     if (this.currentConfiguration && Array.isArray(this.currentConfiguration.scenarios)) {

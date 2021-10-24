@@ -3,15 +3,12 @@ import { fillWindowObject } from "../../helpers/windowHelper";
 describe("About modal", () => {
   beforeEach(() => {
     cy.viewport(1920, 1080);
+    delete window.ipcHandler;
     cy.visit("/", {
       onBeforeLoad(win) {
         fillWindowObject(win);
       }
     });
-  });
-
-  afterEach(() => {
-    delete window.ipcHandler;
   });
 
   it("displays about modal", () => {
