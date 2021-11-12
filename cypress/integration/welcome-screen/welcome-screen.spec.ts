@@ -1,4 +1,6 @@
+import { eventNames } from "../../../shared/constants/eventNames";
 import { fillWindowObject } from "../../helpers/windowHelper";
+import { getRoute } from "../../helpers/appHelper";
 
 describe("Welcome screen", () => {
   beforeEach(() => {
@@ -9,10 +11,6 @@ describe("Welcome screen", () => {
         fillWindowObject(win);
       }
     });
-  });
-
-  afterEach(() => {
-    delete window.ipcHandler;
   });
 
   it("displays welcome screen without any recent opened", () => {
@@ -60,5 +58,24 @@ describe("Welcome screen", () => {
     cy.get("[data-changelog-content]");
     cy.document().its("fonts.status").should("equal", "loaded"); // wait for font
     cy.get("[data-release-info-modal-content]").matchImageSnapshot();
+  });
+
+  it("should ask for opening the configuration file", () => {
+    cy.window().then((win) => {
+      cy.fixture("basicBackstop.json")
+        .then((backstopObj) => {
+          const stub = cy.stub(win.ipcHandler, "invoke");
+
+          stub.withArgs(eventNames.FILE_DIALOG)
+            .returns(Promise.resolve({ content: backstopObj, path: "fakePath" }));
+
+          stub.withArgs(eventNames.RETRIEVE_ENGINE_SCRIPTS)
+            .returns(Promise.resolve({ success: true, content: [] }));
+          cy.get("[data-open-configuration]").click();
+          getRoute().then((route) => {
+            expect(route.name).to.eq("generalConfiguration");
+          });
+        });
+    });
   });
 });

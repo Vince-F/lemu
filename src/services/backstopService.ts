@@ -60,7 +60,7 @@ export class BackstopService {
           if (typeof result.content === "string") {
             return Promise.reject(new Error(result.content));
           } else {
-            return Promise.reject(new Error());
+            return Promise.reject(new Error("Failed to retrieve scripts"));
           }
         }
       });

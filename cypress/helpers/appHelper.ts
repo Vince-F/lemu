@@ -13,4 +13,6 @@ export function fillStore(storeName: string, mutationName: string,
 
 export const getRouter = () => getApp().its("$router");
 
+export const getRoute = () => getApp().its("$route");
+
 export const navigateInApp = (url: string) => getRouter().then((router) => router.push(url));

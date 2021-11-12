@@ -11,7 +11,8 @@
               To start open a BackstopJS tests configuration file ("backstop.json")
             </p>
             <p>
-              <v-btn large color="primary" v-on:click="openSearchFileModal">
+              <v-btn large color="primary" @click="openSearchFileModal"
+                data-open-configuration>
                 Open backstop.json file...
               </v-btn>
             </p>
