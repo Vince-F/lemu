@@ -54,18 +54,18 @@
             <div class="d-flex">
               <div class="flex-grow-1 flex-shrink-1 image-container">
                 <p><strong>Reference</strong></p>
-                <ZoomableImageComponent :imgSrc="getReferenceImagePath(result)" />
+                <ZoomableImageComponent :imgSrc="getReferenceImagePath(result)" :otherImages="getAllImages(result)"/>
               </div>
               <div class="flex-grow-1 flex-shrink-1 image-container">
                 <p><strong>Test</strong></p>
-                <ZoomableImageComponent :imgSrc="getTestImagePath(result)" />
+                <ZoomableImageComponent :imgSrc="getTestImagePath(result)" :otherImages="getAllImages(result)" />
               </div>
               <div
                 class="flex-grow-1 flex-shrink-1 image-container"
                 v-if="result.status === 'fail' && result.pair.diffImage"
               >
                 <p><strong>Diff</strong></p>
-                <ZoomableImageComponent :imgSrc="getDiffImagePath(result)" />
+                <ZoomableImageComponent :imgSrc="getDiffImagePath(result)" :otherImages="getAllImages(result)" />
               </div>
             </div>
           </v-expansion-panel-content>
@@ -212,6 +212,17 @@ export default class TestResultComponent extends Vue {
       this.htmlReportDirectory,
       testResult.pair.test
     ]);
+  }
+
+  private getAllImages(testResult: BackstopTestResult) {
+    const images = [
+      { type: "Reference", src: this.getReferenceImagePath(testResult) },
+      { type: "Test", src: this.getTestImagePath(testResult) }
+    ];
+    if (testResult.pair.diffImage) {
+      images.push({ type: "Diff", src: this.getDiffImagePath(testResult) });
+    }
+    return images;
   }
 
   private togglePanels() {

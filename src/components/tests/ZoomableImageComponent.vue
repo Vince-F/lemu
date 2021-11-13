@@ -11,9 +11,20 @@
         :width="3"
       ></v-progress-circular>
     <v-overlay :value="zoomed" class="image-overlay" @click.native="zoomed = false">
-      <div class="d-flex fill-height">
+      <div class="d-flex fill-height" @click.stop="">
+        <v-btn-toggle
+          v-model="selectedImageIndex"
+          tile
+          color="primary accent-3"
+          group
+        >
+          <v-btn v-for="imageDesc in otherImages" :key="imageDesc.type">
+            {{imageDesc.type}}
+          </v-btn>
+        </v-btn-toggle>
+        {{currentZoomedUrl}}
         <div class="overlay-image-container flex-grow-1 flex-shrink-1">
-          <img :src="imgSrc" v-on:load="stopLoading" />
+          <img :src="otherImages[selectedImageIndex].src" v-on:load="stopLoading" />
         </div>
         <v-btn class="flex-grow-0 flex-shrink-0"
           icon @click="zoomed = false"
@@ -57,6 +68,13 @@ export default class ZoomableImageComponent extends Vue {
   @Prop({ required: true, type: String })
   private readonly imgSrc!: string;
 
+  @Prop({ required: true, type: Array })
+  private readonly otherImages!: Array<{
+    type: string,
+    src: string
+  }>;
+
+  private selectedImageIndex: number;
   private zoomed: boolean;
   private loading: boolean;
 
@@ -64,6 +82,11 @@ export default class ZoomableImageComponent extends Vue {
     super(arguments);
     this.zoomed = false;
     this.loading = false;
+    this.selectedImageIndex = 0;
+  }
+
+  private mounted() {
+    this.selectedImageIndex = this.otherImages.findIndex((val) => val.src === this.imgSrc);
   }
 
   private openFullScreen() {
