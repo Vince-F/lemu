@@ -71,6 +71,7 @@ import AppToolbarComponent from "./components/app/AppToolbarComponent.vue";
 import { ModalService } from "./services/modalService";
 import ReleaseInfoModalComponent from "./components/app/ReleaseInfoModalComponent.vue";
 import { eventNames } from "../shared/constants/eventNames";
+import { BackstopConfiguration } from "./models/backstopConfiguration";
 
 @Component({
   components: {
@@ -93,6 +94,14 @@ export default class App extends Vue {
   @State((state) => state.settingsStore.darkModeEnabled)
   private readonly darkModeEnabled!: boolean;
 
+  @State((state) => state.settingsStore.autoSave)
+  private readonly autoSave!: number;
+
+  @State((state) => state.configurationStore.currentConfiguration)
+  private readonly configuration!: BackstopConfiguration | null;
+
+  private autoSaveToken: number | null;
+
   @Mutation("applicationStore/hideSnackbar")
   private readonly hideSnackbar!: () => void;
 
@@ -105,6 +114,9 @@ export default class App extends Vue {
   @Action("settingsStore/loadSettings")
   private readonly loadSettings!: () => Promise<void>;
 
+  @Action("configurationStore/saveConfiguration")
+  private readonly saveConfiguration!: () => Promise<void>;
+
   private updateSnackbarDisplayed: boolean;
   private updateMessage: string;
   private updateDownloaded: boolean;
@@ -114,6 +126,7 @@ export default class App extends Vue {
     this.updateSnackbarDisplayed = false;
     this.updateMessage = "";
     this.updateDownloaded = false;
+    this.autoSaveToken = null;
   }
 
   private mounted() {
@@ -157,6 +170,20 @@ export default class App extends Vue {
   @Watch("darkModeEnabled", { immediate: true })
   private updateDarkMode() {
     this.$vuetify.theme.dark = this.darkModeEnabled;
+  }
+
+  @Watch("autoSave")
+  private updateAutoSave() {
+    if (this.autoSaveToken !== null) {
+      window.clearInterval(this.autoSaveToken);
+    }
+    if (this.autoSave > 0) {
+      this.autoSaveToken = window.setInterval(() => {
+        if (this.configuration) {
+          this.saveConfiguration();
+        }
+      }, this.autoSave * 60 * 1000);
+    }
   }
 }
 </script>
