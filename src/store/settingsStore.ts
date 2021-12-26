@@ -6,6 +6,7 @@ import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 export default class SettingsStore extends VuexModule {
   public darkModeEnabled = false;
   public autoUpdate = true;
+  public autoSave = -1;
 
   @Action({ rawError: true })
   public loadSettings(): Promise<void> {
@@ -16,6 +17,7 @@ export default class SettingsStore extends VuexModule {
           const settings = JSON.parse(settingsStr);
           this.context.commit("setDarkMode", settings.darkMode ?? false);
           this.context.commit("setAutoUpdate", settings.autoUpdate ?? true);
+          this.context.commit("setAutoSave", settings.autoSave ?? -1);
         } catch (e) {
           reject(e);
         }
@@ -38,10 +40,17 @@ export default class SettingsStore extends VuexModule {
   }
 
   @Action({ rawError: true })
+  public updateAutoSave(autoSaveTime: number): Promise<void> {
+    this.context.commit("setAutoSave", autoSaveTime);
+    return this.context.dispatch("saveSettings");
+  }
+
+  @Action({ rawError: true })
   public saveSettings(): void {
     localStorage.setItem("settings", JSON.stringify({
       darkMode: this.darkModeEnabled,
-      autoUpdate: this.autoUpdate
+      autoUpdate: this.autoUpdate,
+      autoSave: this.autoSave
     }));
   }
 
@@ -53,5 +62,10 @@ export default class SettingsStore extends VuexModule {
   @Mutation
   public setAutoUpdate(enabled: boolean): void {
     this.autoUpdate = enabled;
+  }
+
+  @Mutation
+  public setAutoSave(autoSaveTime: number): void {
+    this.autoSave = autoSaveTime;
   }
 }
