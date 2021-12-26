@@ -10,7 +10,7 @@
         <v-switch :input-value="autoSave > 0" @change="toggleAutoSave($event)" label="Auto save"/>
         <v-text-field outlined dense
           v-if="autoSave > 0" label="Auto save frequency (in minutes)"
-          type="number" :value="autoSave" @input="updateAutoSave(Number.parseInt($event))" />
+          type="number" :value="autoSave" @input="updateAutoSave(Number.parseInt($event))" min="1" />
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
