@@ -12,6 +12,12 @@
         <h3 class="flex-grow-1 flex-shrink-1">Action n°{{index + 1}}</h3>
         <div class="flex-grow-0 flex-shrink-0">
           <v-btn icon @click="removeCurrentAction(index)">
+            <v-icon color="grey">mdi-arrow-up</v-icon>
+          </v-btn>
+          <v-btn icon @click="setElementBelow(index)">
+            <v-icon color="grey">mdi-arrow-down</v-icon>
+          </v-btn>
+          <v-btn icon @click="setElementAbove(index)">
             <v-icon color="grey">mdi-delete</v-icon>
           </v-btn>
         </div>
@@ -119,6 +125,22 @@ export default class TestActionsComponent extends Vue {
       .then(() => {
         this.removeAction({ scenarioIndex: this.testIndex, actionIndex: index });
       });
+  }
+
+  private setElementAbove(index: number) {
+    if (index > 0) {
+      const firstSubArray = this.test.actions.slice(0, index - 1);
+      const secondSubArray = this.test.actions.slice(index + 1);
+      this.test.actions = firstSubArray.concat(this.test.actions[index], this.test.actions[index - 1], ...secondSubArray);
+    }
+  }
+
+  private setElementBelow(index: number) {
+    if (index > 0) {
+      const firstSubArray = this.test.actions.slice(0, index - 1);
+      const secondSubArray = this.test.actions.slice(index + 1);
+      this.test.actions = firstSubArray.concat(this.test.actions[index], this.test.actions[index - 1], ...secondSubArray);
+    }
   }
 }
 </script>
