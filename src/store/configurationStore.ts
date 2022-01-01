@@ -8,6 +8,7 @@ import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 import { SearchService } from "@/services/searchService";
 import { ModalService } from "@/services/modalService";
 import RefrerenceRenameModalComponent from "../components/app/ReferenceRenameModalComponent.vue";
+import { TestAction } from "@/models/testAction";
 @Module({
   namespaced: true
 })
@@ -243,6 +244,61 @@ export default class ConfigurationStore extends VuexModule {
   @Mutation
   public setConfigurationModified(): void {
     this.configurationModified = false;
+  }
+
+  @Mutation
+  public addAction({ scenarioIndex, action }: { scenarioIndex: number, action?: TestAction }): void {
+    if (this.currentConfiguration?.scenarios) {
+      if (!Array.isArray(this.currentConfiguration.scenarios[scenarioIndex].actions)) {
+        Vue.set(this.currentConfiguration.scenarios[scenarioIndex], "actions", []);
+      }
+      this.currentConfiguration.scenarios[scenarioIndex].actions.push(
+        action || { type: "" }
+      );
+      Vue.set(this.testsModified, scenarioIndex, true);
+      this.configurationModified = true;
+    }
+  }
+
+  @Mutation
+  public removeAction({ scenarioIndex, actionIndex }: { scenarioIndex: number, actionIndex: number }): void {
+    if (this.currentConfiguration?.scenarios) {
+      if (Array.isArray(this.currentConfiguration.scenarios[scenarioIndex].actions)) {
+        this.configurationModified = true;
+        this.currentConfiguration.scenarios[scenarioIndex].actions.splice(actionIndex, 1);
+      }
+    }
+  }
+
+  @Mutation
+  public updateActionField({ scenarioIndex, actionIndex, field, value }:
+    { scenarioIndex: number, actionIndex: number, field: string, value: unknown }): void {
+    if (this.currentConfiguration?.scenarios) {
+      if (Array.isArray(this.currentConfiguration.scenarios[scenarioIndex].actions)) {
+        Vue.set(this.currentConfiguration.scenarios[scenarioIndex].actions[actionIndex],
+          field, value);
+        Vue.set(this.testsModified, scenarioIndex, true);
+        this.configurationModified = true;
+      }
+    }
+  }
+
+  @Mutation
+  public updateActionCoordinateField({ scenarioIndex, actionIndex, field, value }:
+    { scenarioIndex: number, actionIndex: number, field: string, value: unknown }): void {
+    if (this.currentConfiguration?.scenarios) {
+      if (Array.isArray(this.currentConfiguration.scenarios[scenarioIndex].actions)) {
+        const action = this.currentConfiguration.scenarios[scenarioIndex].actions[actionIndex];
+        if (!action.coordinate) {
+          Vue.set(action, "coordinate", {});
+        }
+        if (action.coordinate) {
+          Vue.set(action.coordinate, field, value);
+        }
+        Vue.set(this.testsModified, scenarioIndex, true);
+        this.configurationModified = true;
+      }
+    }
   }
 
   @Mutation

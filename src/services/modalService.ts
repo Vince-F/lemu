@@ -3,7 +3,10 @@ import SaveConfirmationModalComponent from "../components/app/SaveConfirmationMo
 import { VueConstructor } from "vue";
 
 export class ModalService {
-  public static launchModal(ModalComponent: VueConstructor, payload?: unknown): Promise<unknown> {
+  // the consumers redefine the type of return because it is context specific
+  // but I don't know how to handle that properly
+  public static launchModal(ModalComponent: VueConstructor, payload?: unknown)
+    : Promise<any> { // eslint-disable-line
     return new Promise((resolve, reject) => {
       const element = this.getModalContainerElement();
       const modal = new ModalComponent({

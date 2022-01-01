@@ -7,6 +7,7 @@ exports.eventNames = Object.freeze({
     RUN_TEST: "runTest",
     APPROVE_TEST: "approveTest",
     INIT_TEST: "initTest",
+    STOP_COMMAND: "stopCommand",
     RETRIEVE_TEST_RESULT: "retrieveTestsResult",
     TEST_LOG: {
         REPLY: "testLog"
@@ -44,5 +45,9 @@ exports.eventNames = Object.freeze({
     CREATE_OR_UPDATE_CONFIGURATION_TEMPLATE: "createOrUpdateConfigurationTemplate",
     RETRIEVE_CONFIGURATION_TEMPLATES: "retrieveConfigurationTemplates",
     DELETE_CONFIGURATION_TEMPLATE: "deleteConfigurationTemplate",
-    RENAME_REFERENCES: "renameReferences"
+    RENAME_REFERENCES: "renameReferences",
+    UPDATE_AVAILABLE: "updateAvailable",
+    UPDATE_DOWNLOADED: "updateDownloaded",
+    INSTALL_AND_RESTART: "installAndRestart",
+    DOWNLOAD_UPDATE: "downloadUpdate"
 });

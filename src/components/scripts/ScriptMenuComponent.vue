@@ -176,15 +176,18 @@ export default class ScriptMenuComponent extends Vue {
     this.items = this.createTreeItemFromMap(paths, "", true);
   }
 
-  private createTreeItemFromMap(map: Map<string, Map<string, unknown>>, path: string, rootDirectory?: boolean) {
+  private createTreeItemFromMap(map: Map<string, (Map<string, unknown> | unknown)>,
+    path: string, rootDirectory?: boolean) {
     const items: TreeEntry[] = [];
     map.forEach((value, key) => {
-      items.push({
-        id: path + (path.length > 0 ? "/" : "") + (rootDirectory ? "" : key),
-        name: key,
-        isScript: key.endsWith(".js"),
-        children: this.createTreeItemFromMap(value, path + (path.length > 0 ? "/" : "") + (rootDirectory ? "" : key))
-      });
+      if (value instanceof Map) {
+        items.push({
+          id: path + (path.length > 0 ? "/" : "") + (rootDirectory ? "" : key),
+          name: key,
+          isScript: key.endsWith(".js"),
+          children: this.createTreeItemFromMap(value, path + (path.length > 0 ? "/" : "") + (rootDirectory ? "" : key))
+        });
+      }
     });
     return items;
   }

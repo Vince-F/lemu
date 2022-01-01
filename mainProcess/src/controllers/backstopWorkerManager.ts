@@ -9,65 +9,69 @@ import logger from "electron-log";
 export class BackstopWorkerManager {
   public static executeCommand(workingPath: string, command: string, options?: unknown) {
     return new Promise((resolve, reject) => {
-      fs.readFile(path.join(__dirname, "./backstopWorker.js"), {encoding: "utf-8"}, (err, fileContent) => {
-        if (err) {
-          reject("Failed to open test launcher.");
+      const worker = new Worker(path.join(__dirname, "./backstopWorker.js"), {
+        stderr: true,
+        stdout: true
+      });
+      this.lastWorker = worker;
+      worker.on("message", (result) => {
+        if (result.success) {
+          resolve(result.arguments[0]);
         } else {
-          const worker = new Worker(fileContent, {
-            eval: true,
-            stderr: true,
-            stdout: true
-          });
-          worker.on("message", (result) => {
-            if (result.success) {
-              resolve(result.arguments[0]);
-            } else {
-              reject(result.arguments[0]);
-            }
-            worker.terminate();
-          });
-          BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
-            level: "divider",
-            message: ""
-          });
-
-          worker.postMessage({
-            command,
-            options,
-            workingPath
-          });
-
-          worker.stdout.on("data", (data: Buffer) => {
-            const message = data.toString();
-            if (message.includes(this.approveEndSentence)) {
-              this.recordApprovalEnabled = false;
-              this.updateApprovalResult(workingPath);
-            } else if (message.includes(this.approveStartSentence)) {
-              this.recordApprovalEnabled = true;
-              this.fileToUpdateInReport = [];
-            } else if (this.recordApprovalEnabled) {
-              this.addApprovalResultToUpdate(message);
-            }
-
-            logger.log(message);
-            BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
-              level: "info",
-              message
-            });
-          });
-
-          worker.stderr.on("data", (data: Buffer) => {
-            logger.warn(data.toString());
-            BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
-              level: "error",
-              message: data.toString()
-            });
-          });
+          reject(result.arguments[0]);
         }
+        worker.terminate();
+      });
+      BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
+        level: "divider",
+        message: ""
+      });
+
+      worker.postMessage({
+        command,
+        options,
+        workingPath
+      });
+
+      worker.stdout.on("data", (data: Buffer) => {
+        const message = data.toString();
+        if (message.includes(this.approveEndSentence)) {
+          this.recordApprovalEnabled = false;
+          this.updateApprovalResult(workingPath);
+        } else if (message.includes(this.approveStartSentence)) {
+          this.recordApprovalEnabled = true;
+          this.fileToUpdateInReport = [];
+        } else if (this.recordApprovalEnabled) {
+          this.addApprovalResultToUpdate(message);
+        }
+
+        logger.log(message);
+        BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
+          level: "info",
+          message
+        });
+      });
+
+      worker.stderr.on("data", (data: Buffer) => {
+        logger.warn(data.toString());
+        BrowserWindowManager.sendEvent(eventNames.TEST_LOG.REPLY, {
+          level: "error",
+          message: data.toString()
+        });
       });
     });
   }
 
+  public static stopCommand() {
+    if (this.lastWorker) {
+      // this will leave open processes because backstop won't clean chromium processes. Maybe this drawback is acceptable.
+      return this.lastWorker.terminate();
+    } else {
+      return Promise.resolve();
+    }
+  }
+
+  private static lastWorker?: Worker;
   private static readonly approveStartSentence: string = "The following files will be promoted to reference...";
   private static readonly approveEndSentence: string = "COMMAND | Command \"approve\" successfully executed";
   private static recordApprovalEnabled: boolean = false;

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, protocol } from 'electron';
+import { app, BrowserWindow, Menu, protocol, ipcMain } from 'electron';
 import { autoUpdater } from "electron-updater";
 import logger from "electron-log";
 
@@ -7,12 +7,7 @@ import "v8-compile-cache";
 
 import "./eventBuses";
 import { BrowserWindowManager } from './controllers/browserWindowManager';
-
-try {
-  autoUpdater.checkForUpdatesAndNotify();
-} catch (e) {
-  logger.warn("Fail to check for updates");
-}
+import { eventNames } from '../../shared/constants/eventNames';
 
 let mainWindow: Electron.BrowserWindow | null = null;
 
@@ -56,7 +51,7 @@ function registerDocProtocol() {
     if (url.endsWith("/") || url === "") {
       url += "index.html";
     }
-    callback({ path: path.normalize(`./dist-app/docs/${url}`) });
+    callback({ path: path.resolve(app.getAppPath(), `./dist-app/docs/${url}`) });
   });
   if (!successfull) {
     logger.error("Fail to register doc protocol");
@@ -67,6 +62,55 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'doc', privileges: { secure: true, standard: true } }
 ]);
 
+function manageUpdate(window: BrowserWindow) {
+  window.webContents
+    .executeJavaScript("localStorage.getItem(\"settings\");")
+    .then((settingsStr) => {
+      // default is auto update
+      const settings = JSON.parse(settingsStr);
+      const autoUpdate = true;
+      if (settings.autoUpdate !== undefined) {
+        autoUpdater.autoDownload = !!settings.autoUpdate;
+      }
+
+      console.log("auto update mode", settings, settings.autoUpdate, autoUpdater.autoDownload);
+
+      autoUpdater.on('update-downloaded', () => {
+        BrowserWindowManager.sendEvent(eventNames.UPDATE_DOWNLOADED);
+      });
+
+      autoUpdater.on('update-available', () => {
+        BrowserWindowManager.sendEvent(eventNames.UPDATE_AVAILABLE);
+      });
+
+      ipcMain.on(eventNames.DOWNLOAD_UPDATE, () => {
+        autoUpdater.downloadUpdate();
+      });
+
+      ipcMain.on(eventNames.INSTALL_AND_RESTART, () => {
+        autoUpdater.quitAndInstall();
+      });
+
+      if (autoUpdate) {
+        try {
+          autoUpdater.checkForUpdatesAndNotify();
+        } catch (e) {
+          logger.warn("Fail to check for updates");
+        }
+      } else {
+        autoUpdater.checkForUpdates()
+          .then((updateCheckResult) => {
+            const updateVersion = updateCheckResult.updateInfo.version;
+            setTimeout(() => {
+              BrowserWindowManager.sendEvent(eventNames.UPDATE_AVAILABLE);
+            }, 15000);
+          }).catch((error) => {
+            logger.warn("Fail to check for updates");
+          });
+      }
+    });
+}
+
 // for notification
 app.setAppUserModelId(process.execPath);
 app.commandLine.appendSwitch("disable-site-isolation-trials");
@@ -74,6 +118,9 @@ app.commandLine.appendSwitch("disable-site-isolation-trials");
 app.on('ready', () => {
   registerDocProtocol();
   createWindow();
+  if (mainWindow) {
+    manageUpdate(mainWindow);
+  }
 });
 
 app.on('window-all-closed', () => {

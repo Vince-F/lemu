@@ -90,7 +90,7 @@ export default class TestPreviewComponent extends Vue {
   }
 
   private get selectorFields(): {[key: string]: string[]} {
-    const result: {[key: string]: unknown} = {};
+    const result: {[key: string]: string[]} = {};
     let i = 0;
     for (const key in this.testContent) {
       if (key in this.testContent) {
@@ -98,10 +98,11 @@ export default class TestPreviewComponent extends Vue {
           (val) => val.name === key
         );
         if (predefinedFieldConfig) {
-          if (predefinedFieldConfig.type === "selector") {
-            result[key] = [this.testContent[key]];
-          } else if (predefinedFieldConfig.type === "selectors") {
-            result[key] = this.testContent[key];
+          const value = this.testContent[key];
+          if (predefinedFieldConfig.type === "selector" && typeof value === "string") {
+            result[key] = [value];
+          } else if (predefinedFieldConfig.type === "selectors" && Array.isArray(value)) {
+            result[key] = value;
           }
           if (!this.selectorProperties[key]) {
             Vue.set(this.selectorProperties, key, { displayed: true, color: this.predefinedColors[i] });
