@@ -140,7 +140,7 @@ describe("ConfigurationStore", () => {
       const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
         .call(store, context);
 
-      return expect(result).rejects.toEqual("Tests are running");
+      return expect(result).rejects.toEqual(new Error("Tests are running"));
     });
 
     it("should not approve and tells if there us no configuration", () => {
@@ -161,7 +161,7 @@ describe("ConfigurationStore", () => {
       const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
         .call(store, context);
 
-      return expect(result).rejects.toEqual("No configuration loaded");
+      return expect(result).rejects.toEqual(new Error("No configuration loaded"));
     });
 
     it("should approve all the tests", async () => {
@@ -213,7 +213,7 @@ describe("ConfigurationStore", () => {
       const result = (configurationStore.actions?.approveTest as ActionHandler<any, any>)
         .call(store, context, "testLabel");
 
-      return expect(result).rejects.toEqual("Tests are running");
+      return expect(result).rejects.toEqual(new Error("Tests are running"));
     });
 
     it("should not approve and tells if there us no configuration", () => {
@@ -234,7 +234,7 @@ describe("ConfigurationStore", () => {
       const result = (configurationStore.actions?.approveTest as ActionHandler<any, any>)
         .call(store, context, "testLabel");
 
-      return expect(result).rejects.toEqual("No configuration loaded");
+      return expect(result).rejects.toEqual(new Error("No configuration loaded"));
     });
 
     it("should approve the test for one test", async () => {
@@ -286,7 +286,7 @@ describe("ConfigurationStore", () => {
       const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
         .call(store, context, { testLabel: "testLabel", viewportLabel: "viewportLabel" });
 
-      return expect(result).rejects.toEqual("Tests are running");
+      return expect(result).rejects.toEqual(new Error("Tests are running"));
     });
 
     it("should not approve and tells if there us no configuration", () => {
@@ -307,7 +307,7 @@ describe("ConfigurationStore", () => {
       const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
         .call(store, context, { testLabel: "testLabel", viewportLabel: "viewportLabel" });
 
-      return expect(result).rejects.toEqual("No configuration loaded");
+      return expect(result).rejects.toEqual(new Error("No configuration loaded"));
     });
 
     it("should approve the test for one viewport", async () => {
@@ -388,7 +388,7 @@ describe("ConfigurationStore", () => {
       const result = (configurationStore.actions?.openConfiguration as ActionHandler<any, any>)
         .call(store, context);
 
-      await expect(result).rejects.toEqual("File doesn't look like a BackstopJS configuration");
+      await expect(result).rejects.toEqual(new Error("File doesn't look like a BackstopJS configuration"));
 
       expect(mockedDialogFileService.openFileDialog).toHaveBeenCalled();
       expect(dispatch).toHaveBeenCalledTimes(0);

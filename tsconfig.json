@@ -38,7 +38,7 @@
     "tests/**/*.tsx", 
     "index.ts", 
     "mainProcess/main.ts",
-    "shared/**/*.ts",
+    "shared/**/*.ts"
   ],
   "exclude": [
     "node_modules"
