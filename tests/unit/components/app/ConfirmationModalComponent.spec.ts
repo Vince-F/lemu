@@ -1,5 +1,5 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify';
+import Vue from "vue";
+import Vuetify from "vuetify";
 import { shallowMount, mount, createLocalVue } from "@vue/test-utils";
 import ConfirmationModalComponent from "@/components/app/ConfirmationModalComponent.vue";
 
