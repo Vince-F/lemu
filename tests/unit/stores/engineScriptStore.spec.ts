@@ -4,6 +4,11 @@ import store from "@/store/index";
 import { ActionContext, ActionHandler } from "vuex";
 import axios from "axios";
 import { mocked } from 'ts-jest/utils';
+import { actionScriptContent } from "@/constants/actionScriptContent";
+import { FileService } from "@/services/fileService";
+
+jest.mock("@/services/fileService");
+const mockedFileService = mocked(FileService, true);
 
 describe("engineScriptStore", () => {
   describe("getScript", () => {
@@ -193,11 +198,95 @@ describe("engineScriptStore", () => {
   });
 
   describe("setScriptContent", () => {
+    it("should replace the content of the script when the path match", () => {
+      const pathLinux = "path/to/file";
+      const pathWindows = "path\\to\\file";
+      const content = "test";
+      const newContent = "newContent";
+      const scripts = [
+        new EngineScript(pathLinux, content),
+        new EngineScript(pathWindows, content)
+      ];
+      const state = {
+        scripts,
+        scriptsModified: false
+      };
 
+      if (engineScriptStore.mutations) {
+        engineScriptStore.mutations.setScriptContent(state, { path: pathLinux, content: newContent });
+      }
+
+      expect(state.scripts).toEqual([
+        new EngineScript(pathLinux, newContent),
+        new EngineScript(pathWindows, content)
+      ]);
+      expect(state.scriptsModified).toBeTruthy();
+    });
+
+    it("should do nothing when the path doesn't match", () => {
+      const pathLinux = "path/to/file";
+      const content = "test";
+      const newContent = "newContent";
+      const scripts = [
+        new EngineScript(pathLinux, content),
+        new EngineScript(pathLinux, content)
+      ];
+      const state = {
+        scripts,
+        scriptsModified: false
+      };
+
+      if (engineScriptStore.mutations) {
+        engineScriptStore.mutations.setScriptContent(state, { path: "fake/path", content: newContent });
+      }
+
+      expect(state.scripts).toEqual([
+        new EngineScript(pathLinux, content),
+        new EngineScript(pathLinux, content)
+      ]);
+      expect(state.scriptsModified).toBeFalsy();
+    });
   });
 
   describe("addActionScript", () => {
+    it("should add the action script", async() => {
+      const pathLinux = "path/to/file";
+      const pathWindows = "path\\to\\file";
+      const content = "test";
+      const scripts = [
+        new EngineScript(pathLinux, content),
+        new EngineScript(pathWindows, content)
+      ];
+      const state = {
+        scripts,
+        scriptsModified: false
+      };
+      const scriptDirectoryPath = "script/directory/";
 
+      const commit = jest.fn();
+      const dispatch = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch,
+        commit,
+        state,
+        getters: {},
+        rootState: {},
+        rootGetters: {
+          configurationStore: {
+            engineScriptDirectory: () => scriptDirectoryPath
+          }
+        }
+      };
+
+      const actionsPath = scriptDirectoryPath + "puppet/actions.js";
+
+      mockedFileService.resolvePath.mockImplementationOnce(() => actionsPath);
+
+      await (engineScriptStore.actions?.addActionsScript as ActionHandler<any, any>)
+        .call(store, context);
+
+      expect(commit).toHaveBeenCalledWith("addScript", { scriptPath: actionsPath, content: actionScriptContent });
+    });
   });
 
   describe("retrieveEngineScripts", () => {

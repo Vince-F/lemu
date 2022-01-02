@@ -10,7 +10,6 @@ import { mocked } from 'ts-jest/utils';
 jest.mock("@/services/backstopService");
 const mockedBackstopService = mocked(BackstopService, true);
 
-
 jest.mock("@/services/dialogFileService");
 const mockedDialogFileService = mocked(DialogFileService, true);
 
