@@ -347,7 +347,7 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public approveTestViewport(payload: {testLabel: string, viewportLabel: string}): Promise<unknown> {
+  public approveTestViewport(payload: { testLabel: string, viewportLabel: string }): Promise<unknown> {
     if (this.context.rootState.testRunnerStore.testRunning) {
       return Promise.reject(new Error("Tests are running"));
     }
@@ -371,7 +371,7 @@ export default class ConfigurationStore extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public initConfig({ template, directory }: {template: BackstopConfiguration, directory: string}): Promise<void> {
+  public initConfig({ template, directory }: { template: BackstopConfiguration, directory: string }): Promise<void> {
     const path = FileService.resolvePath([directory, "backstop.json"]);
     return BackstopService.initTests(directory)
       .then(() => {

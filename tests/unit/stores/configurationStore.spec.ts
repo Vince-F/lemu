@@ -1,6 +1,17 @@
-import configurationStore from "@/store/configurationStore";
-import { BackstopTest } from "@/models/backstopTest";
+import configurationStore from '@/store/configurationStore';
+import { BackstopTest } from '@/models/backstopTest';
+import store from "@/store/index";
+import { ActionContext, ActionHandler } from "vuex";
+import { BackstopService } from "@/services/backstopService";
+import { DialogFileService } from "@/services/dialogFileService";
 import { BackstopConfiguration } from "@/models/backstopConfiguration";
+import { mocked } from 'ts-jest/utils';
+
+jest.mock("@/services/backstopService");
+const mockedBackstopService = mocked(BackstopService, true);
+
+jest.mock("@/services/dialogFileService");
+const mockedDialogFileService = mocked(DialogFileService, true);
 
 describe("ConfigurationStore", () => {
   /* mutations */
@@ -109,6 +120,322 @@ describe("ConfigurationStore", () => {
     });
   });
 
+  describe("approveTests", () => {
+    it("should not approve tests if they are running", () => {
+      const commit = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch: jest.fn(),
+        commit,
+        state: {},
+        getters: {},
+        rootState: {
+          testRunnerStore: {
+            testRunning: true
+          }
+        },
+        rootGetters: {}
+      };
+
+      const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
+        .call(store, context);
+
+      return expect(result).rejects.toEqual(new Error("Tests are running"));
+    });
+
+    it("should not approve and tells if there us no configuration", () => {
+      const commit = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch: jest.fn(),
+        commit,
+        state: {},
+        getters: {},
+        rootState: {
+          testRunnerStore: {
+            testRunning: false
+          }
+        },
+        rootGetters: {}
+      };
+
+      const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
+        .call(store, context);
+
+      return expect(result).rejects.toEqual(new Error("No configuration loaded"));
+    });
+
+    it("should approve all the tests", async () => {
+      const configuration = {
+        id: "test"
+      };
+      const commit = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch: jest.fn(),
+        commit,
+        state: {
+          currentConfiguration: configuration
+        },
+        getters: {},
+        rootState: {
+          testRunnerStore: {
+            testRunning: false
+          }
+        },
+        rootGetters: {}
+      };
+
+      mockedBackstopService.approveTests.mockImplementationOnce(() => Promise.resolve(undefined));
+
+      const result = (configurationStore.actions?.approveTests as ActionHandler<any, any>)
+        .call(store, context);
+
+      await expect(result).resolves.toEqual(undefined);
+      expect(mockedBackstopService.approveTests).toHaveBeenCalledWith(configuration);
+    });
+  });
+
+  describe("approveTest", () => {
+    it("should not approve tests if they are running", () => {
+      const commit = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch: jest.fn(),
+        commit,
+        state: {},
+        getters: {},
+        rootState: {
+          testRunnerStore: {
+            testRunning: true
+          }
+        },
+        rootGetters: {}
+      };
+
+      const result = (configurationStore.actions?.approveTest as ActionHandler<any, any>)
+        .call(store, context, "testLabel");
+
+      return expect(result).rejects.toEqual(new Error("Tests are running"));
+    });
+
+    it("should not approve and tells if there us no configuration", () => {
+      const commit = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch: jest.fn(),
+        commit,
+        state: {},
+        getters: {},
+        rootState: {
+          testRunnerStore: {
+            testRunning: false
+          }
+        },
+        rootGetters: {}
+      };
+
+      const result = (configurationStore.actions?.approveTest as ActionHandler<any, any>)
+        .call(store, context, "testLabel");
+
+      return expect(result).rejects.toEqual(new Error("No configuration loaded"));
+    });
+
+    it("should approve the test for one test", async () => {
+      const configuration = {
+        id: "test"
+      };
+      const commit = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch: jest.fn(),
+        commit,
+        state: {
+          currentConfiguration: configuration
+        },
+        getters: {},
+        rootState: {
+          testRunnerStore: {
+            testRunning: false
+          }
+        },
+        rootGetters: {}
+      };
+
+      mockedBackstopService.approveTest.mockImplementationOnce(() => Promise.resolve(undefined));
+
+      const result = (configurationStore.actions?.approveTest as ActionHandler<any, any>)
+        .call(store, context, "testLabel");
+
+      await expect(result).resolves.toEqual(undefined);
+      expect(mockedBackstopService.approveTest).toHaveBeenCalledWith(configuration, "testLabel");
+    });
+  });
+
+  describe("approveTestViewport", () => {
+    it("should not approve tests if they are running", () => {
+      const commit = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch: jest.fn(),
+        commit,
+        state: {},
+        getters: {},
+        rootState: {
+          testRunnerStore: {
+            testRunning: true
+          }
+        },
+        rootGetters: {}
+      };
+
+      const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
+        .call(store, context, { testLabel: "testLabel", viewportLabel: "viewportLabel" });
+
+      return expect(result).rejects.toEqual(new Error("Tests are running"));
+    });
+
+    it("should not approve and tells if there us no configuration", () => {
+      const commit = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch: jest.fn(),
+        commit,
+        state: {},
+        getters: {},
+        rootState: {
+          testRunnerStore: {
+            testRunning: false
+          }
+        },
+        rootGetters: {}
+      };
+
+      const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
+        .call(store, context, { testLabel: "testLabel", viewportLabel: "viewportLabel" });
+
+      return expect(result).rejects.toEqual(new Error("No configuration loaded"));
+    });
+
+    it("should approve the test for one viewport", async () => {
+      const configuration = {
+        id: "test"
+      };
+      const commit = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch: jest.fn(),
+        commit,
+        state: {
+          currentConfiguration: configuration
+        },
+        getters: {},
+        rootState: {
+          testRunnerStore: {
+            testRunning: false
+          }
+        },
+        rootGetters: {}
+      };
+
+      mockedBackstopService.approveTest.mockImplementationOnce(() => Promise.resolve(undefined));
+
+      const result = (configurationStore.actions?.approveTestViewport as ActionHandler<any, any>)
+        .call(store, context, { testLabel: "testLabel", viewportLabel: "viewportLabel" });
+
+      await expect(result).resolves.toEqual(undefined);
+      expect(mockedBackstopService.approveTest)
+        .toHaveBeenCalledWith(configuration, "testLabel", "viewportLabel");
+    });
+  });
+
+  describe("initConfig", () => {
+
+  });
+
+  describe("openConfiguration", () => {
+    it("should reject when dialog is rejected (closed for instance)", async () => {
+      const commit = jest.fn();
+      const dispatch = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch,
+        commit,
+        state: {},
+        getters: {},
+        rootState: {},
+        rootGetters: {}
+      };
+
+      mockedDialogFileService.openFileDialog.mockImplementationOnce(() => Promise.reject());
+
+      const result = (configurationStore.actions?.openConfiguration as ActionHandler<any, any>)
+        .call(store, context);
+
+      await expect(result).rejects.toEqual(undefined);
+
+      expect(mockedDialogFileService.openFileDialog).toHaveBeenCalled();
+      expect(commit).toHaveBeenCalledTimes(0);
+      expect(dispatch).toHaveBeenCalledTimes(0);
+    });
+
+    it("should reject when opened file is not a backstop configuration", async () => {
+      const commit = jest.fn();
+      const dispatch = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch,
+        commit,
+        state: {},
+        getters: {},
+        rootState: {},
+        rootGetters: {}
+      };
+
+      mockedDialogFileService.openFileDialog.mockImplementationOnce(() =>
+        Promise.resolve({ path: "path", content: {} }));
+
+      const result = (configurationStore.actions?.openConfiguration as ActionHandler<any, any>)
+        .call(store, context);
+
+      await expect(result).rejects.toEqual(new Error("File doesn't look like a BackstopJS configuration"));
+
+      expect(mockedDialogFileService.openFileDialog).toHaveBeenCalled();
+      expect(dispatch).toHaveBeenCalledTimes(0);
+      expect(commit).toHaveBeenCalledTimes(0);
+    });
+
+    it("should open configuration and set path", async () => {
+      const configuration = { id: "test", scenarios: [] };
+      const commit = jest.fn();
+      const dispatch = jest.fn();
+      const context: ActionContext<any, any> = {
+        dispatch,
+        commit,
+        state: {},
+        getters: {
+          backstopConfigurationDirectory: "configurationPath"
+        },
+        rootState: {},
+        rootGetters: {}
+      };
+
+      mockedDialogFileService.openFileDialog.mockImplementationOnce(
+        () => Promise.resolve({ path: "path", content: configuration }));
+
+      const result = (configurationStore.actions?.openConfiguration as ActionHandler<any, any>)
+        .call(store, context);
+
+      await expect(result).resolves.toEqual(undefined);
+
+      expect(commit).toHaveBeenCalledTimes(1);
+      expect(dispatch).toHaveBeenCalledTimes(1);
+
+      expect(commit.mock.calls[0][0]).toBe("setFullConfiguration");
+      expect(commit.mock.calls[0][1]).toEqual(configuration);
+
+
+      expect(dispatch.mock.calls[0][0]).toBe("setContextAfterConfigLoaded");
+      expect(dispatch.mock.calls[0][1]).toEqual("path");
+    });
+  });
+
+  describe("openConfigurationFromPath", () => {
+
+  });
+
+  describe("saveConfiguration", () => {
+
+  });
   /* getters */
   describe("tests", () => {
     it("should get the scenarios from the current configuration", () => {
