@@ -103,6 +103,8 @@ export default class TestActionsComponent extends Vue {
     this.updateActionField({ scenarioIndex: this.testIndex, actionIndex, field, value });
     if (this.test.actions[actionIndex].type !== "mouseMove") {
       this.updateActionField({ scenarioIndex: this.testIndex, actionIndex, field: "coordinate", value: undefined });
+    } else if (this.test.actions[actionIndex].type === "mouseMove" && !this.test.actions[actionIndex].coordinate) {
+      this.updateActionField({ scenarioIndex: this.testIndex, actionIndex, field: "coordinate", value: { x: 0, y: 0 } });
     }
   }
 

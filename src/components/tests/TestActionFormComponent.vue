@@ -19,12 +19,12 @@
       outlined dense label="Text"
       :value="action.text" @input="updateActionField('text', $event)"
       ></v-text-field>
-    <div v-else-if="action.type === 'mouseMove' && action.coordinate">
+    <div v-else-if="action.type === 'mouseMove'">
       <v-text-field class="flex-grow-1 flex-shrink-1" outlined dense label="X coordinate" type="number"
-        :value="action.coordinate.x" @input="updateActionCoordinateField('x', parseInt($event))"
+        :value="action.coordinate.x" @input="updateCurrentActionCoordinateField('x', parseInt($event))"
         ></v-text-field>
       <v-text-field class="flex-grow-1 flex-shrink-1" outlined dense label="Y coordinate" type="number"
-        :value="action.coordinate.y" @input="updateActionCoordinateField('y', parseInt($event))"
+        :value="action.coordinate.y" @input="updateCurrentActionCoordinateField('y', parseInt($event))"
         ></v-text-field>
     </div>
   </div>
