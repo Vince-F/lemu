@@ -77,12 +77,15 @@ export default class AddTestFieldModalComponent extends Vue {
   }
 
   private updateActionField(field: string, value: unknown) {
+    if (field === "type" && value === "mouseMove" && !this.newAction.coordinate) {
+      Vue.set(this.newAction, "coordinate", { x: 0, y: 0 });
+    }
     Vue.set(this.newAction, field, value);
   }
 
   private updateActionCoordinateField(field: string, value: unknown) {
     if (!this.newAction.coordinate) {
-      Vue.set(this.newAction, "coordinate", {});
+      Vue.set(this.newAction, "coordinate", { x: 0, y: 0 });
     }
     if (this.newAction.coordinate) {
       Vue.set(this.newAction.coordinate, field, value);

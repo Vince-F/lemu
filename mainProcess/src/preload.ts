@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { Titlebar, Color } from 'custom-electron-titlebar';
+import { Titlebar, Color } from "custom-electron-titlebar";
 import logger from "electron-log";
 
 let titleBar: Titlebar | null = null;
@@ -47,8 +47,8 @@ const ipcHandler = {
 
   createTitleBar: () => {
     titleBar = new Titlebar({
-      backgroundColor: Color.fromHex('#02468a'),
-      icon: "../../assets/icon.png",
+      backgroundColor: Color.fromHex("#02468a"),
+      icon: "../../assets/icon.png"
     });
     titleBar.updateTitle("Lemu");
   },
