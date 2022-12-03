@@ -73,7 +73,7 @@ export default class ReportComponent extends Vue {
         const reportFrame = this.$refs.reportFrame;
         if (reportFrame instanceof HTMLIFrameElement && reportFrame &&
           reportFrame.contentWindow) {
-          reportFrame.contentWindow.location.reload(true);
+          reportFrame.contentWindow.location.reload();
         }
       }).catch((error) => {
         this.displaySnackbar({ text: "Test approval failed. Error: " + error, success: false });
