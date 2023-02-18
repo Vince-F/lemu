@@ -1,8 +1,8 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { Titlebar, Color } from 'custom-electron-titlebar';
+import { Titlebar, Color } from "custom-electron-titlebar";
 import logger from "electron-log";
 
-let titleBar: Titlebar | null = null;
+let titleBar: any /* Titlebar | null typing seem borken in CET */ = null;
 
 declare global {
   interface Window {

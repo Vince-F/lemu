@@ -38,7 +38,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
-import marked from "marked";
+import { marked } from "marked";
 
 @Component({})
 export default class AboutModalComponent extends Vue {

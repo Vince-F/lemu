@@ -8,7 +8,8 @@
     "strict": true,
     "importHelpers": true,
     "rootDir": "./src",
-    "outDir": "../dist-app/electron-main/"
+    "outDir": "../dist-app/electron-main/",
+    "skipLibCheck": true, // due to custom-electron-titlebar see https://github.com/AlexTorresSk/custom-electron-titlebar/issues/198
   },
   "include": [
     "src/**/*.ts",

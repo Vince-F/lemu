@@ -1,0 +1,24 @@
+<template><div><h1 id="test-view" tabindex="-1"><a class="header-anchor" href="#test-view" aria-hidden="true">#</a> Test view</h1>
+<p>The test view is divided in two parts. On the left, you have the menu to select your tests, and on the right the currently selected test.</p>
+<p>From the menu you can add new test, by clicking on the &quot;add button&quot; on top. Alongside each test on the right, the status of the test is displayed along with a &quot;...&quot; button which allows you to select an action to execute on this test. From there, you can:</p>
+<ul>
+<li>run the test</li>
+<li>approve the test</li>
+<li>duplicate the test</li>
+<li>delete the test</li>
+</ul>
+<p>You can filter your tests to find them easily.</p>
+<p><img src="@source/guide/filter_test.png" alt="filter test"></p>
+<p>You can select your test by clicking on it in the menu.</p>
+<p>After clicking on one it will open in the right part.</p>
+<p>On top you have the action bar for your test. On the left is the test name. On the right are four buttons:</p>
+<ul>
+<li>&quot;play&quot; button allows you to run this test</li>
+<li>&quot;checkmark&quot; button will approve all the result for this test</li>
+<li>&quot;copy&quot; button will duplicate this test</li>
+<li>&quot;bin&quot; button will delete this test</li>
+</ul>
+<p>Below that you got tabs allowing to edit your <a href="/guide/test-configuration">test configuration</a> or see the results and references for this test in the <a href="/guide/test-result">test result section</a>.</p>
+</div></template>
+
+

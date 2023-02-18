@@ -3,21 +3,31 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lemu user guide</title>
-    <meta name="generator" content="VuePress 1.8.2">
-    
-    <meta name="description" content="User guide for Lemu app">
-    <meta name="theme-color" content="#1976d2">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    
-    <link rel="preload" href="/assets/css/0.styles.260d55c9.css" as="style"><link rel="preload" href="/assets/js/app.d49150f4.js" as="script"><link rel="preload" href="/assets/js/8.ad0d7f75.js" as="script"><link rel="prefetch" href="/assets/js/10.7c58c8e9.js"><link rel="prefetch" href="/assets/js/11.5053cc12.js"><link rel="prefetch" href="/assets/js/12.dc6cd4cc.js"><link rel="prefetch" href="/assets/js/13.7509f3db.js"><link rel="prefetch" href="/assets/js/14.da0c4f52.js"><link rel="prefetch" href="/assets/js/15.33a04889.js"><link rel="prefetch" href="/assets/js/16.2405d016.js"><link rel="prefetch" href="/assets/js/17.da45af2d.js"><link rel="prefetch" href="/assets/js/18.b9131f6b.js"><link rel="prefetch" href="/assets/js/19.bd318108.js"><link rel="prefetch" href="/assets/js/2.aaeb4dce.js"><link rel="prefetch" href="/assets/js/20.12e74493.js"><link rel="prefetch" href="/assets/js/3.5815ddf7.js"><link rel="prefetch" href="/assets/js/4.463f8296.js"><link rel="prefetch" href="/assets/js/5.cdc3e65a.js"><link rel="prefetch" href="/assets/js/6.43f0596f.js"><link rel="prefetch" href="/assets/js/7.e580d1e8.js"><link rel="prefetch" href="/assets/js/9.754cf538.js">
-    <link rel="stylesheet" href="/assets/css/0.styles.260d55c9.css">
+    <meta name="generator" content="VuePress 2.0.0-beta.53">
+    <style>
+      :root {
+        --c-bg: #fff;
+      }
+      html.dark {
+        --c-bg: #22272e;
+      }
+      html, body {
+        background-color: var(--c-bg);
+      }
+    </style>
+    <script>
+      const userMode = localStorage.getItem('vuepress-color-scheme');
+			const systemDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (userMode === 'dark' || (userMode !== 'light' && systemDarkMode)) {
+				document.documentElement.classList.toggle('dark', true);
+			}
+    </script>
+    <meta name="theme-color" content="#1976d2"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><title> | Lemu user guide</title><meta name="description" content="User guide for Lemu app">
+    <link rel="preload" href="/assets/style.b5c81eba.css" as="style" /><link rel="stylesheet" href="/assets/style.b5c81eba.css" />
+    <link rel="modulepreload" href="/assets/app.85b691aa.js"><link rel="modulepreload" href="/assets/404.html.d7901dbf.js"><link rel="modulepreload" href="/assets/404.html.d2dc3323.js"><link rel="prefetch" href="/assets/index.html.d19ee306.js" as="script" /><link rel="prefetch" href="/assets/index.html.0c39a128.js" as="script" /><link rel="prefetch" href="/assets/configuration-template.html.6f3de373.js" as="script" /><link rel="prefetch" href="/assets/engine-script-template.html.3e1fcf92.js" as="script" /><link rel="prefetch" href="/assets/engine-scripts.html.99c660b5.js" as="script" /><link rel="prefetch" href="/assets/general-configuration.html.73dda315.js" as="script" /><link rel="prefetch" href="/assets/getting-started.html.792dc9a2.js" as="script" /><link rel="prefetch" href="/assets/logs.html.fcbcdbeb.js" as="script" /><link rel="prefetch" href="/assets/index.html.3ac3fc91.js" as="script" /><link rel="prefetch" href="/assets/report.html.6315ea84.js" as="script" /><link rel="prefetch" href="/assets/test-configuration.html.e8d74e1b.js" as="script" /><link rel="prefetch" href="/assets/test-result.html.13444f0d.js" as="script" /><link rel="prefetch" href="/assets/test-view.html.a11972c4.js" as="script" /><link rel="prefetch" href="/assets/write-first-test.html.a315f031.js" as="script" /><link rel="prefetch" href="/assets/index.html.371cb777.js" as="script" /><link rel="prefetch" href="/assets/index.html.a0ffa3da.js" as="script" /><link rel="prefetch" href="/assets/configuration-template.html.0ac5287c.js" as="script" /><link rel="prefetch" href="/assets/engine-script-template.html.f3b46382.js" as="script" /><link rel="prefetch" href="/assets/engine-scripts.html.9111028b.js" as="script" /><link rel="prefetch" href="/assets/general-configuration.html.c07188ee.js" as="script" /><link rel="prefetch" href="/assets/getting-started.html.9701cb4a.js" as="script" /><link rel="prefetch" href="/assets/logs.html.3c11684c.js" as="script" /><link rel="prefetch" href="/assets/index.html.f8336aa6.js" as="script" /><link rel="prefetch" href="/assets/report.html.21357ff1.js" as="script" /><link rel="prefetch" href="/assets/test-configuration.html.1c422220.js" as="script" /><link rel="prefetch" href="/assets/test-result.html.f20465c9.js" as="script" /><link rel="prefetch" href="/assets/test-view.html.d3c87f21.js" as="script" /><link rel="prefetch" href="/assets/write-first-test.html.0bc5950e.js" as="script" />
   </head>
   <body>
-    <div id="app" data-server-rendered="true"><div class="theme-container"><div class="theme-default-content"><h1>404</h1> <blockquote>That's a Four-Oh-Four.</blockquote> <a href="/" class="router-link-active">
-      Take me home.
-    </a></div></div><div class="global-ui"><!----></div></div>
-    <script src="/assets/js/app.d49150f4.js" defer></script><script src="/assets/js/8.ad0d7f75.js" defer></script>
+    <div id="app"><!--[--><div class="theme-container"><main class="page"><div class="theme-default-content"><h1>404</h1><blockquote>There&#39;s nothing here.</blockquote><a href="/" class="">Take me home</a></div></main></div><!----><!--]--></div>
+    <script type="module" src="/assets/app.85b691aa.js" defer></script>
   </body>
 </html>

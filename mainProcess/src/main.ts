@@ -1,31 +1,39 @@
-import { app, BrowserWindow, Menu, protocol, ipcMain } from 'electron';
+import { app, BrowserWindow, Menu, protocol, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
 import logger from "electron-log";
+import * as remoteMain from "@electron/remote/main";
+import { setupTitlebar, attachTitlebarToWindow } from "custom-electron-titlebar/main";
 
 import path = require("path");
 import "v8-compile-cache";
 
 import "./eventBuses";
-import { BrowserWindowManager } from './controllers/browserWindowManager';
-import { eventNames } from '../../shared/constants/eventNames';
+import { BrowserWindowManager } from "./controllers/browserWindowManager";
+import { eventNames } from "../../shared/constants/eventNames";
 
 let mainWindow: Electron.BrowserWindow | null = null;
+
+setupTitlebar();
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    titleBarStyle: "hidden",
     icon: path.join(__dirname, "../../icon.png"),
     webPreferences: {
       nodeIntegration: false,
       webSecurity: false,
       contextIsolation: true,
-      enableRemoteModule: true,
+      sandbox: false,
       preload: path.join(__dirname, "preload.js")
     },
     backgroundColor: "#fafafa",
     frame: false
   });
+  remoteMain.initialize();
+  remoteMain.enable(mainWindow.webContents);
+  attachTitlebarToWindow(mainWindow);
   mainWindow.maximize();
   BrowserWindowManager.setInstance(mainWindow);
   Menu.setApplicationMenu(null);
@@ -100,10 +108,12 @@ function manageUpdate(window: BrowserWindow) {
       } else {
         autoUpdater.checkForUpdates()
           .then((updateCheckResult) => {
-            const updateVersion = updateCheckResult.updateInfo.version;
-            setTimeout(() => {
-              BrowserWindowManager.sendEvent(eventNames.UPDATE_AVAILABLE);
-            }, 15000);
+            if (updateCheckResult) {
+              const updateVersion = updateCheckResult.updateInfo.version;
+              setTimeout(() => {
+                BrowserWindowManager.sendEvent(eventNames.UPDATE_AVAILABLE);
+              }, 15000);
+            }
           }).catch((error) => {
             logger.warn("Fail to check for updates");
           });

@@ -20,7 +20,8 @@ module.exports = {
     "space-before-function-paren": ["error", "never"],
     "@typescript-eslint/explicit-module-boundary-types": "error",
     "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/no-unused-vars": "error"
+    "@typescript-eslint/no-unused-vars": "error",
+    "prefer-rest-params": "off"
   },
   overrides: [
     {
